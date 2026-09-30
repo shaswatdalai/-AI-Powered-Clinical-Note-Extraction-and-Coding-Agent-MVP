@@ -1,0 +1,37 @@
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Environment Variables & Secrets
+.env
+.env.local
+*.key
+credentials.json
+
+# Local Databases & Vector Stores
+data/raw/
+data/chromadb/
+data/cache/
+*.db
+*.sqlite3
+
+# Outputs & Artifacts
+logs/
+evaluation_results/
+reports/
+*.webm
+*.webp
+
+# OS & IDE artifacts
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

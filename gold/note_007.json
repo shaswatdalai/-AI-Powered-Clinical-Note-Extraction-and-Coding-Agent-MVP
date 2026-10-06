@@ -1,0 +1,72 @@
+{
+  "note_id": "note_007",
+  "specialty": "Cosmetic / Plastic Surgery",
+  "source_row_index": 4074,
+  "diagnoses": [
+    {
+      "name_as_written": "Breast assymetry",
+      "normalised_name": "breast asymmetry",
+      "status": "active",
+      "span": [
+        26,
+        42
+      ],
+      "icd_code": "N65.1"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Kefzol",
+      "dose": "1 gram",
+      "route": "IV",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        1016,
+        1022
+      ]
+    },
+    {
+      "name": "Bacitracin",
+      "dose": "50,000 units",
+      "route": null,
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        2061,
+        2078
+      ]
+    },
+    {
+      "name": "gentamicin",
+      "dose": "80 mg",
+      "route": null,
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        2098,
+        2114
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Capsulotomy left breast",
+      "date": null,
+      "span": [
+        176,
+        199
+      ]
+    },
+    {
+      "name": "flat advancement V to Y left breast for correction lower pole defect",
+      "date": null,
+      "span": [
+        201,
+        269
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

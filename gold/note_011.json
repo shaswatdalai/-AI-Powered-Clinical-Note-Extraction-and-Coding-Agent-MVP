@@ -1,0 +1,102 @@
+{
+  "note_id": "note_011",
+  "specialty": "Discharge Summary",
+  "source_row_index": 3994,
+  "diagnoses": [
+    {
+      "name_as_written": "Abscess with cellulitis, left foot",
+      "normalised_name": "abscess with cellulitis, left foot",
+      "status": "historical",
+      "span": [
+        23,
+        57
+      ],
+      "icd_code": "L03.115"
+    },
+    {
+      "name_as_written": "osteomyelitis",
+      "normalised_name": "osteomyelitis",
+      "status": "ruled_out",
+      "span": [
+        1082,
+        1095
+      ],
+      "icd_code": null
+    }
+  ],
+  "medications": [
+    {
+      "name": "Ancef",
+      "dose": null,
+      "route": "IV",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        502,
+        510
+      ]
+    },
+    {
+      "name": "vancomycin",
+      "dose": "1 g",
+      "route": "IV",
+      "frequency": "q.12h",
+      "status": "discontinued",
+      "span": [
+        1264,
+        1278
+      ]
+    },
+    {
+      "name": "Ancef",
+      "dose": "2 g",
+      "route": "IV",
+      "frequency": "every 8 hours",
+      "status": "current",
+      "span": [
+        1317,
+        1343
+      ]
+    },
+    {
+      "name": "Lorcet",
+      "dose": "10/650 mg",
+      "route": "PO",
+      "frequency": "q.6h as needed",
+      "status": "newly_prescribed",
+      "span": [
+        1668,
+        1684
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Incision and drainage",
+      "date": "06/14/07",
+      "span": [
+        124,
+        145
+      ]
+    },
+    {
+      "name": "X-ray",
+      "date": null,
+      "span": [
+        1060,
+        1095
+      ]
+    }
+  ],
+  "allergies": [
+    {
+      "substance": "Accutane",
+      "reaction": null,
+      "span": [
+        525,
+        533
+      ]
+    }
+  ],
+  "vitals": []
+}

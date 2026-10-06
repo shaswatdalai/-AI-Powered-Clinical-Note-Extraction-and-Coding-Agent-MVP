@@ -1,0 +1,50 @@
+{
+  "note_id": "note_012",
+  "specialty": "ENT - Otolaryngology",
+  "source_row_index": 3707,
+  "diagnoses": [
+    {
+      "name_as_written": "Bilateral progressive conductive hearing losses",
+      "normalised_name": "bilateral conductive hearing loss",
+      "status": "active",
+      "span": [
+        26,
+        73
+      ],
+      "icd_code": "H90.3"
+    },
+    {
+      "name_as_written": "probable otosclerosis",
+      "normalised_name": "otosclerosis",
+      "status": "suspected",
+      "span": [
+        79,
+        100
+      ],
+      "icd_code": "H80.90"
+    },
+    {
+      "name_as_written": "right stapedial fixation secondary to otosclerosis",
+      "normalised_name": "stapedial fixation due to otosclerosis",
+      "status": "active",
+      "span": [
+        170,
+        220
+      ],
+      "icd_code": "H80.01"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "Right argon laser assisted stapedectomy",
+      "date": null,
+      "span": [
+        245,
+        284
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

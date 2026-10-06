@@ -1,0 +1,81 @@
+{
+  "note_id": "note_010",
+  "specialty": "Diets and Nutritions",
+  "source_row_index": 3990,
+  "diagnoses": [
+    {
+      "name_as_written": "diabetes during pregnancy",
+      "normalised_name": "gestational diabetes mellitus",
+      "status": "active",
+      "span": [
+        82,
+        107
+      ],
+      "icd_code": "O24.419"
+    },
+    {
+      "name_as_written": "gestational diabetes",
+      "normalised_name": "gestational diabetes",
+      "status": "historical",
+      "span": [
+        139,
+        159
+      ],
+      "icd_code": "O24.419"
+    },
+    {
+      "name_as_written": "obesity",
+      "normalised_name": "obesity",
+      "status": "active",
+      "span": [
+        1457,
+        1464
+      ],
+      "icd_code": "E66.9"
+    }
+  ],
+  "medications": [
+    {
+      "name": "NovoLog 70/30",
+      "dose": "20 units",
+      "route": null,
+      "frequency": "in the morning",
+      "status": "current",
+      "span": [
+        656,
+        669
+      ]
+    }
+  ],
+  "procedures": [],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "Weight",
+      "value": "238.3",
+      "unit": "pounds",
+      "span": [
+        445,
+        467
+      ]
+    },
+    {
+      "name": "Height",
+      "value": "62-3/4",
+      "unit": "inches",
+      "span": [
+        567,
+        590
+      ]
+    },
+    {
+      "name": "BMI",
+      "value": "42-1/2",
+      "unit": null,
+      "span": [
+        627,
+        633
+      ]
+    }
+  ]
+}

@@ -1,0 +1,225 @@
+{
+  "note_id": "note_006",
+  "specialty": "Consult - History and Phy.",
+  "source_row_index": 4157,
+  "diagnoses": [
+    {
+      "name_as_written": "severe aortic stenosis",
+      "normalised_name": "aortic stenosis",
+      "status": "active",
+      "span": [
+        159,
+        181
+      ],
+      "icd_code": "I35.0"
+    },
+    {
+      "name_as_written": "bipolar disorder",
+      "normalised_name": "bipolar disorder",
+      "status": "active",
+      "span": [
+        364,
+        380
+      ],
+      "icd_code": "F31.9"
+    },
+    {
+      "name_as_written": "schizophrenia",
+      "normalised_name": "schizophrenia",
+      "status": "historical",
+      "span": [
+        418,
+        431
+      ],
+      "icd_code": "F20.9"
+    },
+    {
+      "name_as_written": "hallucinations",
+      "normalised_name": "hallucinations",
+      "status": "ruled_out",
+      "span": [
+        654,
+        668
+      ],
+      "icd_code": null
+    },
+    {
+      "name_as_written": "psychosis",
+      "normalised_name": "psychosis",
+      "status": "ruled_out",
+      "span": [
+        670,
+        679
+      ],
+      "icd_code": null
+    },
+    {
+      "name_as_written": "Mild organic brain syndrome",
+      "normalised_name": "organic brain syndrome",
+      "status": "active",
+      "span": [
+        3192,
+        3219
+      ],
+      "icd_code": "F09"
+    },
+    {
+      "name_as_written": "Aortic stenosis",
+      "normalised_name": "aortic stenosis",
+      "status": "active",
+      "span": [
+        3285,
+        3300
+      ],
+      "icd_code": "I35.0"
+    },
+    {
+      "name_as_written": "Sleep apnea",
+      "normalised_name": "sleep apnea",
+      "status": "active",
+      "span": [
+        3306,
+        3317
+      ],
+      "icd_code": "G47.30"
+    },
+    {
+      "name_as_written": "Obesity",
+      "normalised_name": "obesity",
+      "status": "active",
+      "span": [
+        3323,
+        3330
+      ],
+      "icd_code": "E66.9"
+    },
+    {
+      "name_as_written": "Anemia",
+      "normalised_name": "anemia",
+      "status": "active",
+      "span": [
+        3336,
+        3342
+      ],
+      "icd_code": "D64.9"
+    },
+    {
+      "name_as_written": "Gastroesophageal reflux disease",
+      "normalised_name": "gastroesophageal reflux disease",
+      "status": "active",
+      "span": [
+        3348,
+        3379
+      ],
+      "icd_code": "K21.0"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Depakote",
+      "dose": "500 mg",
+      "route": null,
+      "frequency": "three times a day",
+      "status": "current",
+      "span": [
+        444,
+        459
+      ]
+    },
+    {
+      "name": "Geodon",
+      "dose": "80 mg",
+      "route": null,
+      "frequency": "twice a day",
+      "status": "current",
+      "span": [
+        482,
+        494
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Chest x-ray",
+      "date": null,
+      "span": [
+        2945,
+        2956
+      ]
+    },
+    {
+      "name": "Carotid duplex",
+      "date": null,
+      "span": [
+        2984,
+        2998
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "Temp",
+      "value": "97.3",
+      "unit": null,
+      "span": [
+        2006,
+        2025
+      ]
+    },
+    {
+      "name": "HR",
+      "value": "70",
+      "unit": "bpm",
+      "span": [
+        2027,
+        2035
+      ]
+    },
+    {
+      "name": "RR",
+      "value": "18",
+      "unit": "breaths/min",
+      "span": [
+        2037,
+        2052
+      ]
+    },
+    {
+      "name": "BP",
+      "value": "113/68",
+      "unit": "mmHg",
+      "span": [
+        2054,
+        2075
+      ]
+    },
+    {
+      "name": "O2 sat",
+      "value": "94",
+      "unit": "%",
+      "span": [
+        2081,
+        2102
+      ]
+    },
+    {
+      "name": "Hematocrit",
+      "value": "31",
+      "unit": "%",
+      "span": [
+        3083,
+        3097
+      ]
+    },
+    {
+      "name": "Triglycerides",
+      "value": "152",
+      "unit": null,
+      "span": [
+        3100,
+        3117
+      ]
+    }
+  ]
+}

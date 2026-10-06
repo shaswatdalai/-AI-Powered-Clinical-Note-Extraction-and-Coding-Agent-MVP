@@ -1,0 +1,123 @@
+{
+  "note_id": "note_008",
+  "specialty": "Dentistry",
+  "source_row_index": 4030,
+  "diagnoses": [
+    {
+      "name_as_written": "Nonrestorable teeth",
+      "normalised_name": "nonrestorable teeth",
+      "status": "active",
+      "span": [
+        25,
+        44
+      ],
+      "icd_code": null
+    },
+    {
+      "name_as_written": "narcotic abuse",
+      "normalised_name": "narcotic abuse",
+      "status": "historical",
+      "span": [
+        946,
+        960
+      ],
+      "icd_code": "F11.10"
+    },
+    {
+      "name_as_written": "hepatitis C",
+      "normalised_name": "hepatitis c",
+      "status": "active",
+      "span": [
+        996,
+        1007
+      ],
+      "icd_code": "B18.2"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Methadone",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1097,
+        1106
+      ]
+    },
+    {
+      "name": "Beta-blocker",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1112,
+        1124
+      ]
+    },
+    {
+      "name": "Xanax",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1130,
+        1135
+      ]
+    },
+    {
+      "name": "Norco",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1141,
+        1146
+      ]
+    },
+    {
+      "name": "Clindamycin",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1152,
+        1163
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Full-mouth extraction",
+      "date": null,
+      "span": [
+        105,
+        126
+      ]
+    },
+    {
+      "name": "alveoloplasty",
+      "date": null,
+      "span": [
+        221,
+        234
+      ]
+    }
+  ],
+  "allergies": [
+    {
+      "substance": "Penicillin",
+      "reaction": null,
+      "span": [
+        1204,
+        1214
+      ]
+    }
+  ],
+  "vitals": []
+}

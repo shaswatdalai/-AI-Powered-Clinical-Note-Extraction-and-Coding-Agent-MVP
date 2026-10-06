@@ -1,0 +1,76 @@
+{
+  "note_id": "note_003",
+  "specialty": "Bariatrics",
+  "source_row_index": 17,
+  "diagnoses": [
+    {
+      "name_as_written": "status post lap band placement",
+      "normalised_name": "status post lap band placement",
+      "status": "historical",
+      "span": [
+        80,
+        110
+      ],
+      "icd_code": "Z98.84"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "lap band adjustment",
+      "date": null,
+      "span": [
+        1116,
+        1135
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "Temp",
+      "value": "98",
+      "unit": null,
+      "span": [
+        681,
+        698
+      ]
+    },
+    {
+      "name": "HR",
+      "value": "76",
+      "unit": "bpm",
+      "span": [
+        700,
+        708
+      ]
+    },
+    {
+      "name": "Weight",
+      "value": "197.7",
+      "unit": "pounds",
+      "span": [
+        710,
+        729
+      ]
+    },
+    {
+      "name": "BP",
+      "value": "102/72",
+      "unit": "mmHg",
+      "span": [
+        731,
+        752
+      ]
+    },
+    {
+      "name": "BMI",
+      "value": "38.5",
+      "unit": null,
+      "span": [
+        754,
+        765
+      ]
+    }
+  ]
+}

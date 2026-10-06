@@ -1,0 +1,58 @@
+{
+  "note_id": "note_004",
+  "specialty": "Cardiovascular / Pulmonary",
+  "source_row_index": 4686,
+  "diagnoses": [
+    {
+      "name_as_written": "Moderate obstructive lung disease",
+      "normalised_name": "moderate obstructive lung disease",
+      "status": "active",
+      "span": [
+        400,
+        433
+      ],
+      "icd_code": "J44.1"
+    },
+    {
+      "name_as_written": "bronchospastic element",
+      "normalised_name": "bronchospasm",
+      "status": "active",
+      "span": [
+        487,
+        509
+      ],
+      "icd_code": "J98.01"
+    },
+    {
+      "name_as_written": "fibrosis",
+      "normalised_name": "pulmonary fibrosis",
+      "status": "suspected",
+      "span": [
+        569,
+        577
+      ],
+      "icd_code": null
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "FVC",
+      "date": null,
+      "span": [
+        89,
+        92
+      ]
+    },
+    {
+      "name": "flow volume loop",
+      "date": null,
+      "span": [
+        810,
+        826
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

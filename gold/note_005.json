@@ -1,0 +1,82 @@
+{
+  "note_id": "note_005",
+  "specialty": "Chiropractic",
+  "source_row_index": 4607,
+  "diagnoses": [
+    {
+      "name_as_written": "Lumbosacral contusion/strain",
+      "normalised_name": "lumbosacral contusion/strain",
+      "status": "historical",
+      "span": [
+        8954,
+        8982
+      ],
+      "icd_code": "S39.012A"
+    },
+    {
+      "name_as_written": "seasonal allergies",
+      "normalised_name": "seasonal allergies",
+      "status": "active",
+      "span": [
+        4527,
+        4545
+      ],
+      "icd_code": "J30.1"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Advil",
+      "dose": null,
+      "route": "PO",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        4690,
+        4695
+      ]
+    },
+    {
+      "name": "Tylenol",
+      "dose": null,
+      "route": "PO",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        4700,
+        4707
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "AP and lateral lumbar/pelvic views",
+      "date": "May 15, 2003",
+      "span": [
+        8380,
+        8414
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "Height",
+      "value": "5 feet 7 inches",
+      "unit": null,
+      "span": [
+        5559,
+        5574
+      ]
+    },
+    {
+      "name": "Weight",
+      "value": "125",
+      "unit": "pounds",
+      "span": [
+        5589,
+        5599
+      ]
+    }
+  ]
+}

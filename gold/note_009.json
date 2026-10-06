@@ -1,0 +1,101 @@
+{
+  "note_id": "note_009",
+  "specialty": "Dermatology",
+  "source_row_index": 4007,
+  "diagnoses": [
+    {
+      "name_as_written": "MRSA",
+      "normalised_name": "methicillin-resistant staphylococcus aureus infection",
+      "status": "active",
+      "span": [
+        248,
+        252
+      ],
+      "icd_code": "A49.02"
+    },
+    {
+      "name_as_written": "jaundice",
+      "normalised_name": "jaundice",
+      "status": "ruled_out",
+      "span": [
+        2499,
+        2507
+      ],
+      "icd_code": null
+    }
+  ],
+  "medications": [
+    {
+      "name": "bacitracin",
+      "dose": null,
+      "route": "topical",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        297,
+        316
+      ]
+    },
+    {
+      "name": "Bactrim",
+      "dose": null,
+      "route": "PO",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        2455,
+        2462
+      ]
+    },
+    {
+      "name": "Hibiclens",
+      "dose": null,
+      "route": "topical",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        2532,
+        2541
+      ]
+    },
+    {
+      "name": "Bactroban",
+      "dose": null,
+      "route": "topical",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        2546,
+        2555
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "culture",
+      "date": null,
+      "span": [
+        200,
+        207
+      ]
+    },
+    {
+      "name": "Herpes culture",
+      "date": null,
+      "span": [
+        2628,
+        2642
+      ]
+    },
+    {
+      "name": "Blood culture",
+      "date": null,
+      "span": [
+        2694,
+        2707
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

@@ -43,7 +43,7 @@ Three diagrams, each answering one question. Full narrative in §3.4.
 flowchart LR
     R[Reviewer] --> UI[Reviewer UI<br/>HTML/JS on localhost]
     UI -->|HTTP| BE[FastAPI backend<br/>+ Orchestrator]
-    BE --> EXT[Extractor LLM<br/>Groq Llama 3.3 70B]
+    BE --> EXT[Extractor LLM<br/>Qwen 3.8 27B]
     BE --> VER[Verifier LLM<br/>Gemini 3.8 Flash]
     BE --> IDX[(ICD-10 index<br/>BM25 + ChromaDB)]
     BE --> NOTES[(Clinical notes CSV<br/>~5,000 rows on disk)]
@@ -57,7 +57,7 @@ flowchart LR
 flowchart TD
     A[Raw note] --> B[Section detection<br/>+ offset preservation]
     B --> C[PII masking<br/>same-length filler]
-    C --> D[Extractor LLM<br/>Groq Llama 3.3 70B]
+    C --> D[Extractor LLM<br/>Qwen 3.8 27B]
     D --> E[Pydantic validation<br/>+ span resolver in code]
     E --> F[ICD lookup<br/>BM25 + vectors + RRF]
     F --> G[Verifier LLM<br/>Gemini 3.8 Flash]
@@ -276,7 +276,7 @@ The table below lists each technology choice, the reason for choosing it, and th
 
 | Area | Choice | Why | Rejected alternatives and why |
 |---|---|---|---|
-| Extractor LLM | Groq Llama 3.3 70B | Free tier, fast, good JSON adherence | A small local model: weaker extraction; GPT-class paid models: not allowed |
+| Extractor LLM | Qwen 3.8 27B | Free tier, fast, good JSON adherence | A small local model: weaker extraction; GPT-class paid models: not allowed |
 | Verifier LLM | Gemini Flash 3.8  | Different family from extractor, so less correlated errors | Same model for both: shared blind spots; two prompts of one model: weaker independence |
 | Structured output | Pydantic + JSON mode, validate and retry | Explicit, testable, enforced in code | Free-text parsing with regex: brittle |
 | Embeddings | Local bge-small-en on CPU | No quota use, reproducible, offline | Google embeddings API : uses quota, network dependency, may change |
@@ -332,9 +332,9 @@ The table below lists each technology choice, the reason for choosing it, and th
 
 ## 14. Day-by-day plan
 
-Project duration: Wed 30 Sep 2026 → Thu 15 Oct 2026. Code freeze Wed 14 Oct, 6:00 PM. Defense Thu 15 Oct.
+Project duration: Wed 30 Sep 2026 → Wed 14 Oct 2026. Code freeze Tue 13 Oct, 6:00 PM. Defense Wed 14 Oct.
 
-Each day ends with a commit to the private repo, an end-of-day update to the reviewer (done / blocked / next), and the checkable output listed below.
+Each day ends with a commit to the private repo, an end-of-day update (done / blocked / next), and the checkable output listed below.
 
 ### Phase 0 — Understand and Design
 
@@ -366,8 +366,8 @@ Mid-point review with Zuhair on Wed 7 Oct per SOW section 10.
 
 | Day | Date | Work | Checkable output |
 |---|---|---|---|
-| Wed | 14 Oct | Full eval; report with 3+ failures; README; user guide; demo video; **freeze 6 PM** | One-command eval; report; video |
-| Thu | 15 Oct | Present and defend | Slides on the six SOW sections |
+| Tue | 13 Oct | Full eval; report with 3+ failures; README; user guide; demo video; **freeze 6 PM** | One-command eval; report; video |
+| Wed | 14 Oct | Present and defend | Slides on the six SOW sections |
 
 ### Riskiest pieces (scheduled early)
 
@@ -379,7 +379,7 @@ Mid-point review with Zuhair on Wed 7 Oct per SOW section 10.
 
 - Target: 100 notes across 10+ specialties.
 - Daily quota: 12–15 notes.
-- Running total: 12 (Wed) → 27 (Thu) → 42 (Fri) → 57 (Sat) → 72 (Mon) → 87 (Tue) → 100 (Wed, if needed).
+- Running total: 12 (Wed) → 27 (Thu) → 42 (Fri) → 57 (Sat) → 72 (Mon) → 87 (Tue) → 100 (Tue, if needed).
 - Fallback: if the target is unreachable by Tuesday, reduce labelling scope in writing and document the reason in the evaluation report.
 
 ---
@@ -388,7 +388,7 @@ Mid-point review with Zuhair on Wed 7 Oct per SOW section 10.
 **Extractor prompt budget:**
 - System instruction + schema description: ~500 tokens
 - One masked note: typically 200–2,000 tokens, capped at 4,000 tokens
-- Total per extractor call: under 5,000 tokens — well within Llama 3.3 70B's 128K context window
+- Total per extractor call: under 5,000 tokens — well within Qwen 3.8 27B's 131K context window
 
 **Verifier prompt budget:**
 - System instruction + contract description: ~300 tokens

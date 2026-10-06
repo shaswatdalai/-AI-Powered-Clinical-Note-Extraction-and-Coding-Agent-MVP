@@ -1,9 +1,9 @@
 # Timeline: Clinical Note Extraction and ICD-10 Coding Agent (MVP)
 
-**Project duration:** Wed 30 Sep 2026 → Thu 15 Oct 2026 (11 working days, one Sunday off)
+**Project duration:** Wed 30 Sep 2026 → Wed 14 Oct 2026
 **Review / sign-off:** Tue 6 Oct 2026, afternoon
-**Code freeze:** Wed 14 Oct 2026, 6:00 PM
-**Defense:** Thu 15 Oct 2026
+**Code freeze:** Tue 13 Oct 2026, 6:00 PM
+**Defense:** Wed 14 Oct 2026
 
 Each day ends with:
 - A commit to the private repository
@@ -40,16 +40,15 @@ Mid-point review with Zuhair on Wed 7 Oct per SOW section 10.
 | Fri | 9 Oct | Naive baseline; masker; injection shield; eval skeleton with matching rules; label 15 notes | Baseline numbers on labelled notes |
 | Sat | 10 Oct | Verifier with contract, contradictions, recall check; label 15 notes | Verifier rejects planted fakes |
 | Mon | 12 Oct | Orchestrator: plan, reconcile, bounded retry, abstain, escalate, trace, budget; label 15 notes | End-to-end run with trace JSON |
-| Tue | 13 Oct | Reviewer UI; build contradiction, rare, adversarial sets; label 15 notes | UI works on 3 demo notes |
+| Tue | 13 Oct | Reviewer UI; build contradiction, rare, adversarial sets; label 15 notes; full eval; report; README; user guide; demo video; **freeze 6 PM** | One-command eval; report; video |
 
 ---
 
-## Phase 3 — Evaluation, Documentation, Freeze
+## Defense
 
 | Day | Date | Work | Checkable output |
 |---|---|---|---|
-| Wed | 14 Oct | Full eval; report with 3+ failures; README; user guide; demo video (5–8 min); **freeze 6 PM** | One-command eval; report; video |
-| Thu | 15 Oct | Present and defend | Slides on the six SOW sections |
+| Wed | 14 Oct | Present and defend | Slides on the six SOW sections |
 
 ---
 
@@ -65,7 +64,7 @@ Mid-point review with Zuhair on Wed 7 Oct per SOW section 10.
 
 - **Target:** 100 notes across 10+ specialties
 - **Daily quota:** 12–15 notes
-- **Running total:** 12 (Wed) → 27 (Thu) → 42 (Fri) → 57 (Sat) → 72 (Mon) → 87 (Tue) → 100 (Wed, if needed)
+- **Running total:** 12 (Wed) → 27 (Thu) → 42 (Fri) → 57 (Sat) → 72 (Mon) → 87 (Tue)
 - **Fallback:** If the target is unreachable by Tuesday, reduce labelling scope in writing and document the reason in the evaluation report.
 
 ---
@@ -75,5 +74,5 @@ Mid-point review with Zuhair on Wed 7 Oct per SOW section 10.
 - **Phase 0:** Understand and Design (Wed 30 Sep – Tue 6 Oct)
 - **Phase 1:** Data, Gold Standard and Extraction (Wed 7 Oct – Thu 8 Oct)
 - **Phase 2:** Verification and Agent (Fri 9 Oct – Tue 13 Oct)
-- **Phase 3:** Evaluation, Documentation, Freeze (Wed 14 Oct)
-- **Defense:** Thu 15 Oct
+- **Phase 3:** Evaluation, Documentation, Freeze (Tue 13 Oct)
+- **Defense:** Wed 14 Oct

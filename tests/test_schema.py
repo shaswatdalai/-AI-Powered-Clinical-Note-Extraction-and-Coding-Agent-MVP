@@ -33,7 +33,7 @@ def test_span_accepts_valid_offsets():
     assert s.end == 20
 
 
-def test_span_rejects_negative_start():
+def test_span_rejects_negative_start():#to check that span can not have negative start offset
     with pytest.raises(ValidationError):
         Span(start=-1, end=20)
 

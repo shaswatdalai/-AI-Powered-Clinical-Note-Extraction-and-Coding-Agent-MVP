@@ -33,8 +33,8 @@ class Evidence(BaseModel):
 
 
 class Diagnosis(BaseModel):
-    name_as_written: str
-    normalised_name: str
+    name_as_written: str#T2DM
+    normalised_name: str#Type 2 diabetes mellitus
     status: Literal["active", "historical", "ruled_out", "suspected"]
     evidence: Evidence
     icd_candidates: list[dict] = Field(default_factory=list)

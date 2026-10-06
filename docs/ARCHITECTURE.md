@@ -33,73 +33,50 @@ Known data issues to document (SOW says this is graded): inconsistent or missing
 
 ---
 
-## 3. System diagrams
+## 3. System diagram
 
-Three diagrams, each answering one question. Full narrative in §3.4.
-
-### 3.1 System context — "what are the pieces?"
-
-```mermaid
-flowchart LR
-    R[Reviewer] --> UI[Reviewer UI<br/>HTML/JS on localhost]
-    UI -->|HTTP| BE[FastAPI backend<br/>+ Orchestrator]
-    BE --> EXT[Extractor LLM<br/>Qwen 3.8 27B]
-    BE --> VER[Verifier LLM<br/>Gemini 3.8 Flash]
-    BE --> IDX[(ICD-10 index<br/>BM25 + ChromaDB)]
-    BE --> NOTES[(Clinical notes CSV<br/>~5,000 rows on disk)]
-```
-
-**Answer:** One user, one backend, two LLMs of different families, two local data sources. Everything else is detail.
-
-### 3.2 One note's journey — "what happens to one note?"
+One diagram, one note's journey from ingestion to accepted record. Tools, models, data stores, and the agent loop are annotated inline.
 
 ```mermaid
 flowchart TD
-    A[Raw note] --> B[Section detection<br/>+ offset preservation]
-    B --> C[PII masking<br/>same-length filler]
-    C --> D[Extractor LLM<br/>Qwen 3.8 27B]
-    D --> E[Pydantic validation<br/>+ span resolver in code]
-    E --> F[ICD lookup<br/>BM25 + vectors + RRF]
-    F --> G[Verifier LLM<br/>Gemini 3.8 Flash]
-    G --> H{Reconcile}
-    H -->|both agree| ACC[ACCEPT]
-    H -->|disagree or low confidence| FLAG[FLAG for human review]
-    ACC --> UI[Reviewer UI]
+    subgraph STARTUP[Startup — once]
+        ICD[(icd10cm_data.csv<br/>74,260 rows)]
+        BM[BM25 index]
+        CH[(ChromaDB vectors<br/>bge-small-en, 384-d)]
+        ICD --> BM
+        ICD --> CH
+    end
+
+    subgraph RUNTIME[Runtime — per note]
+        N[Raw clinical note] --> SEC[Sectioner<br/>+ offsets]
+        SEC --> MASK[PII masker<br/>regex + spaCy<br/>same-length filler]
+        MASK --> SHIELD[Injection shield<br/>delimiters + note is data]
+        SHIELD --> PB[Prompt builder<br/>system + schema + note]
+        PB --> EXT[Extractor LLM<br/>Qwen 3.8 27B<br/>temp 0, JSON mode]
+        EXT --> PYD[Pydantic validate<br/>+ span resolver in code]
+        PYD -- invalid JSON, retry le 2 --> PB
+        PYD --> ICDLOOK[ICD lookup<br/>BM25 + vectors + RRF<br/>top-3 or NO_CONFIDENT_MATCH]
+        BM -.-> ICDLOOK
+        CH -.-> ICDLOOK
+        PYD --> VER[Verifier LLM<br/>Gemini 3.8 Flash<br/>masked note + items only]
+        ICDLOOK --> VER
+        VER --> REC{Reconcile<br/>bounded retries<br/>max 1-2 per item}
+        REC -- both agree --> ACC[ACCEPT]
+        REC -- disagree or low confidence --> FLAG[FLAG for human review]
+        REC -- flagged fraction gt 0.4 --> ESC[Escalate whole note]
+    end
+
+    ACC --> UI[Reviewer UI<br/>span highlights, table, trace, export]
     FLAG --> UI
+    ESC --> UI
+    EXT -.-> LOG[(Audit log<br/>masked JSONL)]
+    VER -.-> LOG
+    REC -.-> LOG
 ```
 
-**Note:** Section detection runs **before** masking. The span resolver runs in code, not in the LLM. The verifier is a different model family from the extractor.
+**Narration (walk through in one breath):** "One note goes in. Section, mask, shield, extract with Qwen, validate and resolve spans in code, look up ICD candidates from a pre-built index, verify with Gemini, then reconcile. Accept, flag, or escalate. Everything is logged masked. The two datasets never go to either model in bulk — the notes CSV is read one row per prompt, the ICD table is queried per diagnosis and only the top-3 candidates are shown."
 
-### 3.3 How the two datasets flow — "how are the CSVs used?"
-
-```mermaid
-flowchart LR
-    subgraph STARTUP[Once at startup]
-        ICD[icd10cm_data.csv<br/>74,260 rows] --> BM[BM25 index]
-        ICD --> CH[ChromaDB vectors<br/>bge-small-en]
-    end
-
-    subgraph RUNTIME[At runtime, per note]
-        NOTE[ONE note from<br/>mtsamples.csv] --> MASK[Mask PII<br/>same-length]
-        MASK --> EXTRACT[Extractor LLM]
-        EXTRACT --> DX[diagnosis names]
-        DX --> QUERY[Query the index]
-        BM -.-> QUERY
-        CH -.-> QUERY
-        QUERY --> CAND[top-3 candidates<br/>or NO_CONFIDENT_MATCH]
-        CAND --> VERIFY[Verifier LLM]
-    end
-```
-
-**Answer:** The clinical notes CSV is read at runtime, one note per prompt. The LLM never sees the corpus. The ICD-10 CSV is indexed once at startup into BM25 and ChromaDB, then queried per diagnosis. The LLM never sees the code table — it only sees the top-3 candidates for one diagnosis.
-
-### 3.4 Narration
-
-When presenting, walk through in this order:
-
-1. **Diagram 3.1 (30 s):** "One user, one backend, two LLM calls, two local data sources. Everything else is detail."
-2. **Diagram 3.2 (60 s):** "Section, mask, extract, resolve spans in code, ICD lookup, verify, reconcile. Span resolution is in code because LLMs can't count characters. The verifier is a different model family so errors are less correlated."
-3. **Diagram 3.3 (30 s):** "The datasets never go to the LLM in bulk. Notes CSV: read one row per prompt. ICD CSV: indexed once, queried per diagnosis. This is the defense against hallucination — constrain what the LLM can see."
+---
 
 ## 4. Components and responsibilities
 
@@ -232,7 +209,7 @@ for each item:
     if verdict == SUPPORTED and code_checks_pass: accept
     elif retries_left(item) and budget_ok:
         re_extract(item, reason=verdict.reason)   # max 1-2 per item
-        re-verify
+        re_verify
     else: flag(item, disagreement_text)
 add contradictions and missed items to flagged list
 if flagged_fraction > 0.4: escalate_whole_note()
@@ -277,9 +254,9 @@ The table below lists each technology choice, the reason for choosing it, and th
 | Area | Choice | Why | Rejected alternatives and why |
 |---|---|---|---|
 | Extractor LLM | Qwen 3.8 27B | Free tier, fast, good JSON adherence | A small local model: weaker extraction; GPT-class paid models: not allowed |
-| Verifier LLM | Gemini Flash 3.8  | Different family from extractor, so less correlated errors | Same model for both: shared blind spots; two prompts of one model: weaker independence |
+| Verifier LLM | Gemini 3.8 Flash | Different family from extractor, so less correlated errors | Same model for both: shared blind spots; two prompts of one model: weaker independence |
 | Structured output | Pydantic + JSON mode, validate and retry | Explicit, testable, enforced in code | Free-text parsing with regex: brittle |
-| Embeddings | Local bge-small-en on CPU | No quota use, reproducible, offline | Google embeddings API : uses quota, network dependency, may change |
+| Embeddings | Local bge-small-en on CPU | No quota use, reproducible, offline | Google embeddings API: uses quota, network dependency, may change |
 | Vector store | ChromaDB (local) | Simple, local, persists | FAISS: fine but less convenient metadata; hosted DBs: not allowed/needed |
 | Keyword search | rank_bm25 (or SQLite FTS5) | Exact-term matching, tiny | Elasticsearch: overkill for 70K rows |
 | Masking | Regex + spaCy NER, local | Must not use external API | Cloud DLP: violates SOW |
@@ -321,7 +298,7 @@ The table below lists each technology choice, the reason for choosing it, and th
 
 | Risk | Impact | Mitigation |
 |---|---|---|
-| Gold labelling takes longer than planned | Eval incomplete | Start Wed 7; daily quota of notes; reduce labelling scope in writing and document the reason in the evaluation report if behind; LLM may *suggest* pre-labels but every one is corrected manually and disclosed in the report |
+| Gold labelling takes longer than planned | Eval incomplete | Start Tue 6; daily quota of notes; reduce labelling scope in writing and document the reason in the evaluation report if behind; LLM may *suggest* pre-labels but every one is corrected manually and disclosed in the report |
 | Free-tier limits or model deprecation | Pipeline halts | Cache, fallback model listed, queue |
 | Offset drift from masking | Wrong highlights | Same-length masking + offset tests |
 | LLM wrong offsets | Invalid items | Quote-to-offset resolver in code |
@@ -332,7 +309,7 @@ The table below lists each technology choice, the reason for choosing it, and th
 
 ## 14. Day-by-day plan
 
-Project duration: Wed 30 Sep 2026 → Wed 14 Oct 2026. Code freeze Tue 13 Oct, 6:00 PM. Defense Wed 14 Oct.
+Project duration: Tue 6 Oct 2026 → Mon 13 Oct 2026. Code freeze Mon 13 Oct, 6:00 PM. Defense Tue 13 Oct, evening.
 
 Each day ends with a commit to the private repo, an end-of-day update (done / blocked / next), and the checkable output listed below.
 
@@ -340,16 +317,14 @@ Each day ends with a commit to the private repo, an end-of-day update (done / bl
 
 | Day | Date | Work | Checkable output |
 |---|---|---|---|
-| Wed | 30 Sep | Read SOW; list questions; share private repo | Questions sent |
-| Thu | 1 Oct | Architecture v1 draft; initial timeline | Architecture doc v1 submitted |
-| Tue | 6 Oct | Final architecture + timeline + tech stack presented for sign-off (afternoon) | Sign-off received |
+| Tue | 6 Oct (afternoon) | Final architecture + timeline + tech stack presented for sign-off | Sign-off received |
 
 ### Phase 1 — Data, Gold Standard, Extraction
 
 | Day | Date | Work | Checkable output |
 |---|---|---|---|
-| Wed | 7 Oct | Ingestion + sectioning with offsets; Pydantic schema; labelling guidelines v1; label 12 notes | Offset tests pass; guidelines written |
-| Thu | 8 Oct | Extractor on Groq with quote resolver and retry; ICD index (BM25 + Chroma) and RRF tool; label 15 notes | Extractor runs on 10 notes; ICD top-3 works |
+| Tue | 6 Oct | Ingestion + sectioning with offsets; Pydantic schema; labelling guidelines v1; label 12 notes | Offset tests pass; guidelines written; 12 gold notes |
+| Wed | 7 Oct | Extractor on Groq with quote resolver and retry; ICD index (BM25 + Chroma) and RRF tool; label 15 notes | Extractor runs on 10 notes; ICD top-3 works; 27 gold notes |
 
 Mid-point review with Zuhair on Wed 7 Oct per SOW section 10.
 
@@ -357,32 +332,34 @@ Mid-point review with Zuhair on Wed 7 Oct per SOW section 10.
 
 | Day | Date | Work | Checkable output |
 |---|---|---|---|
-| Fri | 9 Oct | Naive baseline; masker; injection shield; eval skeleton with matching rules; label 15 notes | Baseline numbers on labelled notes |
-| Sat | 10 Oct | Verifier with contract, contradictions, recall check; label 15 notes | Verifier rejects planted fakes |
-| Mon | 12 Oct | Orchestrator: plan, reconcile, bounded retry, abstain, escalate, trace, budget; label 15 notes | End-to-end run with trace JSON |
-| Tue | 13 Oct | Reviewer UI; build contradiction, rare, adversarial sets; label 15 notes | UI works on 3 demo notes |
+| Wed | 8 Oct | Naive baseline; masker; injection shield; eval skeleton with matching rules; label 15 notes | Baseline numbers on labelled notes; 42 gold notes |
+| Thu | 9 Oct | Verifier with contract, contradictions, recall check; label 15 notes | Verifier rejects planted fakes; 57 gold notes |
+| Fri | 10 Oct | Orchestrator: plan, reconcile, bounded retry, abstain, escalate, trace, budget; label 15 notes | End-to-end run with trace JSON; 72 gold notes |
+| Sat | 11 Oct | Reviewer UI; build contradiction, rare, adversarial sets; label 15 notes | UI works on 3 demo notes; 87 gold notes |
 
 ### Phase 3 — Evaluation, Documentation, Freeze
 
 | Day | Date | Work | Checkable output |
 |---|---|---|---|
-| Tue | 13 Oct | Full eval; report with 3+ failures; README; user guide; demo video; **freeze 6 PM** | One-command eval; report; video |
-| Wed | 14 Oct | Present and defend | Slides on the six SOW sections |
+| Sun | 12 Oct | Finish remaining gold labels; special sets finalized | 100 gold notes |
+| Mon | 13 Oct | Full eval; report with 3+ failures; README; user guide; demo video; **freeze 6 PM** | One-command eval; report; video |
+| Tue | 13 Oct (evening) | Present and defend | Slides on the six SOW sections |
 
 ### Riskiest pieces (scheduled early)
 
-1. **Span resolver** (Wed 7 Oct) — every downstream display and metric depends on correct offsets.
-2. **ICD index + RRF** (Thu 8 Oct) — the retrieval layer.
-3. **Verifier independence** (Sat 10 Oct) — the SOW's central requirement.
+1. **Span resolver** (Tue 6 Oct) — every downstream display and metric depends on correct offsets.
+2. **ICD index + RRF** (Wed 7 Oct) — the retrieval layer.
+3. **Verifier independence** (Thu 9 Oct) — the SOW's central requirement.
 
 ### Gold-standard labelling plan
 
 - Target: 100 notes across 10+ specialties.
 - Daily quota: 12–15 notes.
-- Running total: 12 (Wed) → 27 (Thu) → 42 (Fri) → 57 (Sat) → 72 (Mon) → 87 (Tue) → 100 (Tue, if needed).
-- Fallback: if the target is unreachable by Tuesday, reduce labelling scope in writing and document the reason in the evaluation report.
+- Running total: 12 (Tue) → 27 (Wed) → 42 (Thu) → 57 (Fri) → 72 (Sat) → 87 (Sun) → 100 (Mon).
+- Fallback: if the target is unreachable by Monday, reduce labelling scope in writing and document the reason in the evaluation report.
 
 ---
+
 ## 15. Token and context management
 
 **Extractor prompt budget:**
@@ -406,6 +383,3 @@ Mid-point review with Zuhair on Wed 7 Oct per SOW section 10.
 **Why this matters:** free-tier rate limits are usually token-per-minute, not request-per-minute. Staying under 5K tokens per call and 30K per note keeps the system inside free-tier quotas for both Groq and Gemini.
 
 ---
-
-
-

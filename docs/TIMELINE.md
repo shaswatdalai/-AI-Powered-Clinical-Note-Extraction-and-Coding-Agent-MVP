@@ -1,9 +1,9 @@
 # Timeline: Clinical Note Extraction and ICD-10 Coding Agent (MVP)
 
-**Project duration:** Wed 30 Sep 2026 → Wed 14 Oct 2026
+**Project start:** Tue 6 Oct 2026
 **Review / sign-off:** Tue 6 Oct 2026, afternoon
-**Code freeze:** Tue 13 Oct 2026, 6:00 PM
-**Defense:** Wed 14 Oct 2026
+**Code freeze:** Mon 13 Oct 2026, 6:00 PM
+**Defense:** Tue 13 Oct 2026, evening
 
 Each day ends with:
 - A commit to the private repository
@@ -16,8 +16,6 @@ Each day ends with:
 
 | Day | Date | Work | Checkable output |
 |---|---|---|---|
-| Wed | 30 Sep | Read SOW; list every question; share private repo | Questions sent |
-| Thu | 1 Oct | Architecture v1 draft; initial timeline | Architecture doc v1 submitted |
 | Tue | 6 Oct (afternoon) | Final architecture + timeline + tech stack presented for sign-off | Sign-off received |
 
 ---
@@ -26,8 +24,8 @@ Each day ends with:
 
 | Day | Date | Work | Checkable output |
 |---|---|---|---|
-| Wed | 7 Oct | Ingestion + sectioning with offsets; Pydantic schema; labelling guidelines v1; label 12 notes | Offset tests pass; guidelines written |
-| Thu | 8 Oct | Extractor on Groq with quote resolver and retry; ICD index (BM25 + Chroma) and RRF tool; label 15 notes | Extractor runs on 10 notes; ICD top-3 works |
+| Tue | 6 Oct | Ingestion + sectioning with offsets; Pydantic schema; labelling guidelines v1; label 12 notes | Offset tests pass; guidelines written; 12 gold notes |
+| Wed | 7 Oct | Extractor on Groq with quote resolver and retry; ICD index (BM25 + Chroma) and RRF tool; label 15 notes | Extractor runs on 10 notes; ICD top-3 works; 27 gold notes |
 
 Mid-point review with Zuhair on Wed 7 Oct per SOW section 10.
 
@@ -37,26 +35,28 @@ Mid-point review with Zuhair on Wed 7 Oct per SOW section 10.
 
 | Day | Date | Work | Checkable output |
 |---|---|---|---|
-| Fri | 9 Oct | Naive baseline; masker; injection shield; eval skeleton with matching rules; label 15 notes | Baseline numbers on labelled notes |
-| Sat | 10 Oct | Verifier with contract, contradictions, recall check; label 15 notes | Verifier rejects planted fakes |
-| Mon | 12 Oct | Orchestrator: plan, reconcile, bounded retry, abstain, escalate, trace, budget; label 15 notes | End-to-end run with trace JSON |
-| Tue | 13 Oct | Reviewer UI; build contradiction, rare, adversarial sets; label 15 notes; full eval; report; README; user guide; demo video; **freeze 6 PM** | One-command eval; report; video |
+| Wed | 8 Oct | Naive baseline; masker; injection shield; eval skeleton with matching rules; label 15 notes | Baseline numbers on labelled notes; 42 gold notes |
+| Thu | 9 Oct | Verifier with contract, contradictions, recall check; label 15 notes | Verifier rejects planted fakes; 57 gold notes |
+| Fri | 10 Oct | Orchestrator: plan, reconcile, bounded retry, abstain, escalate, trace, budget; label 15 notes | End-to-end run with trace JSON; 72 gold notes |
+| Sat | 11 Oct | Reviewer UI; build contradiction, rare, adversarial sets; label 15 notes | UI works on 3 demo notes; 87 gold notes |
 
 ---
 
-## Defense
+## Phase 3 — Evaluation, Documentation, Freeze
 
 | Day | Date | Work | Checkable output |
 |---|---|---|---|
-| Wed | 14 Oct | Present and defend | Slides on the six SOW sections |
+| Sun | 12 Oct | Finish remaining gold labels; special sets finalized | 100 gold notes |
+| Mon | 13 Oct | Full eval; report with 3+ failures; README; user guide; demo video; **freeze 6 PM** | One-command eval; report; video |
+| Tue | 13 Oct (evening) | Present and defend | Slides on the six SOW sections |
 
 ---
 
 ## Riskiest pieces (scheduled early)
 
-1. **Span resolver** (Wed 7 Oct) — every downstream display and metric depends on correct offsets
-2. **ICD index + RRF** (Thu 8 Oct) — the retrieval layer
-3. **Verifier independence** (Sat 10 Oct) — the SOW's central requirement
+1. **Span resolver** (Tue 6 Oct) — every downstream display and metric depends on correct offsets
+2. **ICD index + RRF** (Wed 7 Oct) — the retrieval layer
+3. **Verifier independence** (Thu 9 Oct) — the SOW's central requirement
 
 ---
 
@@ -64,15 +64,15 @@ Mid-point review with Zuhair on Wed 7 Oct per SOW section 10.
 
 - **Target:** 100 notes across 10+ specialties
 - **Daily quota:** 12–15 notes
-- **Running total:** 12 (Wed) → 27 (Thu) → 42 (Fri) → 57 (Sat) → 72 (Mon) → 87 (Tue)
-- **Fallback:** If the target is unreachable by Tuesday, reduce labelling scope in writing and document the reason in the evaluation report.
+- **Running total:** 12 (Tue) → 27 (Wed) → 42 (Thu) → 57 (Fri) → 72 (Sat) → 87 (Sun) → 100 (Mon)
+- **Fallback:** If the target is unreachable by Monday, reduce labelling scope in writing and document the reason in the evaluation report.
 
 ---
 
 ## Phase definitions (from SOW section 10)
 
-- **Phase 0:** Understand and Design (Wed 30 Sep – Tue 6 Oct)
-- **Phase 1:** Data, Gold Standard and Extraction (Wed 7 Oct – Thu 8 Oct)
-- **Phase 2:** Verification and Agent (Fri 9 Oct – Tue 13 Oct)
-- **Phase 3:** Evaluation, Documentation, Freeze (Tue 13 Oct)
-- **Defense:** Wed 14 Oct
+- **Phase 0:** Understand and Design (Tue 6 Oct)
+- **Phase 1:** Data, Gold Standard and Extraction (Tue 6 Oct – Wed 7 Oct)
+- **Phase 2:** Verification and Agent (Wed 8 Oct – Sat 11 Oct)
+- **Phase 3:** Evaluation, Documentation, Freeze (Sun 12 Oct – Mon 13 Oct)
+- **Defense:** Tue 13 Oct

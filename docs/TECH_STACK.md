@@ -8,13 +8,13 @@ Every choice below is accompanied by *why* and *what was rejected*.
 
 | Role | Choice | Why | Rejected |
 |---|---|---|---|
-| Extractor | Qwen 3.8 27B | Free tier; fast (~300 ms median); reliable JSON mode | GPT-4 (paid, not allowed); local Mistral (weaker extraction quality) |
-| Verifier | Gemini 3.8 Flash | **Different model family** from Llama → errors are decorrelated; free tier | Same model for both → shared blind spots; two prompts of one model → not truly independent |
+| Extractor | Qwen 3.8 27B | Free tier; fast; reliable JSON mode | GPT-4 (paid, not allowed); local Mistral (weaker extraction quality) |
+| Verifier | Gemini 3.8 Flash | **Different model family** from Qwen → errors are decorrelated; free tier | Same model for both → shared blind spots; two prompts of one model → not truly independent |
 
-**Independence rationale:** the SOW's central requirement is that verification is an *independent* check. Using two different model families (Meta's Llama vs Google's Gemini) reduces the chance that both models make the same mistake on the same input. This is defended with evidence from the eval — the baseline single-model run vs the two-model pipeline.
+**Independence rationale:** the SOW's central requirement is that verification is an *independent* check. Using two different model families (Alibaba's Qwen vs Google's Gemini) reduces the chance that both models make the same mistake on the same input. This is defended with evidence from the eval — the baseline single-model run vs the two-model pipeline.
 
 **Context window:**
-- Qwen 3.8 27B: 131K tokens token context window
+- Qwen 3.8 27B: 131K token context window
 - Gemini 3.8 Flash: 1M token context window
 
 Both windows are far larger than the per-note budget (~5K tokens for the extractor, ~6K for the verifier). This means the system never hits the window limit even on long notes. Long notes are handled by section-by-section extraction, not by truncation.
@@ -82,7 +82,7 @@ Both windows are far larger than the per-note budget (~5K tokens for the extract
 
 Every choice above must run on free-tier services:
 
-- **Groq free tier:** ~1000 requests/day for Qwen 3.8 27B
+- **Groq free tier:** rate-limited Qwen 3.8 27B
 - **Google AI Studio free tier:** rate-limited Gemini 3.8 Flash
 - **ChromaDB + bge-small-en + rank_bm25:** all local, no quota
 - **Cache layer:** every model call cached to disk, so evaluation costs zero quota on re-run

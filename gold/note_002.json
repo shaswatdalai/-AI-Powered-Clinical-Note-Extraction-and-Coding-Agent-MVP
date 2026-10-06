@@ -1,0 +1,45 @@
+{
+  "note_id": "note_002",
+  "specialty": "Autopsy",
+  "source_row_index": 4991,
+  "diagnoses": [
+    {
+      "name_as_written": "ligature mark",
+      "normalised_name": "ligature mark",
+      "status": "active",
+      "span": [1196, 1209],
+      "icd_code": null
+    },
+    {
+      "name_as_written": "Ligature B",
+      "normalised_name": "ligature mark (ligature B)",
+      "status": "active",
+      "span": [1852, 1862],
+      "icd_code": null
+    },
+    {
+      "name_as_written": "broken hyoid bone",
+      "normalised_name": "hyoid bone fracture",
+      "status": "active",
+      "span": [2979, 2996],
+      "icd_code": null
+    }
+  ],
+  "medications": [],
+  "procedures": [],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "Length",
+      "value": "67",
+      "unit": "inches",
+      "span": [668, 677]
+    },
+    {
+      "name": "Weight",
+      "value": "118",
+      "unit": "pounds",
+      "span": [691, 701]
+    }
+  ]
+}

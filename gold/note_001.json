@@ -1,0 +1,78 @@
+{
+  "note_id": "note_001",
+  "specialty": "Allergy / Immunology",
+  "source_row_index": 0,
+  "diagnoses": [
+    {
+      "name_as_written": "allergies",
+      "normalised_name": "allergies",
+      "status": "active",
+      "span": [71, 80],
+      "icd_code": null
+    },
+    {
+      "name_as_written": "asthma",
+      "normalised_name": "asthma",
+      "status": "active",
+      "span": [520, 526],
+      "icd_code": "J45.909"
+    },
+    {
+      "name_as_written": "Allergic rhinitis",
+      "normalised_name": "allergic rhinitis",
+      "status": "active",
+      "span": [1028, 1045],
+      "icd_code": "J30.9"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Allegra",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [303, 310]
+    },
+    {
+      "name": "Ortho Tri-Cyclen",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [660, 676]
+    },
+    {
+      "name": "Zyrtec",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [214, 220]
+    },
+    {
+      "name": "Nasonex",
+      "dose": "two sprays in each nostril",
+      "route": "nasal",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [1237, 1244]
+    }
+  ],
+  "procedures": [],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "Weight",
+      "value": "130",
+      "unit": "pounds",
+      "span": [775, 785]
+    },
+    {
+      "name": "Blood pressure",
+      "value": "124/78",
+      "unit": "mmHg",
+      "span": [805, 811]
+    }
+  ]
+}

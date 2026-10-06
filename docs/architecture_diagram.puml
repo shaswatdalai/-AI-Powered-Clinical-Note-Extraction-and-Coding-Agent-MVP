@@ -1,249 +1,216 @@
-@startuml Clinical_Architecture
-
+@startuml Clinical_Architecture_Detailed
 ' ============================================================================
-' AI-Powered Clinical Note Extraction & ICD-10 Coding Agent MVP
-' System Architecture — Streamlined Presentation Version
+' DIAGRAM 1: DETAILED VERSION (Vertical / Portrait Layout)
+' Flows top-to-bottom in a narrow column for vertical screen viewing.
 ' ============================================================================
 
 skinparam defaultFontName "Segoe UI"
 skinparam defaultFontSize 11
-skinparam packageBorderThickness 2
-skinparam componentBorderThickness 1.5
-skinparam arrowThickness 1.5
 skinparam shadowing false
-skinparam wrapWidth 200
-skinparam nodesep 40
-skinparam ranksep 35
+skinparam packageBorderThickness 2
+skinparam arrowThickness 1.5
+skinparam nodesep 20
+skinparam ranksep 25
 
 top to bottom direction
 
-' === LEGEND ===
 legend right
   |= Color |= Category |
-  |<#E3F2FD> | Input / Reviewer UI |
-  |<#F3E5F5> | Backend / Orchestration |
-  |<#FFEBEE> | Safety / Guardrails |
-  |<#E8F5E9> | LLM Services (External) |
-  |<#FFFDE7> | Retrieval / Search |
-  |<#E0F2F1> | Data Stores |
-  |<#E8EAF6> | Verification / Reconciliation |
-  |<#F5F5F5> | Observability |
+  |<#E3F2FD> | Input / UI |
+  |<#FFEBEE> | Safety |
+  |<#F3E5F5> | Backend |
+  |<#E8F5E9> | LLM (External) |
+  |<#FFFDE7> | Retrieval |
+  |<#E0F2F1> | Data Store |
+  |<#E8EAF6> | Verification |
+  |<#F5F5F5> | Logging |
 end legend
 
-' ============================================================================
-' 1. USER & INPUT
-' ============================================================================
-actor "Reviewer / Medical Coder" as USER #1565C0
+' === INPUT ===
+actor "Reviewer" as USER #1565C0
+component "Raw Clinical Note" as RAW #90CAF9
 
-package "Reviewer Cockpit  (HTML + CSS + JS)" as PKG_UI #E3F2FD {
-    component "Note View + Span Highlights" as UI_NOTE #BBDEFB
-    component "Entity Table + ICD-10 Cards" as UI_ENTITIES #BBDEFB
-    component "Accept / Reject / Abstain" as UI_DECISION #BBDEFB
-    component "Agent Trace Viewer" as UI_TRACE #BBDEFB
-    component "JSON Export" as UI_EXPORT #BBDEFB
+' === BACKEND ===
+component "FastAPI + Orchestrator" as ORCH #CE93D8
+
+' === SAFETY ===
+package "Safety (Local)" #FFEBEE {
+    component "PII Masker\n(Regex + spaCy)" as PII #EF9A9A
+    component "Injection Shield\n(XML Delimiters)" as INJ #EF9A9A
 }
 
-component "Raw Clinical Note" as RAW_NOTE #90CAF9
+' === SECTIONS ===
+component "Section Detector\n+ Offset Anchor\n(CC, HPI, Meds, Allergies,\nPE, A&P, Procedures)" as SECTIONS #CE93D8
 
-' ============================================================================
-' 2. BACKEND ORCHESTRATION
-' ============================================================================
-package "Backend  (FastAPI + Python)" as PKG_BACKEND #F3E5F5 {
-    component "Agent Orchestrator\n(State Machine)" as ORCHESTRATOR #CE93D8
-    component "Rate Limiter\n(Token Bucket + Backoff)" as RATE_LIMITER #CE93D8
-    component "Bounded Retry Manager\n(N ≤ 2)" as RETRY_MGR #CE93D8
+' === EXTRACTION ===
+package "Extraction" #E8F5E9 {
+    component "Prompt Builder" as PROMPT #A5D6A7
+    component "Groq Llama 3.3 70B\n**EXTRACTOR** (External)" as EXTR #66BB6A
 }
 
-' ============================================================================
-' 3. SAFETY / GUARDRAILS
-' ============================================================================
-package "Safety Layer  (Local Only)" as PKG_SAFETY #FFEBEE {
-    component "PII Detector\n(Regex + spaCy NER)" as PII_DETECT #EF9A9A
-    component "PII Masker / Redactor" as PII_MASK #EF9A9A
-    component "Prompt Injection Shield\n(XML Delimiters)" as INJ_SHIELD #EF9A9A
+' === VALIDATION ===
+package "Pydantic V2 Validation" #F3E5F5 {
+    component "Schema + Span Check\nT[start:end] == text" as PYD #CE93D8
+    component "Validated Entities\n(Dx, Meds, Procedures,\nAllergies, Vitals)" as VALID #CE93D8
 }
 
-note bottom of PKG_SAFETY
-  Raw PII (names, DOB, addresses,
-  MRNs, SSNs) is **NEVER** sent
-  to external LLM APIs.
-  All masking runs **locally**.
+' === OFFLINE INDEXING ===
+package "Offline Indexing (Startup)" #E0F2F1 {
+    database "ICD-10 Dataset\n(~70K codes)" as ICD_DATA #80CBC4
+    database "BM25 Index" as BM25_IDX #4DB6AC
+    database "ChromaDB Vectors" as CHROMA #4DB6AC
+}
+
+' === RUNTIME RETRIEVAL ===
+package "Hybrid ICD-10 Retrieval" #FFFDE7 {
+    component "BM25 Lexical\nSearch" as BM25 #FFF176
+    component "Semantic Vector\nSearch (ChromaDB)" as SEM #FFF176
+    component "RRF Fusion +\nConfidence Filter\n(≥0.70 or abstain)" as RRF #FFD54F
+}
+
+' === VERIFICATION ===
+package "Independent Verification" #E8EAF6 {
+    component "Gemini 2.0 Flash\n**VERIFIER** (External)\n\nChecks: spans, status,\ncontradictions, recall,\nICD-10 fitness" as VERIFIER #7986CB
+}
+
+' === RECONCILIATION ===
+package "Reconciliation" #E8EAF6 {
+    component "**ACCEPT**" as ACCEPT #66BB6A
+    component "**REJECT**" as REJECT #EF5350
+    component "**ABSTAIN**\n→ Human Review" as ABSTAIN #FFA726
+}
+
+' === UI ===
+package "Reviewer Cockpit (HTML/CSS/JS)" #E3F2FD {
+    component "Note + Span Highlights\nEntity Table + ICD Cards\nTrace Viewer + JSON Export" as UI #BBDEFB
+}
+
+' === LOGGING ===
+component "Audit Log (JSONL)" as LOG #E0E0E0
+
+' ============================================================================
+' DATA FLOW
+' ============================================================================
+USER -down-> RAW : "submits"
+RAW -down-> ORCH : "raw text"
+ORCH -down-> PII : "raw text"
+PII -down-> INJ : "redacted text"
+INJ -down-> SECTIONS : "safe text"
+SECTIONS -down-> PROMPT : "sections + offsets"
+PROMPT -down-> EXTR : "prompt"
+EXTR -down-> PYD : "raw JSON"
+PYD -down-> VALID : "validated"
+PYD ..> ORCH : "retry on failure\n(N ≤ 2)"
+
+VALID -down-> BM25 : "diagnosis names"
+VALID -down-> SEM : "diagnosis names"
+BM25 -left-> BM25_IDX : "lookup"
+SEM -left-> CHROMA : "vector search"
+BM25 -down-> RRF : "lexical ranks"
+SEM -down-> RRF : "semantic ranks"
+
+ICD_DATA -down-> BM25_IDX : "one-time index"
+ICD_DATA -down-> CHROMA : "one-time embed"
+
+VALID -down-> VERIFIER : "entities + spans"
+RRF -down-> VERIFIER : "ICD candidates"
+
+VERIFIER -down-> ACCEPT
+VERIFIER -down-> REJECT
+VERIFIER -down-> ABSTAIN
+
+ACCEPT -down-> UI : "accepted"
+ABSTAIN -down-> UI : "flagged"
+USER <-up- UI : "review & export"
+
+EXTR ..> LOG
+VERIFIER ..> LOG
+RRF ..> LOG
+
+@enduml
+
+
+' ############################################################################
+' ############################################################################
+' SEPARATOR — SECOND DIAGRAM BELOW (SIMPLIFIED EXECUTIVE VERSION)
+' ############################################################################
+' ############################################################################
+
+
+@startuml Clinical_Architecture_Simple
+' ============================================================================
+' DIAGRAM 2: SIMPLIFIED EXECUTIVE VERSION
+' Minimal boxes, same core flow, for quick overview slides.
+' ============================================================================
+
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam arrowThickness 2
+skinparam nodesep 30
+skinparam ranksep 30
+skinparam componentStyle rectangle
+
+top to bottom direction
+
+actor "Reviewer" as USER #1565C0
+
+rectangle "**Raw Clinical Note**" as RAW #90CAF9
+
+rectangle "**PII Masking + Safety**\n(Local: Regex + spaCy + XML Shield)" as SAFETY #EF9A9A
+
+rectangle "**Section Detection**\n(CC, HPI, Meds, Allergies, PE, A&P)\n+ Character Offset Preservation" as SECTIONS #CE93D8
+
+rectangle "**Structured Extraction**\nGroq Llama 3.3 70B\n+ Pydantic V2 Validation" as EXTRACT #66BB6A
+
+rectangle "**Hybrid ICD-10 Retrieval**\nBM25 + ChromaDB + RRF\n(≥0.70 → candidates | <0.70 → abstain)" as RETRIEVAL #FFD54F
+
+rectangle "**Independent Verification**\nGemini 2.0 Flash\n(Spans, Status, Contradictions, Recall)" as VERIFY #7986CB
+
+rectangle "**Reconciliation**" as RECON #9FA8DA {
+    rectangle "ACCEPT" as A #66BB6A
+    rectangle "REJECT" as R #EF5350
+    rectangle "ABSTAIN" as AB #FFA726
+}
+
+rectangle "**Reviewer Cockpit**\nSpan Highlights · Entity Table\nTrace Viewer · JSON Export" as UI #BBDEFB
+
+database "Audit Log\n(JSONL)" as LOG #E0E0E0
+
+' === FLOW ===
+USER -down-> RAW
+RAW -down-> SAFETY : "raw text"
+SAFETY -down-> SECTIONS : "safe redacted text"
+SECTIONS -down-> EXTRACT : "sections + offsets"
+EXTRACT -down-> RETRIEVAL : "validated entities"
+EXTRACT -down-> VERIFY : "entities + spans"
+RETRIEVAL -down-> VERIFY : "ICD-10 candidates"
+VERIFY -down-> RECON : "verdicts"
+A -down-> UI : "accepted"
+AB -down-> UI : "flagged for review"
+UI -up-> USER : "review & export"
+
+EXTRACT ..> LOG
+VERIFY ..> LOG
+RETRIEVAL ..> LOG
+
+note right of SAFETY
+  PII never leaves
+  localhost. All masking
+  runs before external
+  API calls.
 end note
 
-' ============================================================================
-' 4. SECTION DETECTION
-' ============================================================================
-package "Section Detection" as PKG_SECTIONS #F3E5F5 {
-    component "UTF-8 Normalizer +\nOffset Coordinate Anchor" as NORMALIZER #CE93D8
-    component "Section Boundary Detector\n(CC, HPI, PMH, Meds,\nAllergies, PE, A&P, Procedures)" as SECTION_DET #CE93D8
-}
-
-' ============================================================================
-' 5. EXTRACTION (EXTERNAL LLM)
-' ============================================================================
-package "Extraction Engine" as PKG_EXTRACT #E8F5E9 {
-    component "Extraction Prompt Builder" as EXTRACT_PROMPT #A5D6A7
-    cloud "Groq API  (External)" as GROQ {
-        component "Llama 3.3 70B\n**EXTRACTOR**" as EXTRACTOR_LLM #66BB6A
-    }
-}
-
-' ============================================================================
-' 6. PYDANTIC VALIDATION
-' ============================================================================
-package "Schema Validation  (Pydantic V2)" as PKG_PYDANTIC #F3E5F5 {
-    component "Type + Enum + Required\nField Validation" as PYD_VALIDATE #CE93D8
-    component "Span Faithfulness Assertion\nT[start:end] == exact_text" as PYD_SPAN #CE93D8
-    component "Validated Entities\n(Dx, Meds, Procedures,\nAllergies, Vitals + Spans)" as VALIDATED #CE93D8
-}
-
-note right of PYD_SPAN
-  Deterministic code check.
-  If offset does not match
-  verbatim source text,
-  the entity is **discarded**.
+note right of VERIFY
+  Verifier never sees
+  extractor reasoning.
+  Independent check.
 end note
 
-' ============================================================================
-' 7. OFFLINE ICD-10 INDEXING
-' ============================================================================
-package "Offline Indexing  (Startup)" as PKG_OFFLINE #E0F2F1 {
-    database "ICD-10-CM Dataset\n(~70K codes)" as ICD_DATASET #80CBC4
-    component "Text Normalizer" as ICD_NORM #80CBC4
-    component "Embedding Model\n(bge-small-en)" as EMBED_OFFLINE #80CBC4
-    database "ChromaDB Vector Store\n(localhost SQLite)" as CHROMADB #4DB6AC
-    database "BM25 Lexical Index\n(rank_bm25)" as BM25_IDX #4DB6AC
-}
-
-' ============================================================================
-' 8. RUNTIME ICD-10 RETRIEVAL
-' ============================================================================
-package "Runtime ICD-10 Retrieval" as PKG_RETRIEVAL #FFFDE7 {
-    component "BM25 Lexical Search\n(term-frequency matching)" as BM25_SEARCH #FFF176
-    component "Semantic Vector Search\n(ChromaDB cosine similarity)" as SEM_SEARCH #FFF176
-    component "Reciprocal Rank Fusion\n(RRF)\nmerges rankings, not scores" as RRF #FFD54F
-    component "Confidence Filter\n(≥ 0.70 → Top-K candidates\n< 0.70 → \"no confident match\")" as CONF_FILTER #FFD54F
-}
-
-note bottom of RRF
-  BM25 scores and cosine
-  similarities are on
-  **incompatible scales**.
-  RRF normalizes via
-  rank position.
+note right of AB
+  Abstention = intentional
+  safety mechanism, not
+  a system failure.
 end note
-
-' ============================================================================
-' 9. INDEPENDENT VERIFICATION (EXTERNAL LLM)
-' ============================================================================
-package "Independent Verification" as PKG_VERIFY #E8EAF6 {
-    component "Payload Builder\n(note + entities + spans +\nICD candidates; NO extractor\nreasoning)" as VERIFY_PAYLOAD #9FA8DA
-    cloud "Google API  (External)" as GEMINI {
-        component "Gemini 2.0 Flash\n**VERIFIER**" as VERIFIER_LLM #7986CB
-    }
-    component "Checks: Span Faithfulness,\nStatus Correctness,\nContradictions, Recall Gaps,\nICD-10 Fitness" as VERIFY_CHECKS #9FA8DA
-}
-
-note left of VERIFY_PAYLOAD
-  **Asymmetric Independence:**
-  Verifier never sees the
-  extractor's reasoning
-  or system prompt.
-end note
-
-' ============================================================================
-' 10. RECONCILIATION
-' ============================================================================
-package "Reconciliation Engine" as PKG_RECONCILE #E8EAF6 {
-    component "Evidence Aggregator +\nConflict Resolver" as RESOLVER #9FA8DA
-    component "**ACCEPT**\n(consistent evidence)" as ACCEPT #66BB6A
-    component "**REJECT**\n(contradicted)" as REJECT #EF5350
-    component "**ABSTAIN**\n(ambiguous → human review)" as ABSTAIN #FFA726
-}
-
-note bottom of ABSTAIN
-  Abstention ≠ Failure.
-  It is an intentional safety
-  mechanism for genuine
-  uncertainty.
-end note
-
-' ============================================================================
-' 11. OBSERVABILITY
-' ============================================================================
-package "Audit & Observability" as PKG_LOG #F5F5F5 {
-    component "Structured JSON Logger\n(note_id, model, latency,\ntokens, rankings, verdict)" as LOGGER #E0E0E0
-    database "Append-Only JSONL\nAudit Log" as AUDIT_LOG #BDBDBD
-}
-
-' ============================================================================
-' DATA FLOW ARROWS
-' ============================================================================
-
-' --- Input ---
-USER -down-> RAW_NOTE : "submits note"
-RAW_NOTE -down-> ORCHESTRATOR : "raw text (HTTP)"
-
-' --- Safety ---
-ORCHESTRATOR -down-> PII_DETECT : "raw text"
-PII_DETECT -down-> PII_MASK : "flagged PII spans"
-PII_MASK -down-> INJ_SHIELD : "redacted text"
-
-' --- Sections ---
-INJ_SHIELD -down-> NORMALIZER : "safe text"
-NORMALIZER -down-> SECTION_DET : "normalized text\nwith offset map"
-
-' --- Extraction ---
-SECTION_DET -down-> EXTRACT_PROMPT : "sections + offsets"
-EXTRACT_PROMPT -down-> EXTRACTOR_LLM : "prompt + safe text"
-RATE_LIMITER ..> EXTRACTOR_LLM : "paces calls"
-
-' --- Validation ---
-EXTRACTOR_LLM -down-> PYD_VALIDATE : "raw JSON output"
-PYD_VALIDATE -down-> PYD_SPAN : "type-valid entities"
-PYD_SPAN -down-> VALIDATED : "span-verified entities"
-PYD_SPAN ..> RETRY_MGR : "validation failure"
-RETRY_MGR ..> EXTRACT_PROMPT : "retry with\nerror context"
-
-' --- Offline Indexing ---
-ICD_DATASET -right-> ICD_NORM : "raw codes"
-ICD_NORM -down-> EMBED_OFFLINE : "normalized text"
-ICD_NORM -down-> BM25_IDX : "tokenized (one-time)"
-EMBED_OFFLINE -down-> CHROMADB : "vectors (one-time)"
-
-' --- Runtime Retrieval ---
-VALIDATED -down-> BM25_SEARCH : "diagnosis names"
-VALIDATED -down-> SEM_SEARCH : "diagnosis names"
-BM25_SEARCH -left-> BM25_IDX : "lookup"
-SEM_SEARCH -left-> CHROMADB : "vector search"
-BM25_SEARCH -down-> RRF : "lexical rankings"
-SEM_SEARCH -down-> RRF : "semantic rankings"
-RRF -down-> CONF_FILTER : "fused list"
-
-' --- Verification ---
-VALIDATED -down-> VERIFY_PAYLOAD : "entities + spans"
-CONF_FILTER -down-> VERIFY_PAYLOAD : "ICD-10 candidates\nor \"no match\""
-VERIFY_PAYLOAD -down-> VERIFIER_LLM : "verification prompt"
-RATE_LIMITER ..> VERIFIER_LLM : "paces calls"
-VERIFIER_LLM -down-> VERIFY_CHECKS : "model evaluation"
-
-' --- Reconciliation ---
-VERIFY_CHECKS -down-> RESOLVER : "per-entity verdicts"
-RESOLVER -down-> ACCEPT
-RESOLVER -down-> REJECT
-RESOLVER -down-> ABSTAIN
-
-' --- Output to UI ---
-ACCEPT -up-> PKG_UI : "accepted entities +\nICD-10 codes"
-ABSTAIN -up-> PKG_UI : "flagged for\nhuman review"
-USER <-- PKG_UI : "review & export"
-
-' --- Cross-cutting Logging ---
-EXTRACTOR_LLM ..> LOGGER : "log"
-VERIFIER_LLM ..> LOGGER : "log"
-RRF ..> LOGGER : "log"
-RESOLVER ..> LOGGER : "log"
-LOGGER -down-> AUDIT_LOG : "append"
-AUDIT_LOG ..> UI_TRACE : "trace data"
 
 @enduml

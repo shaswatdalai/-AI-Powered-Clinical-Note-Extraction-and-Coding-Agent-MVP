@@ -1,0 +1,90 @@
+# Tech Stack Justification
+
+Every choice below is accompanied by *why* and *what was rejected*.
+
+---
+
+## LLMs
+
+| Role | Choice | Why | Rejected |
+|---|---|---|---|
+| Extractor | Groq Llama 3.3 70B | Free tier; fast (~300 ms median); reliable JSON mode | GPT-4 (paid, not allowed); local Mistral (weaker extraction quality) |
+| Verifier | Gemini 3.8 Flash | **Different model family** from Llama → errors are decorrelated; free tier | Same model for both → shared blind spots; two prompts of one model → not truly independent |
+
+**Independence rationale:** the SOW's central requirement is that verification is an *independent* check. Using two different model families (Meta's Llama vs Google's Gemini) reduces the chance that both models make the same mistake on the same input. This is defended with evidence from the eval — the baseline single-model run vs the two-model pipeline.
+
+**Context window:**
+- Groq Llama 3.3 70B: 128K token context window
+- Gemini 3.8 Flash: 1M token context window
+
+Both windows are far larger than the per-note budget (~5K tokens for the extractor, ~6K for the verifier). This means the system never hits the window limit even on long notes. Long notes are handled by section-by-section extraction, not by truncation.
+
+---
+
+## Data layer
+
+| Role | Choice | Why | Rejected |
+|---|---|---|---|
+| Vector store | ChromaDB | Local, persistent, simple API, metadata filtering | FAISS (no metadata filtering); Pinecone (paid, cloud dependency) |
+| Keyword search | rank_bm25 | Tiny dependency; exact-term matching; pure Python | Elasticsearch (overkill for 74K rows); SQLite FTS5 (viable but requires preprocessing) |
+| Embeddings | bge-small-en (CPU) | No quota use; offline; reproducible; ~130 MB model | Google text-embedding-004 (uses quota; network dependency) |
+| Hybrid fusion | Reciprocal Rank Fusion (k=60) | Merges two ranked lists without needing comparable scores | Weighted sum of scores (requires calibration); top-N of each (loses information) |
+
+---
+
+## Backend
+
+| Role | Choice | Why | Rejected |
+|---|---|---|---|
+| Web framework | FastAPI | Lightweight; async support; automatic OpenAPI docs; Pydantic native | Flask (sync-only by default); Django (too heavy for a single-user MVP) |
+| Structured output | Pydantic v2 | Explicit schemas; testable; integrates with FastAPI; validates on parse | dataclasses (no runtime validation); manual dict checking (error-prone) |
+| Orchestration | Plain Python functions | The SOW requires explaining every line. Frameworks hide the loop. | LangChain / LangGraph (opaque; harder to defend); CrewAI (same problem) |
+
+---
+
+## Guardrails
+
+| Role | Choice | Why | Rejected |
+|---|---|---|---|
+| PII masking | Regex + spaCy (local) | SOW requires masking to run locally, never through an external API | Cloud DLP (violates SOW); Microsoft Presidio (heavier, similar capability, adds dependency) |
+| Injection defence | Delimiter wrapping + system instruction | Simple, testable, no external dependency | LLM-based injection filter (circular — would need another model call before masking) |
+| Offset preservation | Same-length masking (replace with same character count) | Keeps every downstream offset valid without a remapping layer | Variable-length masks + offset map (added complexity; drift risk) |
+
+---
+
+## Frontend
+
+| Role | Choice | Why | Rejected |
+|---|---|---|---|
+| UI | HTML/CSS/JS served by FastAPI | Offset-based highlighting is straightforward with DOM ranges; no build step | React (build tooling overhead for a single-user MVP); Streamlit (less precise offset control; harder to render overlapping highlights) |
+
+---
+
+## Observability
+
+| Role | Choice | Why | Rejected |
+|---|---|---|---|
+| Tracing | Structured JSON per note | Human-readable; viewable in the reviewer UI; cheap | OpenTelemetry (overkill); LangSmith (cloud dependency) |
+| Evaluation | pytest + one-command harness | Deterministic; reproducible; standard Python tooling | Notebook-based eval (not reproducible) |
+
+---
+
+## Testing
+
+| Role | Choice | Why | Rejected |
+|---|---|---|---|
+| Framework | pytest | Standard; fixtures; parameterisation | unittest (verbose) |
+| Model mocking | Disk cache keyed by (model + prompt + schema version) | Reproducible; zero quota on re-run | Live-only testing (burns free tier quota; non-deterministic) |
+
+---
+
+## Free-tier constraints
+
+Every choice above must run on free-tier services:
+
+- **Groq free tier:** ~14,400 requests/day for Llama 3.3 70B
+- **Google AI Studio free tier:** rate-limited Gemini 3.8 Flash
+- **ChromaDB + bge-small-en + rank_bm25:** all local, no quota
+- **Cache layer:** every model call cached to disk, so evaluation costs zero quota on re-run
+
+If a free-tier model is deprecated or rate-limited, the fallback is listed in the ARCHITECTURE.md risk table.

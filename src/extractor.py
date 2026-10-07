@@ -38,7 +38,7 @@ SYSTEM_PROMPT = (PROMPTS_DIR / "extractor_system.txt").read_text(encoding="utf-8
 USER_PROMPT_TEMPLATE = (PROMPTS_DIR / "extractor_user.txt").read_text(encoding="utf-8")
 
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-GROQ_MODEL = "qwen-3.8-27b"
+GROQ_MODEL = "qwen/qwen3.8-27b"
 MAX_RETRIES = 2
 CACHE_DIR = Path("cache") / "extractor"
 
@@ -139,60 +139,71 @@ def _resolve_span(note_text: str, quote: str) -> Span | None:
 
 
 def _build_extraction(raw: dict, note_text: str) -> Extraction:
-    """Convert the raw LLM JSON into a validated Extraction with spans."""
+    """Convert the raw LLM JSON into a validated Extraction with spans.
+
+    Span strategy: prefer the shorter, canonical name field
+    (name_as_written for diagnoses, name for others). Fall back to the
+    evidence quote only when the name can't be located.
+    """
+    def resolve(name: str, quote: str) -> Span | None:
+        s = _resolve_span(note_text, name) if name else None
+        if s is None and quote:
+            s = _resolve_span(note_text, quote)
+        return s
+
     diagnoses = []
     for d in raw.get("diagnoses", []):
+        name = d.get("name_as_written", "")
         quote = d.get("evidence_quote", "")
-        span = _resolve_span(note_text, quote)
         diagnoses.append(Diagnosis(
-            name_as_written=d.get("name_as_written", ""),
-            normalised_name=d.get("normalised_name", d.get("name_as_written", "")),
+            name_as_written=name,
+            normalised_name=d.get("normalised_name", name),
             status=d.get("status", "active"),
-            evidence=Evidence(quote=quote, span=span),
+            evidence=Evidence(quote=quote, span=resolve(name, quote)),
         ))
 
     medications = []
     for m in raw.get("medications", []):
+        name = m.get("name", "")
         quote = m.get("evidence_quote", "")
-        span = _resolve_span(note_text, quote)
         medications.append(Medication(
-            name=m.get("name", ""),
+            name=name,
             dose=m.get("dose"),
             route=m.get("route"),
             frequency=m.get("frequency"),
             status=m.get("status", "current"),
-            evidence=Evidence(quote=quote, span=span),
+            evidence=Evidence(quote=quote, span=resolve(name, quote)),
         ))
 
     procedures = []
     for p in raw.get("procedures", []):
+        name = p.get("name", "")
         quote = p.get("evidence_quote", "")
-        span = _resolve_span(note_text, quote)
         procedures.append(Procedure(
-            name=p.get("name", ""),
+            name=name,
             date=p.get("date"),
-            evidence=Evidence(quote=quote, span=span),
+            evidence=Evidence(quote=quote, span=resolve(name, quote)),
         ))
 
     allergies = []
     for a in raw.get("allergies", []):
+        name = a.get("substance", "")
         quote = a.get("evidence_quote", "")
-        span = _resolve_span(note_text, quote)
         allergies.append(Allergy(
-            substance=a.get("substance", ""),
+            substance=name,
             reaction=a.get("reaction"),
-            evidence=Evidence(quote=quote, span=span),
+            evidence=Evidence(quote=quote, span=resolve(name, quote)),
         ))
 
     vitals = []
     for v in raw.get("vitals", []):
+        name = v.get("name", "")
         quote = v.get("evidence_quote", "")
-        span = _resolve_span(note_text, quote)
         vitals.append(Vital(
-            name=v.get("name", ""),
+            name=name,
             value=v.get("value", ""),
             unit=v.get("unit"),
-            evidence=Evidence(quote=quote, span=span),
+            evidence=Evidence(quote=quote, span=resolve(name, quote)),
         ))
 
     return Extraction(
@@ -202,7 +213,6 @@ def _build_extraction(raw: dict, note_text: str) -> Extraction:
         allergies=allergies,
         vitals=vitals,
     )
-
 
 def extract(note_text: str) -> Extraction:
     """

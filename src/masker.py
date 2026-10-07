@@ -63,6 +63,13 @@ _REGEX_PATTERNS = [
     ("ZIP", re.compile(r"\b\d{5}(?:-\d{4})?\b")),
 ]
 
+CLINICAL_BLOCKLIST = {
+    "allergic", "rhinitis", "asthma", "diabetes", "hypertension",
+    "pneumonia", "bronchitis", "sinusitis", "dermatitis", "arthritis",
+    "anemia", "cardiac", "renal", "hepatic", "pulmonary", "gastric",
+}
+
+
 
 def _same_length_filler(length: int) -> str:
     """Return a filler string of exactly `length` characters."""
@@ -93,8 +100,13 @@ def mask_pii(note_text: str) -> tuple[str, list[MaskEntry]]:
     doc = _NLP(note_text)
     spacy_spans: list[tuple[int, int, str]] = []
     for ent in doc.ents:
-        if ent.label_ in {"PERSON", "GPE", "LOC", "ORG", "FAC"}:
-            spacy_spans.append((ent.start_char, ent.end_char, ent.label_))
+        if ent.label_ not in {"PERSON", "GPE", "LOC", "ORG", "FAC"}:
+            continue
+        # Skip single-token entities — too many false positives from
+        # capitalized medical terms and adjectives.
+        if len(ent.text.split()) < 2:
+            continue
+        spacy_spans.append((ent.start_char, ent.end_char, ent.label_))
 
     # --- Merge and de-overlap ---
     # Prefer regex spans over spaCy spans when they overlap (regex is

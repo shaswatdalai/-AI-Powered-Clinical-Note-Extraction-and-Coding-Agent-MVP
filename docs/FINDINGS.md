@@ -160,4 +160,20 @@ Format per entry:
   a paid tier or a different model with higher limits would remove
   this bottleneck.
 
+
+  ### Note_016 (Carotid Duplex Report) — kept empty
+
+- **Severity:** low (accepted as-is)
+- **Where:** `gold/note_016.json`
+- **What:** Note_016 is a vascular ultrasound report. Findings are
+  imaging observations ("heterogeneous plaque", "stenosis ~70%",
+  peak systolic velocities). I initially considered extracting the
+  plaque findings as diagnoses but decided to leave the arrays empty.
+- **Action:** Accepted. Consistency with the autopsy rule — imaging
+  observations are findings, not diagnoses. Empty gold is a legitimate
+  label for a report that describes only findings.
+- **Notes:** Two defensible positions exist. Documenting the choice so
+  it's explicit in the evaluation report. If a reviewer disagrees, they
+  can see the reasoning and challenge it directly.
+
 ---

@@ -22,7 +22,7 @@ def main():
     notes = pd.read_csv("data/mtsamples.csv")
 
     # Clean the data. Note: index is preserved (original CSV row number).
-    notes = notes.dropna(subset=["transcription", "medical_specialty"])
+    notes = notes.dropna(subset=["transcription", "medical_specialty"])#drop rows with missing transcription or medical_specialty . only dropna() will drop rows with NaN values in these columns
     notes = notes[notes["transcription"].str.len() >= MIN_LENGTH]
 
     # Pick one note per specialty. Uses the original index for tracking.
@@ -37,7 +37,7 @@ def main():
         extras = remaining.sample(n=NUM_NOTES - len(sampled), random_state=SEED)
         sampled = pd.concat([sampled, extras])
 
-    sampled = sampled.head(NUM_NOTES)
+    sampled = sampled.head(NUM_NOTES)#trim to at most 12 rows, in case there are more than 12 specialties in the CSV
 
     Path("data").mkdir(exist_ok=True)
 

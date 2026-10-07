@@ -49,4 +49,14 @@ Format per entry:
 - **Action:** Fixed on 2026-10-07. Wrote `src/utils/check_groq.py` to isolate the issue. The key was valid, but the model ID was missing the `qwen/` provider prefix. Corrected `GROQ_MODEL` from `qwen-3.8-27b` to `qwen/qwen3.8-27b`.
 - **Notes:** Groq's model IDs include a provider prefix. This is a common gotcha when switching between model providers. Future integrations should list `/models` first.
 
+
+
+### ChromaDB batch size limit
+
+- **Severity:** high (fixed)
+- **Where:** `src/icd_index.py`, `build_index()`
+- **What:** `collection.add()` with all 74,260 items at once failed with `ValueError: Batch size of 74260 is greater than max batch size of 5461`. ChromaDB has a per-call limit.
+- **Action:** Fixed by chunking into batches of 5,000.
+- **Notes:** This is a known limitation of the Rust-backed Chroma bindings. The Python docs don't prominently mention it. Worth remembering for any large-scale ingestion.
+
 ---

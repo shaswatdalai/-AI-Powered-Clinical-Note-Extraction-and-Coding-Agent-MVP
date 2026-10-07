@@ -8,3 +8,4 @@ chroma_db/
 results/
 *.log
 .pytest_cache/
+cache/

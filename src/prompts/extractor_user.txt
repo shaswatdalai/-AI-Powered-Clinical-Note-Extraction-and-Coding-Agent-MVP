@@ -1,0 +1,6 @@
+Clinical note:
+---
+{note_text}
+---
+
+Extract all items. For each, include a verbatim evidence_quote from the note.

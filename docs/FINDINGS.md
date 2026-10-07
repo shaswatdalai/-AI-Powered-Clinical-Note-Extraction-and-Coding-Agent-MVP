@@ -59,4 +59,31 @@ Format per entry:
 - **Action:** Fixed by chunking into batches of 5,000.
 - **Notes:** This is a known limitation of the Rust-backed Chroma bindings. The Python docs don't prominently mention it. Worth remembering for any large-scale ingestion.
 
+### ICD-10 description field contains wrapper text
+
+- **Severity:** medium (deferred)
+- **Where:** `src/icd_index.py`, descriptions loaded from `data/icd10cm_data.csv`
+- **What:** The `description` column in the source CSV contains wrapper text:
+  `Header: <parent> | Specific long description about this code: <actual>`
+  This means the indexed descriptions include non-clinical tokens
+  ("header", "specific", "long", "description"), which pollutes BM25
+  scoring and embedding representation.
+- **Action:** Deferred. Impact is minor — the correct code still ranks
+  highly on test queries. To fix: strip the wrapper before indexing,
+  keeping only the text after the last colon.
+- **Notes:** Observed during ICD index build on 7 Oct. Would matter more
+  if the description text were shown directly to the user without
+  cleanup. The verifier sees this text, so a cleaner version improves
+  the quality of its judgments.
+
+### ChromaDB batch size limit
+
+- **Severity:** high (fixed)
+- **Where:** `src/icd_index.py`, `build_index()`
+- **What:** `collection.add()` with all 74,260 items at once failed with
+  `ValueError: Batch size of 74260 is greater than max batch size of 5461`.
+  ChromaDB enforces a per-call batch limit.
+- **Action:** Fixed by chunking into batches of 5,000.
+- **Notes:** Known limitation of the Rust-backed Chroma bindings.
+
 ---

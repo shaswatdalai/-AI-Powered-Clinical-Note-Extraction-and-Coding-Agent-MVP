@@ -1,0 +1,287 @@
+{
+  "note_id": "note_015",
+  "specialty": "Bariatrics",
+  "source_row_index": 4985,
+  "diagnoses": [
+    {
+      "name_as_written": "hypertension",
+      "normalised_name": "hypertension",
+      "status": "active",
+      "span": [
+        692,
+        704
+      ],
+      "icd_code": "I10"
+    },
+    {
+      "name_as_written": "hypercholesterolemia",
+      "normalised_name": "hypercholesterolemia",
+      "status": "active",
+      "span": [
+        709,
+        729
+      ],
+      "icd_code": "E78.00"
+    },
+    {
+      "name_as_written": "high cholesterol",
+      "normalised_name": "hypercholesterolemia",
+      "status": "active",
+      "span": [
+        863,
+        879
+      ],
+      "icd_code": "E78.00"
+    },
+    {
+      "name_as_written": "depression",
+      "normalised_name": "depression",
+      "status": "active",
+      "span": [
+        920,
+        930
+      ],
+      "icd_code": "F32.9"
+    },
+    {
+      "name_as_written": "DVT",
+      "normalised_name": "deep vein thrombosis",
+      "status": "historical",
+      "span": [
+        996,
+        999
+      ],
+      "icd_code": "Z86.718"
+    },
+    {
+      "name_as_written": "thyroid disease",
+      "normalised_name": "thyroid disease",
+      "status": "historical",
+      "span": [
+        1062,
+        1077
+      ],
+      "icd_code": "E07.9"
+    },
+    {
+      "name_as_written": "gallstones",
+      "normalised_name": "cholelithiasis",
+      "status": "historical",
+      "span": [
+        1203,
+        1213
+      ],
+      "icd_code": "K80.20"
+    },
+    {
+      "name_as_written": "hemorrhoids",
+      "normalised_name": "hemorrhoids",
+      "status": "active",
+      "span": [
+        2389,
+        2400
+      ],
+      "icd_code": "K64.9"
+    },
+    {
+      "name_as_written": "ulcerative colitis",
+      "normalised_name": "ulcerative colitis",
+      "status": "ruled_out",
+      "span": [
+        2490,
+        2508
+      ],
+      "icd_code": "K51.90"
+    },
+    {
+      "name_as_written": "Crohn disease",
+      "normalised_name": "crohn disease",
+      "status": "ruled_out",
+      "span": [
+        2510,
+        2523
+      ],
+      "icd_code": "K50.90"
+    },
+    {
+      "name_as_written": "liver disease",
+      "normalised_name": "liver disease",
+      "status": "ruled_out",
+      "span": [
+        2545,
+        2558
+      ],
+      "icd_code": null
+    },
+    {
+      "name_as_written": "kidney disease",
+      "normalised_name": "kidney disease",
+      "status": "ruled_out",
+      "span": [
+        2563,
+        2577
+      ],
+      "icd_code": null
+    },
+    {
+      "name_as_written": "cardiac disease",
+      "normalised_name": "cardiac disease",
+      "status": "ruled_out",
+      "span": [
+        2603,
+        2618
+      ],
+      "icd_code": null
+    },
+    {
+      "name_as_written": "stroke",
+      "normalised_name": "stroke",
+      "status": "ruled_out",
+      "span": [
+        2632,
+        2638
+      ],
+      "icd_code": null
+    }
+  ],
+  "medications": [
+    {
+      "name": "Norvasc",
+      "dose": "10 mg",
+      "route": "PO",
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        1343,
+        1356
+      ]
+    },
+    {
+      "name": "Lopressor",
+      "dose": "50 mg",
+      "route": "PO",
+      "frequency": "b.i.d.",
+      "status": "current",
+      "span": [
+        1369,
+        1393
+      ]
+    },
+    {
+      "name": "lovastatin",
+      "dose": "10 mg",
+      "route": "PO",
+      "frequency": "at bedtime",
+      "status": "current",
+      "span": [
+        1407,
+        1423
+      ]
+    },
+    {
+      "name": "citalopram",
+      "dose": "10 mg",
+      "route": "PO",
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        1441,
+        1457
+      ]
+    },
+    {
+      "name": "aspirin",
+      "dose": "500 mg",
+      "route": "PO",
+      "frequency": "three times a day",
+      "status": "discontinued",
+      "span": [
+        1470,
+        1484
+      ]
+    },
+    {
+      "name": "vitamin D",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1532,
+        1541
+      ]
+    },
+    {
+      "name": "Premarin",
+      "dose": "0.3 mg",
+      "route": "PO",
+      "frequency": "daily",
+      "status": "discontinued",
+      "span": [
+        1543,
+        1558
+      ]
+    },
+    {
+      "name": "omega-3 fatty acids",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1601,
+        1620
+      ]
+    },
+    {
+      "name": "vitamin D",
+      "dose": "50,000 units",
+      "route": null,
+      "frequency": "q. weekly",
+      "status": "current",
+      "span": [
+        1626,
+        1648
+      ]
+    },
+    {
+      "name": "Medifast",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        4201,
+        4209
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "hysterectomy",
+      "date": "1994",
+      "span": [
+        1025,
+        1037
+      ]
+    },
+    {
+      "name": "cholecystectomy",
+      "date": "2008",
+      "span": [
+        1175,
+        1190
+      ]
+    },
+    {
+      "name": "upper GI series",
+      "date": null,
+      "span": [
+        3988,
+        4003
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

@@ -1,0 +1,180 @@
+{
+  "note_id": "note_013",
+  "specialty": "Allergy / Immunology",
+  "source_row_index": 4993,
+  "diagnoses": [
+    {
+      "name_as_written": "xerostomia",
+      "normalised_name": "xerostomia",
+      "status": "active",
+      "span": [
+        135,
+        145
+      ],
+      "icd_code": "R68.2"
+    },
+    {
+      "name_as_written": "gastroesophageal reflux disease",
+      "normalised_name": "gastroesophageal reflux disease",
+      "status": "active",
+      "span": [
+        147,
+        178
+      ],
+      "icd_code": "K21.9"
+    },
+    {
+      "name_as_written": "possible food allergies",
+      "normalised_name": "food allergies",
+      "status": "suspected",
+      "span": [
+        180,
+        203
+      ],
+      "icd_code": null
+    },
+    {
+      "name_as_written": "asthma",
+      "normalised_name": "asthma",
+      "status": "active",
+      "span": [
+        230,
+        236
+      ],
+      "icd_code": "J45.909"
+    },
+    {
+      "name_as_written": "environmental inhalant allergies",
+      "normalised_name": "environmental inhalant allergies",
+      "status": "active",
+      "span": [
+        242,
+        274
+      ],
+      "icd_code": "J30.1"
+    },
+    {
+      "name_as_written": "Chronic glossitis",
+      "normalised_name": "chronic glossitis",
+      "status": "active",
+      "span": [
+        394,
+        411
+      ],
+      "icd_code": "K14.0"
+    },
+    {
+      "name_as_written": "probable environmental inhalant allergies",
+      "normalised_name": "environmental inhalant allergies",
+      "status": "suspected",
+      "span": [
+        423,
+        464
+      ],
+      "icd_code": "J30.1"
+    },
+    {
+      "name_as_written": "probable food allergies",
+      "normalised_name": "food allergies",
+      "status": "suspected",
+      "span": [
+        465,
+        488
+      ],
+      "icd_code": null
+    },
+    {
+      "name_as_written": "fibromyalgia",
+      "normalised_name": "fibromyalgia",
+      "status": "historical",
+      "span": [
+        523,
+        535
+      ],
+      "icd_code": "M79.3"
+    },
+    {
+      "name_as_written": "peptic ulcer disease",
+      "normalised_name": "peptic ulcer disease",
+      "status": "historical",
+      "span": [
+        552,
+        572
+      ],
+      "icd_code": "K27.9"
+    },
+    {
+      "name_as_written": "gastritis",
+      "normalised_name": "gastritis",
+      "status": "historical",
+      "span": [
+        585,
+        594
+      ],
+      "icd_code": "K29.70"
+    },
+    {
+      "name_as_written": "gastroesophageal disease",
+      "normalised_name": "gastroesophageal reflux disease",
+      "status": "historical",
+      "span": [
+        607,
+        631
+      ],
+      "icd_code": "K21.9"
+    },
+    {
+      "name_as_written": "chronic fatigue",
+      "normalised_name": "chronic fatigue syndrome",
+      "status": "historical",
+      "span": [
+        648,
+        663
+      ],
+      "icd_code": "G93.3"
+    },
+    {
+      "name_as_written": "hypothyroidism",
+      "normalised_name": "hypothyroidism",
+      "status": "historical",
+      "span": [
+        680,
+        694
+      ],
+      "icd_code": "E03.9"
+    },
+    {
+      "name_as_written": "depression",
+      "normalised_name": "depression",
+      "status": "historical",
+      "span": [
+        711,
+        721
+      ],
+      "icd_code": "F32.9"
+    },
+    {
+      "name_as_written": "dysphagia",
+      "normalised_name": "dysphagia",
+      "status": "historical",
+      "span": [
+        738,
+        747
+      ],
+      "icd_code": "R13.10"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "RAST allergy testing",
+      "date": null,
+      "span": [
+        768,
+        788
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

@@ -1,0 +1,115 @@
+{
+  "note_id": "note_023",
+  "specialty": "Discharge Summary",
+  "source_row_index": 3973,
+  "diagnoses": [
+    {
+      "name_as_written": "Cholecystitis",
+      "normalised_name": "cholecystitis",
+      "status": "active",
+      "span": [
+        24,
+        37
+      ],
+      "icd_code": "K81.9"
+    },
+    {
+      "name_as_written": "choledocholithiasis",
+      "normalised_name": "choledocholithiasis",
+      "status": "active",
+      "span": [
+        43,
+        62
+      ],
+      "icd_code": "K80.50"
+    },
+    {
+      "name_as_written": "sleep apnea",
+      "normalised_name": "sleep apnea",
+      "status": "historical",
+      "span": [
+        287,
+        298
+      ],
+      "icd_code": "G47.30"
+    },
+    {
+      "name_as_written": "Morbid obesity",
+      "normalised_name": "morbid obesity",
+      "status": "active",
+      "span": [
+        346,
+        360
+      ],
+      "icd_code": "E66.01"
+    }
+  ],
+  "medications": [
+    {
+      "name": "iron",
+      "dose": "325 mg",
+      "route": "PO",
+      "frequency": "t.i.d.",
+      "status": "newly_prescribed",
+      "span": [
+        2620,
+        2631
+      ]
+    },
+    {
+      "name": "Lortab",
+      "dose": "15 cc",
+      "route": "PO",
+      "frequency": "q.4 h. p.r.n.",
+      "status": "newly_prescribed",
+      "span": [
+        2648,
+        2661
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "roux-en-y gastric bypass",
+      "date": "01/07",
+      "span": [
+        160,
+        184
+      ]
+    },
+    {
+      "name": "Laparoscopic paraventral hernia",
+      "date": "11/07",
+      "span": [
+        230,
+        261
+      ]
+    },
+    {
+      "name": "common bile duct exploration",
+      "date": null,
+      "span": [
+        466,
+        494
+      ]
+    },
+    {
+      "name": "Laparoscopic cholecystectomy",
+      "date": null,
+      "span": [
+        402,
+        430
+      ]
+    },
+    {
+      "name": "HIDA scan",
+      "date": null,
+      "span": [
+        819,
+        828
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

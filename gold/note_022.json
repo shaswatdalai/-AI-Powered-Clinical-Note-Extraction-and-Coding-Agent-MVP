@@ -1,0 +1,20 @@
+{
+  "note_id": "note_022",
+  "specialty": "Diets and Nutritions",
+  "source_row_index": 3996,
+  "diagnoses": [],
+  "medications": [],
+  "procedures": [],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "Weight",
+      "value": "186-1/2",
+      "unit": "pounds",
+      "span": [
+        193,
+        200
+      ]
+    }
+  ]
+}

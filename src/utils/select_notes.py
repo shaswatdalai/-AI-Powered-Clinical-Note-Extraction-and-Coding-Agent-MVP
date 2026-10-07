@@ -1,56 +1,112 @@
 """
 Select a diverse set of notes from mtsamples.csv for gold labelling.
 
-Picks 12 notes across different specialties, saves each as
-data/note_NNN.txt, and prints a summary.
+Picks notes across different specialties, saves each as
+data/note_NNN.txt with a metadata sidecar, and prints a summary.
 
-Run from the project root:
-    python src/utils/select_notes.py
+Notes already selected in previous runs (detected by inspecting
+existing .meta.json files) are automatically excluded.
+
+Usage:
+    python -m src.utils.select_notes                       # default: 12 notes, note_001..012
+    python -m src.utils.select_notes --start 13 --end 27   # 15 notes, note_013..027
+    python -m src.utils.select_notes --start 28 --end 40   # 13 notes, note_028..040
 """
 
+import argparse
 import json
 import pandas as pd
 from pathlib import Path
 
 
-MIN_LENGTH = 200       # skip fragments. notes shorter than this are not included in the sample
-SEED = 42              # fixed for reproducibility . 
-NUM_NOTES = 12
+MIN_LENGTH = 200       # skip fragments: notes shorter than this are excluded
+SEED = 42              # fixed for reproducibility
+DEFAULT_START = 1
+DEFAULT_END = 12
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Select clinical notes for gold labelling.")
+    parser.add_argument("--start", type=int, default=DEFAULT_START,
+                        help=f"First note number (default: {DEFAULT_START})")
+    parser.add_argument("--end", type=int, default=DEFAULT_END,
+                        help=f"Last note number, inclusive (default: {DEFAULT_END})")
+    parser.add_argument("--seed", type=int, default=SEED,
+                        help=f"Random seed (default: {SEED})")
+    return parser.parse_args()
+
+
+def load_used_indices() -> set[int]:
+    """Return the set of original CSV row indices already used by existing notes."""
+    used: set[int] = set()
+    for meta_path in Path("data").glob("note_*.meta.json"):
+        try:
+            data = json.loads(meta_path.read_text(encoding="utf-8"))
+            used.add(int(data["original_index"]))
+        except Exception:
+            # Skip malformed metadata files rather than crash
+            continue
+    return used
 
 
 def main():
+    args = parse_args()
+    start, end = args.start, args.end
+    if end < start:
+        raise SystemExit(f"--end ({end}) must be >= --start ({start})")
+
+    target_count = end - start + 1
+    print(f"Target: {target_count} notes, labelled note_{start:03d} to note_{end:03d}")
+    print(f"Seed:   {args.seed}")
+
+    # Load and clean the CSV
     notes = pd.read_csv("data/mtsamples.csv")
-
-    # Clean the data. Note: index is preserved (original CSV row number).
-    notes = notes.dropna(subset=["transcription", "medical_specialty"])#drop rows with missing transcription or medical_specialty . only dropna() will drop rows with NaN values in these columns
+    notes = notes.dropna(subset=["transcription", "medical_specialty"])
     notes = notes[notes["transcription"].str.len() >= MIN_LENGTH]
+    print(f"CSV: {len(notes)} usable notes after filtering")
 
-    # Pick one note per specialty. Uses the original index for tracking.
+    # Exclude notes already used in previous batches
+    used = load_used_indices()
+    if used:
+        before = len(notes)
+        notes = notes[~notes.index.isin(used)]
+        print(f"Excluded {before - len(notes)} notes already selected in previous batches "
+              f"({len(used)} unique indices on record)")
+
+    if len(notes) < target_count:
+        raise SystemExit(
+            f"Not enough unused notes: need {target_count}, have {len(notes)}"
+        )
+
+    # One note per specialty
     sampled = (
         notes.groupby("medical_specialty", group_keys=False)
-        .sample(n=1, random_state=SEED)
+        .sample(n=1, random_state=args.seed)
     )
 
-    # If there are fewer than NUM_NOTES specialties, sample more
-    if len(sampled) < NUM_NOTES:
+    # If we need more than there are specialties, sample extras from remaining rows
+    if len(sampled) < target_count:
         remaining = notes[~notes.index.isin(sampled.index)]
-        extras = remaining.sample(n=NUM_NOTES - len(sampled), random_state=SEED)
+        extras = remaining.sample(
+            n=target_count - len(sampled),
+            random_state=args.seed,
+        )
         sampled = pd.concat([sampled, extras])
 
-    sampled = sampled.head(NUM_NOTES)#trim to at most 12 rows, in case there are more than 12 specialties in the CSV
+    # Trim to exactly the target count
+    sampled = sampled.head(target_count)
 
     Path("data").mkdir(exist_ok=True)
 
-    print(f"Selected {len(sampled)} notes:")
-    for i, (csv_index, row) in enumerate(sampled.iterrows(), start=1):
-        note_id = f"note_{i:03d}"
+    print(f"\nSelected {len(sampled)} notes:")
+    for offset, (csv_index, row) in enumerate(sampled.iterrows()):
+        note_num = start + offset
+        note_id = f"note_{note_num:03d}"
         text = row["transcription"]
         specialty = row["medical_specialty"]
 
-        # Save note text
         (Path("data") / f"{note_id}.txt").write_text(text, encoding="utf-8")
 
-        # Save metadata sidecar
         meta = {
             "note_id": note_id,
             "specialty": specialty,
@@ -63,8 +119,8 @@ def main():
 
         print(f"  {note_id} | {specialty:<35} | {len(text):>5} chars")
 
-    print(f"\nSaved to data/note_001.txt .. data/note_{len(sampled):03d}.txt")
-    print(f"Metadata sidecars: data/note_NNN.meta.json")
+    print(f"\nSaved note_{start:03d} through note_{end:03d} in data/")
+    print("Metadata sidecars written alongside each note.")
 
 
 if __name__ == "__main__":

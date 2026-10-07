@@ -1,0 +1,88 @@
+{
+  "note_id": "note_026",
+  "specialty": "Endocrinology",
+  "source_row_index": 3794,
+  "diagnoses": [
+    {
+      "name_as_written": "squamous cell carcinoma of his glottic larynx",
+      "normalised_name": "squamous cell carcinoma of the larynx",
+      "status": "historical",
+      "span": [
+        237,
+        282
+      ],
+      "icd_code": "C32.0"
+    },
+    {
+      "name_as_written": "Squamous cell carcinoma of the larynx",
+      "normalised_name": "squamous cell carcinoma of the larynx",
+      "status": "active",
+      "span": [
+        1370,
+        1407
+      ],
+      "icd_code": "C32.0"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "Total laryngectomy",
+      "date": null,
+      "span": [
+        22,
+        40
+      ]
+    },
+    {
+      "name": "right level 2, 3, 4 neck dissection",
+      "date": null,
+      "span": [
+        42,
+        77
+      ]
+    },
+    {
+      "name": "tracheoesophageal puncture",
+      "date": null,
+      "span": [
+        79,
+        105
+      ]
+    },
+    {
+      "name": "cricopharyngeal myotomy",
+      "date": null,
+      "span": [
+        107,
+        130
+      ]
+    },
+    {
+      "name": "right thyroid lobectomy",
+      "date": null,
+      "span": [
+        132,
+        155
+      ]
+    },
+    {
+      "name": "laser excision",
+      "date": "06/07",
+      "span": [
+        311,
+        325
+      ]
+    },
+    {
+      "name": "Direct laryngoscopy",
+      "date": null,
+      "span": [
+        1760,
+        1779
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

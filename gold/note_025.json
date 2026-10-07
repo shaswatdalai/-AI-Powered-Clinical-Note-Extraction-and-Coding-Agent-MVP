@@ -1,0 +1,88 @@
+{
+  "note_id": "note_025",
+  "specialty": "Emergency Room Reports",
+  "source_row_index": 3846,
+  "diagnoses": [
+    {
+      "name_as_written": "Hypertension",
+      "normalised_name": "hypertension",
+      "status": "historical",
+      "span": [
+        397,
+        409
+      ],
+      "icd_code": "I10"
+    }
+  ],
+  "medications": [
+    {
+      "name": "banana bag",
+      "dose": null,
+      "route": "IV",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        1748,
+        1758
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "X-rays of the C spine",
+      "date": null,
+      "span": [
+        1425,
+        1446
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "BP",
+      "value": "165/95",
+      "unit": "mmHg",
+      "span": [
+        610,
+        616
+      ]
+    },
+    {
+      "name": "HR",
+      "value": "80",
+      "unit": "bpm",
+      "span": [
+        620,
+        622
+      ]
+    },
+    {
+      "name": "RR",
+      "value": "12",
+      "unit": "breaths/min",
+      "span": [
+        626,
+        628
+      ]
+    },
+    {
+      "name": "Temp",
+      "value": "98.4",
+      "unit": "\u00b0F",
+      "span": [
+        634,
+        638
+      ]
+    },
+    {
+      "name": "SpO2",
+      "value": "95%",
+      "unit": "%",
+      "span": [
+        644,
+        647
+      ]
+    }
+  ]
+}

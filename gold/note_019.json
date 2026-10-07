@@ -1,0 +1,56 @@
+{
+  "note_id": "note_019",
+  "specialty": "Cosmetic / Plastic Surgery",
+  "source_row_index": 4056,
+  "diagnoses": [
+    {
+      "name_as_written": "personal history of breast cancer",
+      "normalised_name": "breast cancer",
+      "status": "historical",
+      "span": [
+        71,
+        104
+      ],
+      "icd_code": "Z85.3"
+    },
+    {
+      "name_as_written": "Breast asymmetry",
+      "normalised_name": "breast asymmetry",
+      "status": "active",
+      "span": [
+        110,
+        126
+      ],
+      "icd_code": "N65.1"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "Left nipple areolar reconstruction",
+      "date": null,
+      "span": [
+        271,
+        305
+      ]
+    },
+    {
+      "name": "full-thickness skin graft",
+      "date": null,
+      "span": [
+        318,
+        343
+      ]
+    },
+    {
+      "name": "Redo right mastopexy",
+      "date": null,
+      "span": [
+        369,
+        389
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

@@ -1,0 +1,62 @@
+{
+  "note_id": "note_020",
+  "specialty": "Dentistry",
+  "source_row_index": 4044,
+  "diagnoses": [
+    {
+      "name_as_written": "Severe dental caries",
+      "normalised_name": "dental caries",
+      "status": "active",
+      "span": [
+        134,
+        154
+      ],
+      "icd_code": "K02.9"
+    },
+    {
+      "name_as_written": "Hemophilia",
+      "normalised_name": "hemophilia",
+      "status": "active",
+      "span": [
+        160,
+        170
+      ],
+      "icd_code": "D66"
+    },
+    {
+      "name_as_written": "Nonrestorable teeth",
+      "normalised_name": "nonrestorable teeth",
+      "status": "active",
+      "span": [
+        245,
+        264
+      ],
+      "icd_code": null
+    }
+  ],
+  "medications": [
+    {
+      "name": "Tylenol with Codeine",
+      "dose": null,
+      "route": "PO",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        5352,
+        5372
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Full mouth dental rehabilitation",
+      "date": null,
+      "span": [
+        23,
+        55
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

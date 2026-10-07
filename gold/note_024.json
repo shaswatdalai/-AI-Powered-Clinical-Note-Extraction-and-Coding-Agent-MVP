@@ -1,0 +1,48 @@
+{
+  "note_id": "note_024",
+  "specialty": "ENT - Otolaryngology",
+  "source_row_index": 3696,
+  "diagnoses": [
+    {
+      "name_as_written": "Ventilator-dependent respiratory failure",
+      "normalised_name": "ventilator-dependent respiratory failure",
+      "status": "active",
+      "span": [
+        28,
+        68
+      ],
+      "icd_code": "J96.00"
+    },
+    {
+      "name_as_written": "Multiple strokes",
+      "normalised_name": "stroke",
+      "status": "active",
+      "span": [
+        74,
+        90
+      ],
+      "icd_code": "I63.9"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "Tracheostomy",
+      "date": null,
+      "span": [
+        211,
+        223
+      ]
+    },
+    {
+      "name": "Thyroid isthmusectomy",
+      "date": null,
+      "span": [
+        229,
+        250
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

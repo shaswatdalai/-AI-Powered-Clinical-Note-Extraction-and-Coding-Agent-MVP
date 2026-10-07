@@ -1,0 +1,230 @@
+{
+  "note_id": "note_018",
+  "specialty": "Consult - History and Phy.",
+  "source_row_index": 4155,
+  "diagnoses": [
+    {
+      "name_as_written": "schizoaffective disorder",
+      "normalised_name": "schizoaffective disorder",
+      "status": "active",
+      "span": [
+        114,
+        138
+      ],
+      "icd_code": "F25.9"
+    },
+    {
+      "name_as_written": "diabetes",
+      "normalised_name": "diabetes mellitus",
+      "status": "active",
+      "span": [
+        140,
+        148
+      ],
+      "icd_code": "E11.9"
+    },
+    {
+      "name_as_written": "osteoarthritis",
+      "normalised_name": "osteoarthritis",
+      "status": "active",
+      "span": [
+        150,
+        164
+      ],
+      "icd_code": "M19.90"
+    },
+    {
+      "name_as_written": "hypothyroidism",
+      "normalised_name": "hypothyroidism",
+      "status": "active",
+      "span": [
+        166,
+        180
+      ],
+      "icd_code": "E03.9"
+    },
+    {
+      "name_as_written": "GERD",
+      "normalised_name": "gastroesophageal reflux disease",
+      "status": "active",
+      "span": [
+        182,
+        186
+      ],
+      "icd_code": "K21.9"
+    },
+    {
+      "name_as_written": "dyslipidemia",
+      "normalised_name": "dyslipidemia",
+      "status": "active",
+      "span": [
+        192,
+        204
+      ],
+      "icd_code": "E78.5"
+    },
+    {
+      "name_as_written": "bipolar disorder",
+      "normalised_name": "bipolar disorder",
+      "status": "historical",
+      "span": [
+        1976,
+        1992
+      ],
+      "icd_code": "F31.9"
+    },
+    {
+      "name_as_written": "schizophrenia",
+      "normalised_name": "schizophrenia",
+      "status": "historical",
+      "span": [
+        2024,
+        2037
+      ],
+      "icd_code": "F20.9"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Zyprexa",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "discontinued",
+      "span": [
+        463,
+        470
+      ]
+    },
+    {
+      "name": "lithium",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "discontinued",
+      "span": [
+        475,
+        482
+      ]
+    },
+    {
+      "name": "Seroquel",
+      "dose": "100 mg",
+      "route": "PO",
+      "frequency": "b.i.d.",
+      "status": "current",
+      "span": [
+        2166,
+        2174
+      ]
+    },
+    {
+      "name": "Risperdal",
+      "dose": "1 mg",
+      "route": "PO",
+      "frequency": "t.i.d.",
+      "status": "current",
+      "span": [
+        2412,
+        2421
+      ]
+    },
+    {
+      "name": "Actos",
+      "dose": "30 mg",
+      "route": "PO",
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        2450,
+        2455
+      ]
+    },
+    {
+      "name": "Lipitor",
+      "dose": "10 mg",
+      "route": "PO",
+      "frequency": "at bedtime",
+      "status": "current",
+      "span": [
+        2481,
+        2488
+      ]
+    },
+    {
+      "name": "Gabapentin",
+      "dose": "100 mg",
+      "route": "PO",
+      "frequency": "b.i.d.",
+      "status": "current",
+      "span": [
+        2519,
+        2529
+      ]
+    },
+    {
+      "name": "Glimepiride",
+      "dose": "2 mg",
+      "route": "PO",
+      "frequency": "b.i.d.",
+      "status": "current",
+      "span": [
+        2556,
+        2567
+      ]
+    },
+    {
+      "name": "Levothyroxine",
+      "dose": "25 mcg",
+      "route": "PO",
+      "frequency": "q.a.m.",
+      "status": "current",
+      "span": [
+        2592,
+        2605
+      ]
+    },
+    {
+      "name": "Protonix",
+      "dose": "40 mg",
+      "route": "PO",
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        2632,
+        2640
+      ]
+    }
+  ],
+  "procedures": [],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "BP",
+      "value": "152/92",
+      "unit": "mmHg",
+      "span": [
+        4622,
+        4628
+      ]
+    },
+    {
+      "name": "HR",
+      "value": "81",
+      "unit": "bpm",
+      "span": [
+        4630,
+        4643
+      ]
+    },
+    {
+      "name": "Temp",
+      "value": "97.2",
+      "unit": "\u00b0F",
+      "span": [
+        4661,
+        4665
+      ]
+    }
+  ]
+}

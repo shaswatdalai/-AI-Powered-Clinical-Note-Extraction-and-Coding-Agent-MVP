@@ -1,0 +1,61 @@
+{
+  "note_id": "note_014",
+  "specialty": "Autopsy",
+  "source_row_index": 4988,
+  "diagnoses": [
+    {
+      "name_as_written": "Subdural hematoma",
+      "normalised_name": "subdural hematoma",
+      "status": "active",
+      "span": [
+        1544,
+        1561
+      ],
+      "icd_code": "S06.4X9A"
+    },
+    {
+      "name_as_written": "comminuted fractures of the occipital bone",
+      "normalised_name": "comminuted occipital bone fracture",
+      "status": "active",
+      "span": [
+        1566,
+        1608
+      ],
+      "icd_code": "S02.119A"
+    },
+    {
+      "name_as_written": "Blunt force traumatic injury",
+      "normalised_name": "blunt force traumatic injury",
+      "status": "active",
+      "span": [
+        2995,
+        3023
+      ],
+      "icd_code": "T14.8XXA"
+    },
+    {
+      "name_as_written": "multiple cranial fractures",
+      "normalised_name": "multiple cranial fractures",
+      "status": "active",
+      "span": [
+        3029,
+        3055
+      ],
+      "icd_code": "S02.91XA"
+    },
+    {
+      "name_as_written": "craniocerebral injury",
+      "normalised_name": "craniocerebral injury",
+      "status": "active",
+      "span": [
+        3069,
+        3090
+      ],
+      "icd_code": "S09.90XA"
+    }
+  ],
+  "medications": [],
+  "procedures": [],
+  "allergies": [],
+  "vitals": []
+}

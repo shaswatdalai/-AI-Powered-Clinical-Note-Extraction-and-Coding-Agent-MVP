@@ -1,0 +1,111 @@
+{
+  "note_id": "note_021",
+  "specialty": "Dermatology",
+  "source_row_index": 4024,
+  "diagnoses": [
+    {
+      "name_as_written": "Buttock abscess",
+      "normalised_name": "buttock abscess",
+      "status": "active",
+      "span": [
+        19,
+        34
+      ],
+      "icd_code": "L02.31"
+    },
+    {
+      "name_as_written": "Diabetes type II",
+      "normalised_name": "type 2 diabetes mellitus",
+      "status": "active",
+      "span": [
+        569,
+        585
+      ],
+      "icd_code": "E11.9"
+    },
+    {
+      "name_as_written": "high cholesterol",
+      "normalised_name": "hypercholesterolemia",
+      "status": "active",
+      "span": [
+        606,
+        622
+      ],
+      "icd_code": "E78.00"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Insulin",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        721,
+        728
+      ]
+    },
+    {
+      "name": "metformin",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        730,
+        739
+      ]
+    },
+    {
+      "name": "Glucotrol",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        741,
+        750
+      ]
+    },
+    {
+      "name": "Lipitor",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        756,
+        763
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "incision and drainage",
+      "date": null,
+      "span": [
+        339,
+        360
+      ]
+    },
+    {
+      "name": "C-section",
+      "date": null,
+      "span": [
+        649,
+        658
+      ]
+    },
+    {
+      "name": "D&C",
+      "date": null,
+      "span": [
+        663,
+        666
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

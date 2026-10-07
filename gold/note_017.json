@@ -1,0 +1,19 @@
+{
+  "note_id": "note_017",
+  "specialty": "Chiropractic",
+  "source_row_index": 4606,
+  "diagnoses": [],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "x-rays of the lumbar spine, left ankle, and left foot",
+      "date": "November 21, 2004",
+      "span": [
+        771,
+        824
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

@@ -1,0 +1,30 @@
+{
+  "note_id": "note_027",
+  "specialty": "Gastroenterology",
+  "source_row_index": 3512,
+  "diagnoses": [
+    {
+      "name_as_written": "Appendicitis",
+      "normalised_name": "appendicitis",
+      "status": "active",
+      "span": [
+        26,
+        38
+      ],
+      "icd_code": "K37"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "Laparoscopic appendectomy",
+      "date": null,
+      "span": [
+        104,
+        129
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

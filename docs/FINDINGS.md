@@ -86,4 +86,15 @@ Format per entry:
 - **Action:** Fixed by chunking into batches of 5,000.
 - **Notes:** Known limitation of the Rust-backed Chroma bindings.
 
+### End-to-end pipeline works on note_001
+
+- **Severity:** note (success)
+- **Where:** `src/utils/try_pipeline.py`, running on `data/note_001.txt`
+- **What:** The pipeline ran cleanly: note → mask (2 items, same length) → extract (2 dx, 5 meds, 2 vitals) → ICD lookup.
+- **Correct ICD chapter matches:**
+  - asthma → J45.998, J45.902, J45.991
+  - Allergic rhinitis → J30.89, J30.81, J30.9
+- **Action:** None. Milestone.
+- **Notes:** Diagnoses converged on correct ICD-10 chapters on first integration test. Specific sub-codes are for the verifier to refine.
+
 ---

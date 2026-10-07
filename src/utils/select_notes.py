@@ -13,8 +13,8 @@ import pandas as pd
 from pathlib import Path
 
 
-MIN_LENGTH = 200       # skip fragments
-SEED = 42              # fixed for reproducibility
+MIN_LENGTH = 200       # skip fragments. notes shorter than this are not included in the sample
+SEED = 42              # fixed for reproducibility . 
 NUM_NOTES = 12
 
 

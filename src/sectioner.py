@@ -93,7 +93,7 @@ def section_note(note_text: str) -> list[Section]:
     cleaned: list[dict] = []
     for h in headings:
         if cleaned and h["heading_start"] < cleaned[-1]["body_start"]:
-            continue  # skip overlapping
+            continue  # skip overlapping between headings and the content of the previous heading
         cleaned.append(h)
 
     # Step 5: build sections. Each section runs from this heading's body start
@@ -108,7 +108,7 @@ def section_note(note_text: str) -> list[Section]:
             # Skip empty sections (heading with no body before next heading)
             continue
         # Adjust start forward past leading whitespace
-        leading = len(note_text[body_start:body_end]) - len(note_text[body_start:body_end].lstrip())
+        leading = len(note_text[body_start:body_end]) - len(note_text[body_start:body_end].lstrip())#to count the number of leading whitespace characters in the section body . for span we need this 
         sections.append({
             "name": h["name"],
             "start": body_start + leading,

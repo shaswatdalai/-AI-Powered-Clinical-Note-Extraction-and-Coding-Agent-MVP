@@ -146,7 +146,8 @@ def test_extraction_parses_from_json_string():
 
 
 def test_extraction_roundtrips_through_json():
-    original = Extraction(
+    #extracting a diagnosis and converting it to JSON and back
+    original = Extraction( 
         diagnoses=[
             Diagnosis(
                 name_as_written="type 2 diabetes",
@@ -156,9 +157,9 @@ def test_extraction_roundtrips_through_json():
             )
         ],
     )
-    dumped = original.model_dump_json()
-    reparsed = Extraction.model_validate_json(dumped)
-    assert reparsed.diagnoses[0].name_as_written == "type 2 diabetes"
+    dumped = original.model_dump_json()#convert the original Extraction object to a JSON string
+    reparsed = Extraction.model_validate_json(dumped)#parse the JSON string back into an Extraction object
+    assert reparsed.diagnoses[0].name_as_written == "type 2 diabetes"   #to check that the reparsed object has the same name_as_written as the original
     assert reparsed.diagnoses[0].evidence.span.start == 12
 
 

@@ -39,7 +39,8 @@ USER_PROMPT_TEMPLATE = (PROMPTS_DIR / "extractor_user.txt").read_text(encoding="
 
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 GROQ_MODEL = "qwen/qwen3.8-27b"
-MAX_RETRIES = 2
+MAX_RETRIES = 5
+RATE_LIMIT_SLEEP = 30
 CACHE_DIR = Path("cache") / "extractor"
 
 
@@ -88,6 +89,14 @@ def _call_groq(note_text: str) -> dict:
         },
         timeout=60.0,
     )
+
+    if response.status_code == 429:
+        retry_after = response.headers.get("retry-after", "30")
+        raise RuntimeError(f"429 rate limited; retry-after={retry_after}")
+
+    response.raise_for_status()
+    body = response.json()
+    return json.loads(body["choices"][0]["message"]["content"])
     response.raise_for_status()
     body = response.json()
     return json.loads(body["choices"][0]["message"]["content"])
@@ -234,9 +243,11 @@ def extract(note_text: str) -> Extraction:
                 break
             except Exception as e:
                 last_error = e
+                is_rate_limit = "429" in str(e) or "rate" in str(e).lower()
                 if attempt < MAX_RETRIES:
-                    time.sleep(2 ** attempt)
+                    sleep_for = RATE_LIMIT_SLEEP if is_rate_limit else (2 ** attempt)
+                    print(f"  [retry] attempt {attempt + 1}/{MAX_RETRIES}; sleeping {sleep_for}s")
+                    time.sleep(sleep_for)
         if cached is None:
             raise RuntimeError(f"Extractor failed after {MAX_RETRIES + 1} attempts: {last_error}")
-
     return _build_extraction(cached, note_text)

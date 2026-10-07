@@ -97,4 +97,67 @@ Format per entry:
 - **Action:** None. Milestone.
 - **Notes:** Diagnoses converged on correct ICD-10 chapters on first integration test. Specific sub-codes are for the verifier to refine.
 
+### Autopsy notes over-extracted as diagnoses
+
+- **Severity:** high (deferred — will fix on Day 3)
+- **Where:** `src/extractor.py` running on `data/note_002.txt` (autopsy)
+- **What:** The extractor returned 24 diagnoses for an autopsy note whose
+  gold standard has 3. It treated every forensic finding (petechial
+  hemorrhaging, injuries, lesions, pregnancy status, etc.) as a diagnosis.
+  Root cause: the extractor prompt is written for clinical notes, not
+  autopsy reports.
+- **Action:** Deferred. Plan: detect autopsy specialty upfront, use a
+  restricted prompt that extracts only the cause-of-death findings.
+- **Notes:** The labelling guidelines already document that autopsy notes
+  are handled differently. The extractor needs the same treatment. This
+  is exactly the kind of failure the evaluation report should discuss.
+
+### Groq 429 rate limit
+
+- **Severity:** medium (fixed)
+- **Where:** `src/extractor.py`, `_call_groq()` + `src/utils/eval_batch.py`
+- **What:** Processing 12 notes back-to-back hit Groq's requests-per-minute
+  limit. The extractor crashed with a hard error on note_003.
+- **Action:** Fixed by (1) adding explicit 429 handling in `_call_groq()`
+  that reads the `Retry-After` header and sleeps before retrying, and
+  (2) adding a 2-second delay between notes in `eval_batch.py`.
+- **Notes:** Free-tier Groq has ~30 RPM for Qwen. Pacing is necessary.
+  This is a production-grade concern that will come up again during the
+  full evaluation run.
+
+
+  ### Extractor prompt fix — over-extraction resolved
+
+- **Severity:** high (fixed 2026-10-07)
+- **Where:** `src/prompts/extractor_system.txt`
+- **What:** Initial extractor prompt over-extracted categories the SOW
+  doesn't define as diagnoses (mechanism of injury, radiology findings,
+  exam findings, social facts, autopsy findings). Worst case: 24 dx on
+  the autopsy note vs a gold of 3.
+- **Action:** Fixed by adding an explicit "DO NOT extract" list and an
+  autopsy special case to the system prompt.
+- **Verified:** After the fix, note_002 extracted 3 diagnoses (exact
+  match with gold) and note_005 extracted 2 (exact match). Notes 001–005
+  now show minor or no disagreements with gold.
+- **Residual issues:**
+  - note_001: "allergies" chief complaint not extracted as a diagnosis.
+    LLM judgment call — defer.
+  - note_003: "BMI is 38.5" extracted as a diagnosis instead of the
+    implied condition (obesity). Prompt could be tightened further.
+  - note_004: "restrictive element" extracted as a diagnosis; arguably
+    a finding, not a diagnosis. Minor.
+
+### Groq rate limits — worked around via smaller batches
+
+- **Severity:** medium (mitigated)
+- **Where:** `src/utils/eval_batch.py`
+- **What:** Groq free-tier rate limits prevent processing 12+ notes in
+  one session, especially at Qwen 3.8 27B's TPM limits.
+- **Action:** Mitigated. Model processes in batches of 5, caches each
+  response on disk, and can be resumed. A smaller, more structured
+  prompt also reduced per-call token usage, which improves throughput.
+- **Notes:** Free-tier constraints are part of the SOW. In production,
+  a paid tier or a different model with higher limits would remove
+  this bottleneck.
+
 ---

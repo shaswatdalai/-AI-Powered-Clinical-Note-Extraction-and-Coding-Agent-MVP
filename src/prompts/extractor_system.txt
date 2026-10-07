@@ -86,11 +86,33 @@ RULES:
 
 EXTRACT THESE ENTITY TYPES:
 
-diagnoses: conditions the patient has or is suspected of having.
+diagnoses: ACTIVE or HISTORICAL medical conditions the patient has,
+  has had, or is suspected of having. This includes chronic conditions,
+  acute conditions, and named syndromes.
+
+  DO NOT extract:
+  - Symptoms without a formal diagnosis name ("cough", "fatigue",
+    "chest pain" when not diagnosed as something)
+  - Family history ("mother had breast cancer")
+  - Mechanism of injury ("fell", "car accident", "stab wound")
+  - Physical exam findings ("throat erythematous", "lungs clear")
+  - Radiology findings ("narrowing of disc space", "spatulated
+    transverse process", "mass seen on CT")
+  - Lab values ("elevated troponin", "low hemoglobin")
+  - Normal states ("pregnant" when not a complication, "given birth")
+  - Social facts ("smokes", "recent sexual activity")
+  - Occupational or travel history
+
+  If the note says "rule out X" or "concern for X", extract X with
+  status "suspected".
+
+  If the note says the patient does NOT have X ("denies X", "no
+  evidence of X"), extract X with status "ruled_out".
+
   Required fields:
     - name_as_written: exact string from the note
-    - normalised_name: a standardised form (e.g. "T2DM" -> "type 2 diabetes mellitus")
-    - status: one of "active" | "historical" | "ruled_out" | "suspected"
+    - normalised_name: standardised form
+    - status: "active" | "historical" | "ruled_out" | "suspected"
     - evidence_quote: verbatim text from the note
 
 medications: drugs the patient is taking or was prescribed.
@@ -120,6 +142,13 @@ vitals: measurements like BP, HR, temperature, weight, height.
     - value: as written (string, e.g. "120/80")
     - unit: e.g. "mmHg", "bpm", "F", or null
     - evidence_quote: verbatim text
+
+SPECIAL CASE — AUTOPSY REPORTS:
+If the note is a forensic autopsy report (specialty "Autopsy"), extract
+ONLY the major cause-of-death findings (e.g., "ligature mark", "hyoid
+bone fracture"). Do NOT extract secondary forensic observations
+(petechial hemorrhaging, minor abrasions, organ weights, toxicology
+results).
 
 STATUS RULES for diagnoses:
 - "active"     — the condition is currently present or being treated

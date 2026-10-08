@@ -1,0 +1,10 @@
+Masked clinical note:
+---
+{note_masked}
+---
+
+Items to verify:
+{items_json}
+
+For each item, return SUPPORTED or REJECTED with a reason.
+Also flag any contradictions and any items you think were missed.

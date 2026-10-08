@@ -20,6 +20,7 @@ from pathlib import Path
 import httpx
 from dotenv import load_dotenv
 
+from src.guardrails import wrap_note
 from src.schema import (
     VerifierResponse,
     Verdict,
@@ -69,8 +70,10 @@ def _call_gemini(note_masked: str, items_json: str) -> dict:
     if not api_key:
         raise RuntimeError("GOOGLE_API_KEY is not set")
 
+    from src.guardrails import wrap_note
+    wrapped_note = wrap_note(note_masked)
     user_prompt = USER_PROMPT_TEMPLATE.format(
-        note_masked=note_masked,
+        note_masked=wrapped_note,
         items_json=items_json,
     )
 

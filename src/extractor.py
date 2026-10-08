@@ -19,6 +19,7 @@ from pathlib import Path
 import httpx
 from dotenv import load_dotenv
 
+from src.guardrails import wrap_note
 from src.schema import (
     Diagnosis,
     Evidence,
@@ -70,8 +71,9 @@ def _call_groq(note_text: str) -> dict:
     if not api_key:
         raise RuntimeError("GROQ_API_KEY is not set")
 
-    user_prompt = USER_PROMPT_TEMPLATE.format(note_text=note_text)
-
+    from src.guardrails import wrap_note
+    wrapped = wrap_note(note_text)
+    user_prompt = USER_PROMPT_TEMPLATE.format(note_text=wrapped)
     response = httpx.post(
         GROQ_API_URL,
         headers={

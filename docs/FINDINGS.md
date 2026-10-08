@@ -176,4 +176,43 @@ Format per entry:
   it's explicit in the evaluation report. If a reviewer disagrees, they
   can see the reasoning and challenge it directly.
 
+  ### Verifier correctly rejects over-extracted medication (note_001)
+
+- **Severity:** note (success)
+- **Where:** `src/verifier.py` running on note_001
+- **What:** Extractor returned 5 medications including "loratadine"
+  (mentioned in the note only as a possible alternative — "Another
+  option will be to use loratadine"). The verifier rejected it as
+  "not prescribed or initiated." This is exactly the fail-closed
+  behavior the SOW requires.
+- **Action:** None. Logged as evidence the verifier is doing real work.
+- **Notes:** This is a concrete example of the extractor-verifier
+  independence providing value. Great material for the evaluation
+  report's discussion of precision vs recall trade-offs.
+
+### Verifier missed vitals on note_001
+
+- **Severity:** low (accepted)
+- **Where:** `src/verifier.py` running on note_001
+- **What:** Verifier flagged "Weight 130 lbs" and "Blood pressure
+  124/78" as missed items. These ARE in the note but the extractor
+  didn't produce them. The verifier's recall check caught the gap.
+- **Action:** Accepted as-is. The extractor's vitals are incomplete;
+  the verifier correctly identifies the gap. This is the recall-check
+  feature working as designed.
+- **Notes:** Raises the question: should missed-item verdicts feed
+  back to re-extract? That's a possible enhancement (documented as
+  deferred).
+
+### Verifier flagging "no known medicine allergies" as missed (false positive)
+
+- **Severity:** low (accepted)
+- **Where:** `src/verifier.py` running on note_001
+- **What:** The verifier listed "No known medicine allergies" as a
+  missed allergy item. This is actually correct behavior — a negation
+  is NOT an allergy to extract. The verifier incorrectly treated it
+  as a missed positive.
+- **Action:** Accepted. Documented as a verifier false-positive to
+  discuss in the evaluation report.
+
 ---

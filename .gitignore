@@ -4,8 +4,10 @@ __pycache__/
 venv/
 .venv/
 chroma_db/
+bm25_index.pkl
 *.pkl
 results/
 *.log
 .pytest_cache/
 cache/
+icd_embeddings.npy

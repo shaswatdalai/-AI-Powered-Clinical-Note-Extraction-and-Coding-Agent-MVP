@@ -1,0 +1,379 @@
+{
+  "note_id": "note_030",
+  "specialty": "Bariatrics",
+  "source_row_index": 1,
+  "diagnoses": [
+    {
+      "name_as_written": "gastroesophageal reflux disease",
+      "normalised_name": "gastroesophageal reflux disease",
+      "status": "active",
+      "span": [
+        416,
+        447
+      ],
+      "icd_code": "K21.9"
+    },
+    {
+      "name_as_written": "heart attack",
+      "normalised_name": "myocardial infarction",
+      "status": "ruled_out",
+      "span": [
+        1685,
+        1697
+      ],
+      "icd_code": "I21.9"
+    },
+    {
+      "name_as_written": "coronary artery disease",
+      "normalised_name": "coronary artery disease",
+      "status": "ruled_out",
+      "span": [
+        1699,
+        1722
+      ],
+      "icd_code": "I25.10"
+    },
+    {
+      "name_as_written": "congestive heart failure",
+      "normalised_name": "congestive heart failure",
+      "status": "ruled_out",
+      "span": [
+        1724,
+        1748
+      ],
+      "icd_code": "I50.9"
+    },
+    {
+      "name_as_written": "arrhythmia",
+      "normalised_name": "arrhythmia",
+      "status": "ruled_out",
+      "span": [
+        1750,
+        1760
+      ],
+      "icd_code": "I49.9"
+    },
+    {
+      "name_as_written": "atrial fibrillation",
+      "normalised_name": "atrial fibrillation",
+      "status": "ruled_out",
+      "span": [
+        1762,
+        1781
+      ],
+      "icd_code": "I48.91"
+    },
+    {
+      "name_as_written": "high cholesterol",
+      "normalised_name": "hypercholesterolemia",
+      "status": "ruled_out",
+      "span": [
+        1794,
+        1810
+      ],
+      "icd_code": "E78.00"
+    },
+    {
+      "name_as_written": "pulmonary embolism",
+      "normalised_name": "pulmonary embolism",
+      "status": "ruled_out",
+      "span": [
+        1812,
+        1830
+      ],
+      "icd_code": "I26.99"
+    },
+    {
+      "name_as_written": "high blood pressure",
+      "normalised_name": "hypertension",
+      "status": "ruled_out",
+      "span": [
+        1832,
+        1851
+      ],
+      "icd_code": "I10"
+    },
+    {
+      "name_as_written": "CVA",
+      "normalised_name": "cerebrovascular accident",
+      "status": "ruled_out",
+      "span": [
+        1853,
+        1856
+      ],
+      "icd_code": "I63.9"
+    },
+    {
+      "name_as_written": "venous insufficiency",
+      "normalised_name": "venous insufficiency",
+      "status": "ruled_out",
+      "span": [
+        1858,
+        1878
+      ],
+      "icd_code": "I87.2"
+    },
+    {
+      "name_as_written": "thrombophlebitis",
+      "normalised_name": "thrombophlebitis",
+      "status": "ruled_out",
+      "span": [
+        1880,
+        1896
+      ],
+      "icd_code": "I80.9"
+    },
+    {
+      "name_as_written": "asthma",
+      "normalised_name": "asthma",
+      "status": "ruled_out",
+      "span": [
+        1898,
+        1904
+      ],
+      "icd_code": "J45.909"
+    },
+    {
+      "name_as_written": "COPD",
+      "normalised_name": "chronic obstructive pulmonary disease",
+      "status": "ruled_out",
+      "span": [
+        1927,
+        1931
+      ],
+      "icd_code": "J44.9"
+    },
+    {
+      "name_as_written": "emphysema",
+      "normalised_name": "emphysema",
+      "status": "ruled_out",
+      "span": [
+        1933,
+        1942
+      ],
+      "icd_code": "J43.9"
+    },
+    {
+      "name_as_written": "sleep apnea",
+      "normalised_name": "sleep apnea",
+      "status": "ruled_out",
+      "span": [
+        1944,
+        1955
+      ],
+      "icd_code": "G47.30"
+    },
+    {
+      "name_as_written": "diabetes",
+      "normalised_name": "diabetes mellitus",
+      "status": "ruled_out",
+      "span": [
+        821,
+        829
+      ],
+      "icd_code": "E11.9"
+    },
+    {
+      "name_as_written": "osteoarthritis",
+      "normalised_name": "osteoarthritis",
+      "status": "ruled_out",
+      "span": [
+        1990,
+        2004
+      ],
+      "icd_code": "M19.90"
+    },
+    {
+      "name_as_written": "rheumatoid arthritis",
+      "normalised_name": "rheumatoid arthritis",
+      "status": "ruled_out",
+      "span": [
+        2006,
+        2026
+      ],
+      "icd_code": "M06.9"
+    },
+    {
+      "name_as_written": "hiatal hernia",
+      "normalised_name": "hiatal hernia",
+      "status": "ruled_out",
+      "span": [
+        2028,
+        2041
+      ],
+      "icd_code": "K44.9"
+    },
+    {
+      "name_as_written": "peptic ulcer disease",
+      "normalised_name": "peptic ulcer disease",
+      "status": "ruled_out",
+      "span": [
+        2043,
+        2063
+      ],
+      "icd_code": "K27.9"
+    },
+    {
+      "name_as_written": "gallstones",
+      "normalised_name": "cholelithiasis",
+      "status": "ruled_out",
+      "span": [
+        2065,
+        2075
+      ],
+      "icd_code": "K80.20"
+    },
+    {
+      "name_as_written": "infected gallbladder",
+      "normalised_name": "cholecystitis",
+      "status": "ruled_out",
+      "span": [
+        2077,
+        2097
+      ],
+      "icd_code": "K81.9"
+    },
+    {
+      "name_as_written": "pancreatitis",
+      "normalised_name": "pancreatitis",
+      "status": "ruled_out",
+      "span": [
+        2099,
+        2111
+      ],
+      "icd_code": "K85.90"
+    },
+    {
+      "name_as_written": "fatty liver",
+      "normalised_name": "fatty liver",
+      "status": "ruled_out",
+      "span": [
+        2113,
+        2124
+      ],
+      "icd_code": "K76.0"
+    },
+    {
+      "name_as_written": "hepatitis",
+      "normalised_name": "hepatitis",
+      "status": "ruled_out",
+      "span": [
+        2126,
+        2135
+      ],
+      "icd_code": "K75.9"
+    },
+    {
+      "name_as_written": "hemorrhoids",
+      "normalised_name": "hemorrhoids",
+      "status": "ruled_out",
+      "span": [
+        2137,
+        2148
+      ],
+      "icd_code": "K64.9"
+    },
+    {
+      "name_as_written": "polyps",
+      "normalised_name": "polyps",
+      "status": "ruled_out",
+      "span": [
+        2167,
+        2173
+      ],
+      "icd_code": "K63.5"
+    },
+    {
+      "name_as_written": "urinary stress incontinence",
+      "normalised_name": "stress incontinence",
+      "status": "ruled_out",
+      "span": [
+        2198,
+        2225
+      ],
+      "icd_code": "N39.3"
+    },
+    {
+      "name_as_written": "cancer",
+      "normalised_name": "cancer",
+      "status": "ruled_out",
+      "span": [
+        2230,
+        2236
+      ],
+      "icd_code": "C80.1"
+    },
+    {
+      "name_as_written": "cellulitis",
+      "normalised_name": "cellulitis",
+      "status": "ruled_out",
+      "span": [
+        2246,
+        2256
+      ],
+      "icd_code": "L03.90"
+    },
+    {
+      "name_as_written": "pseudotumor cerebri",
+      "normalised_name": "pseudotumor cerebri",
+      "status": "ruled_out",
+      "span": [
+        2258,
+        2277
+      ],
+      "icd_code": "G93.2"
+    },
+    {
+      "name_as_written": "meningitis",
+      "normalised_name": "meningitis",
+      "status": "ruled_out",
+      "span": [
+        2279,
+        2289
+      ],
+      "icd_code": "G03.9"
+    },
+    {
+      "name_as_written": "encephalitis",
+      "normalised_name": "encephalitis",
+      "status": "ruled_out",
+      "span": [
+        2294,
+        2306
+      ],
+      "icd_code": "G04.90"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "reconstructive surgery on his right hand",
+      "date": "13 years ago",
+      "span": [
+        482,
+        522
+      ]
+    }
+  ],
+  "allergies": [
+    {
+      "substance": "Penicillin",
+      "reaction": null,
+      "span": [
+        948,
+        958
+      ]
+    }
+  ],
+  "vitals": [
+    {
+      "name": "Weight",
+      "value": "312",
+      "unit": "pounds",
+      "span": [
+        1383,
+        1393
+      ]
+    }
+  ]
+}

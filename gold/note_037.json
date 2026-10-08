@@ -1,0 +1,69 @@
+{
+  "note_id": "note_037",
+  "specialty": "Diets and Nutritions",
+  "source_row_index": 3988,
+  "diagnoses": [
+    {
+      "name_as_written": "hyperlipidemia",
+      "normalised_name": "hyperlipidemia",
+      "status": "active",
+      "span": [
+        87,
+        101
+      ],
+      "icd_code": "E78.5"
+    },
+    {
+      "name_as_written": "hypertension",
+      "normalised_name": "hypertension",
+      "status": "active",
+      "span": [
+        103,
+        115
+      ],
+      "icd_code": "I10"
+    },
+    {
+      "name_as_written": "gastroesophageal reflux disease",
+      "normalised_name": "gastroesophageal reflux disease",
+      "status": "active",
+      "span": [
+        117,
+        148
+      ],
+      "icd_code": "K21.9"
+    }
+  ],
+  "medications": [],
+  "procedures": [],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "Height",
+      "value": "5 feet 4 inches",
+      "unit": null,
+      "span": [
+        650,
+        665
+      ]
+    },
+    {
+      "name": "Weight",
+      "value": "170",
+      "unit": "pounds",
+      "span": [
+        687,
+        697
+      ]
+    },
+    {
+      "name": "BMI",
+      "value": "29",
+      "unit": null,
+      "span": [
+        700,
+        723
+      ]
+    }
+  ]
+}

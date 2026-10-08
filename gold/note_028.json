@@ -1,0 +1,94 @@
+{
+  "note_id": "note_028",
+  "specialty": "Allergy / Immunology",
+  "source_row_index": 4995,
+  "diagnoses": [
+    {
+      "name_as_written": "Kawasaki disease",
+      "normalised_name": "kawasaki disease",
+      "status": "active",
+      "span": [
+        23,
+        39
+      ],
+      "icd_code": "M30.3"
+    },
+    {
+      "name_as_written": "mild arthritis",
+      "normalised_name": "arthritis",
+      "status": "active",
+      "span": [
+        257,
+        271
+      ],
+      "icd_code": "M13.90"
+    },
+    {
+      "name_as_written": "thrombocytosis",
+      "normalised_name": "thrombocytosis",
+      "status": "active",
+      "span": [
+        334,
+        348
+      ],
+      "icd_code": "D75.2"
+    }
+  ],
+  "medications": [
+    {
+      "name": "aspirin",
+      "dose": "high dose",
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        529,
+        536
+      ]
+    },
+    {
+      "name": "IVIG",
+      "dose": null,
+      "route": "IV",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        541,
+        545
+      ]
+    },
+    {
+      "name": "Prevacid",
+      "dose": "15 mg",
+      "route": "p.o.",
+      "frequency": "once a day",
+      "status": "newly_prescribed",
+      "span": [
+        1194,
+        1202
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Echocardiogram",
+      "date": null,
+      "span": [
+        548,
+        562
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "Temp",
+      "value": "102",
+      "unit": "\u00b0F",
+      "span": [
+        425,
+        428
+      ]
+    }
+  ]
+}

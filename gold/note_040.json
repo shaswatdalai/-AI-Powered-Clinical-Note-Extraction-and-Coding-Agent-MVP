@@ -1,0 +1,150 @@
+{
+  "note_id": "note_040",
+  "specialty": "Emergency Room Reports",
+  "source_row_index": 3875,
+  "diagnoses": [
+    {
+      "name_as_written": "alcohol abuse",
+      "normalised_name": "alcohol abuse",
+      "status": "active",
+      "span": [
+        462,
+        475
+      ],
+      "icd_code": "F10.10"
+    },
+    {
+      "name_as_written": "right hip fracture",
+      "normalised_name": "hip fracture",
+      "status": "historical",
+      "span": [
+        632,
+        650
+      ],
+      "icd_code": "S72.91XA"
+    },
+    {
+      "name_as_written": "hyponatremia",
+      "normalised_name": "hyponatremia",
+      "status": "active",
+      "span": [
+        2013,
+        2025
+      ],
+      "icd_code": "E87.1"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Ativan",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        198,
+        204
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "chest x-ray",
+      "date": null,
+      "span": [
+        285,
+        296
+      ]
+    },
+    {
+      "name": "appendectomy",
+      "date": null,
+      "span": [
+        618,
+        630
+      ]
+    },
+    {
+      "name": "TAH/BSO",
+      "date": null,
+      "span": [
+        676,
+        683
+      ]
+    },
+    {
+      "name": "CT scan",
+      "date": null,
+      "span": [
+        1622,
+        1629
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "Temp",
+      "value": "98.3",
+      "unit": "\u00b0F",
+      "span": [
+        952,
+        961
+      ]
+    },
+    {
+      "name": "HR",
+      "value": "82",
+      "unit": "bpm",
+      "span": [
+        963,
+        976
+      ]
+    },
+    {
+      "name": "RR",
+      "value": "24",
+      "unit": "breaths/min",
+      "span": [
+        978,
+        997
+      ]
+    },
+    {
+      "name": "BP",
+      "value": "141/70",
+      "unit": "mmHg",
+      "span": [
+        1003,
+        1024
+      ]
+    },
+    {
+      "name": "Sodium",
+      "value": "107",
+      "unit": "mEq/L",
+      "span": [
+        1501,
+        1514
+      ]
+    },
+    {
+      "name": "chloride",
+      "value": "68",
+      "unit": "mEq/L",
+      "span": [
+        1521,
+        1532
+      ]
+    },
+    {
+      "name": "potassium",
+      "value": "2.8",
+      "unit": "mEq/L",
+      "span": [
+        1537,
+        1553
+      ]
+    }
+  ]
+}

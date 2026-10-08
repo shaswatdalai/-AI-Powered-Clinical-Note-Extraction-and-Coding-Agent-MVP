@@ -1,0 +1,69 @@
+{
+  "note_id": "note_031",
+  "specialty": "Cardiovascular / Pulmonary",
+  "source_row_index": 4926,
+  "diagnoses": [],
+  "medications": [
+    {
+      "name": "papaverine",
+      "dose": null,
+      "route": "topical",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1403,
+        1413
+      ]
+    },
+    {
+      "name": "heparin",
+      "dose": null,
+      "route": "IV",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1499,
+        1510
+      ]
+    },
+    {
+      "name": "Protamine",
+      "dose": null,
+      "route": "IV",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        3303,
+        3312
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Redo coronary bypass grafting x3",
+      "date": null,
+      "span": [
+        25,
+        57
+      ]
+    },
+    {
+      "name": "Placement of a right femoral intraaortic balloon pump",
+      "date": null,
+      "span": [
+        350,
+        403
+      ]
+    },
+    {
+      "name": "Total cardiopulmonary bypass",
+      "date": null,
+      "span": [
+        244,
+        272
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

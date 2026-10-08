@@ -1,0 +1,64 @@
+{
+  "note_id": "note_035",
+  "specialty": "Dentistry",
+  "source_row_index": 14,
+  "diagnoses": [
+    {
+      "name_as_written": "Completely bony impacted teeth #1, #16, #17, and #32.",
+      "normalised_name": "impacted teeth",
+      "status": "active",
+      "span": [
+        26,
+        79
+      ],
+      "icd_code": "K01.1"
+    }
+  ],
+  "medications": [
+    {
+      "name": "lidocaine",
+      "dose": "7.2 mL of lidocaine 2%",
+      "route": "local",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        738,
+        747
+      ]
+    },
+    {
+      "name": "epinephrine",
+      "dose": "1:100,000",
+      "route": "local",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        766,
+        777
+      ]
+    },
+    {
+      "name": "bupivacaine",
+      "dose": "3.6 mL of bupivacaine 0.5%",
+      "route": "local",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        793,
+        804
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Surgical removal of completely bony impacted teeth #1, #16, #17, and #32.",
+      "date": null,
+      "span": [
+        174,
+        247
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

@@ -1,0 +1,53 @@
+{
+  "note_id": "note_033",
+  "specialty": "Consult - History and Phy.",
+  "source_row_index": 4156,
+  "diagnoses": [
+    {
+      "name_as_written": "depression",
+      "normalised_name": "depression",
+      "status": "active",
+      "span": [
+        2023,
+        2033
+      ],
+      "icd_code": "F32.9"
+    },
+    {
+      "name_as_written": "ADD",
+      "normalised_name": "attention deficit disorder",
+      "status": "historical",
+      "span": [
+        2200,
+        2203
+      ],
+      "icd_code": "F90.9"
+    },
+    {
+      "name_as_written": "substance abuse",
+      "normalised_name": "substance abuse",
+      "status": "suspected",
+      "span": [
+        3375,
+        3390
+      ],
+      "icd_code": "F19.10"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Celexa",
+      "dose": "40 mg",
+      "route": "PO",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        2183,
+        2195
+      ]
+    }
+  ],
+  "procedures": [],
+  "allergies": [],
+  "vitals": []
+}

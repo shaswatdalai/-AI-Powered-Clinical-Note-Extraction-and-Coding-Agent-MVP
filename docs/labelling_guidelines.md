@@ -138,3 +138,31 @@ When unsure about span:
 ## 11. Change log
 
 - **v1 (7 Oct 2026):** Initial version. Written before any gold notes were labelled.
+
+
+## Radiology and imaging reports
+
+When a note is primarily a radiology report (ultrasound, CT, MRI, X-ray):
+
+**DO extract as diagnoses:**
+- Named pathological findings that describe a condition:
+  - "carotid artery plaque" / "heterogeneous plaque"
+  - "stenosis" (specify location and severity if stated)
+  - "fracture", "mass", "nodule", "effusion", "consolidation"
+  - "cardiomegaly", "hepatomegaly", "splenomegaly"
+- Each anatomically distinct finding gets its own item, even if the same
+  type of finding appears on both sides.
+
+**DO NOT extract as diagnoses:**
+- Measurements and velocities ("peak systolic velocity 280 cm/sec")
+- Descriptive qualifiers alone ("mild", "moderate", "severe")
+- Normal findings ("no masses", "unremarkable")
+- Comparison statements ("stable compared to prior")
+- Impression headers ("FINDINGS:", "IMPRESSION:")
+
+**Do NOT extract peak systolic velocities as vitals.** They are
+diagnostic measurements, not patient vitals.
+
+**Multiple same-type findings on different sides** → separate items
+with separate spans (e.g. "mild heterogeneous plaque" appears twice,
+once for right and once for left; both are extracted).

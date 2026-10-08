@@ -1,0 +1,106 @@
+{
+  "note_id": "note_038",
+  "specialty": "Discharge Summary",
+  "source_row_index": 3943,
+  "diagnoses": [
+    {
+      "name_as_written": "Right pleural mass",
+      "normalised_name": "pleural mass",
+      "status": "active",
+      "span": [
+        26,
+        44
+      ],
+      "icd_code": "R22.2"
+    },
+    {
+      "name_as_written": "Mesothelioma",
+      "normalised_name": "mesothelioma",
+      "status": "active",
+      "span": [
+        73,
+        85
+      ],
+      "icd_code": "C45.0"
+    }
+  ],
+  "medications": [
+    {
+      "name": "oxygen",
+      "dose": null,
+      "route": "inhalation",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        636,
+        642
+      ]
+    },
+    {
+      "name": "albuterol",
+      "dose": null,
+      "route": "nebulizer",
+      "frequency": "q.i.d.",
+      "status": "newly_prescribed",
+      "span": [
+        679,
+        688
+      ]
+    },
+    {
+      "name": "Vicodin",
+      "dose": null,
+      "route": "PO",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        784,
+        791
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Flexible bronchoscopy",
+      "date": null,
+      "span": [
+        113,
+        134
+      ]
+    },
+    {
+      "name": "Mediastinoscopy",
+      "date": null,
+      "span": [
+        140,
+        155
+      ]
+    },
+    {
+      "name": "Right thoracotomy",
+      "date": null,
+      "span": [
+        161,
+        178
+      ]
+    },
+    {
+      "name": "Parietal pleural biopsy",
+      "date": null,
+      "span": [
+        184,
+        207
+      ]
+    },
+    {
+      "name": "chest x-ray",
+      "date": null,
+      "span": [
+        875,
+        886
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

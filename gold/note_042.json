@@ -1,0 +1,92 @@
+{
+  "note_id": "note_042",
+  "specialty": "Gastroenterology",
+  "source_row_index": 3601,
+  "diagnoses": [
+    {
+      "name_as_written": "hypodense mass in the cervix and lower uterine segment",
+      "normalised_name": "cervical and lower uterine segment mass",
+      "status": "active",
+      "span": [
+        447,
+        501
+      ],
+      "icd_code": "N88.8"
+    },
+    {
+      "name_as_written": "intramural hypodense mass involving the dorsal uterine fundus",
+      "normalised_name": "uterine fibroid",
+      "status": "suspected",
+      "span": [
+        549,
+        610
+      ],
+      "icd_code": "D25.1"
+    },
+    {
+      "name_as_written": "diverticula",
+      "normalised_name": "diverticula of colon",
+      "status": "active",
+      "span": [
+        880,
+        891
+      ],
+      "icd_code": "K57.30"
+    },
+    {
+      "name_as_written": "diverticulitis",
+      "normalised_name": "diverticulitis",
+      "status": "ruled_out",
+      "span": [
+        933,
+        947
+      ],
+      "icd_code": "K57.32"
+    },
+    {
+      "name_as_written": "calcified granulomas",
+      "normalised_name": "calcified granulomas of spleen",
+      "status": "active",
+      "span": [
+        1241,
+        1261
+      ],
+      "icd_code": "D86.9"
+    },
+    {
+      "name_as_written": "mild facet degenerative changes",
+      "normalised_name": "facet arthropathy",
+      "status": "active",
+      "span": [
+        1404,
+        1435
+      ],
+      "icd_code": "M47.817"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Isovue-300",
+      "dose": "100 mL",
+      "route": "intravenous",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        203,
+        213
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "CT examination of the abdomen and pelvis",
+      "date": null,
+      "span": [
+        8,
+        48
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

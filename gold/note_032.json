@@ -1,0 +1,156 @@
+{
+  "note_id": "note_032",
+  "specialty": "Chiropractic",
+  "source_row_index": 4610,
+  "diagnoses": [
+    {
+      "name_as_written": "sprain-thoracic",
+      "normalised_name": "thoracic sprain",
+      "status": "historical",
+      "span": [
+        7004,
+        7019
+      ],
+      "icd_code": "S23.3XXA"
+    },
+    {
+      "name_as_written": "back pain",
+      "normalised_name": "back pain",
+      "status": "active",
+      "span": [
+        693,
+        702
+      ],
+      "icd_code": "M54.5"
+    },
+    {
+      "name_as_written": "degenerative disc disease",
+      "normalised_name": "degenerative disc disease",
+      "status": "active",
+      "span": [
+        13638,
+        13663
+      ],
+      "icd_code": "M51.36"
+    },
+    {
+      "name_as_written": "Schmorl's nodes",
+      "normalised_name": "schmorl's nodes",
+      "status": "active",
+      "span": [
+        13802,
+        13817
+      ],
+      "icd_code": "M51.46"
+    },
+    {
+      "name_as_written": "psoriasis",
+      "normalised_name": "psoriasis",
+      "status": "active",
+      "span": [
+        14103,
+        14112
+      ],
+      "icd_code": "L40.9"
+    },
+    {
+      "name_as_written": "compression fractures",
+      "normalised_name": "compression fracture",
+      "status": "active",
+      "span": [
+        2778,
+        2799
+      ],
+      "icd_code": "S22.009A"
+    },
+    {
+      "name_as_written": "thoracic spine pain",
+      "normalised_name": "thoracic spine pain",
+      "status": "active",
+      "span": [
+        15916,
+        15935
+      ],
+      "icd_code": "M54.6"
+    }
+  ],
+  "medications": [
+    {
+      "name": "ibuprofen",
+      "dose": null,
+      "route": "PO",
+      "frequency": "occasional",
+      "status": "current",
+      "span": [
+        5031,
+        5040
+      ]
+    },
+    {
+      "name": "hydrocodone/acetaminophen",
+      "dose": null,
+      "route": "PO",
+      "frequency": null,
+      "status": "discontinued",
+      "span": [
+        7043,
+        7068
+      ]
+    },
+    {
+      "name": "Motrin",
+      "dose": "800 mg",
+      "route": "PO",
+      "frequency": null,
+      "status": "discontinued",
+      "span": [
+        7081,
+        7094
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "x-ray of the whole spine",
+      "date": "October 4, 2000",
+      "span": [
+        1830,
+        1854
+      ]
+    },
+    {
+      "name": "MRI",
+      "date": null,
+      "span": [
+        2461,
+        2464
+      ]
+    },
+    {
+      "name": "thoracic spine x-rays",
+      "date": "October 4, 2000",
+      "span": [
+        2631,
+        2652
+      ]
+    },
+    {
+      "name": "bone scan",
+      "date": null,
+      "span": [
+        3247,
+        3256
+      ]
+    },
+    {
+      "name": "chiropractic manipulation",
+      "date": "December 11, 2000",
+      "span": [
+        11380,
+        11405
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

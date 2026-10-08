@@ -1,0 +1,50 @@
+{
+  "note_id": "note_029",
+  "specialty": "Autopsy",
+  "source_row_index": 4990,
+  "diagnoses": [
+    {
+      "name_as_written": "Widespread bronchopneumonia",
+      "normalised_name": "bronchopneumonia",
+      "status": "active",
+      "span": [
+        9958,
+        9985
+      ],
+      "icd_code": "J18.0"
+    },
+    {
+      "name_as_written": "Tubular necrosis",
+      "normalised_name": "acute tubular necrosis",
+      "status": "active",
+      "span": [
+        10532,
+        10548
+      ],
+      "icd_code": "N17.0"
+    }
+  ],
+  "medications": [],
+  "procedures": [],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "Length",
+      "value": "62",
+      "unit": "inches",
+      "span": [
+        46,
+        53
+      ]
+    },
+    {
+      "name": "Weight",
+      "value": "112",
+      "unit": "pounds",
+      "span": [
+        55,
+        64
+      ]
+    }
+  ]
+}

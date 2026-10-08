@@ -1,0 +1,112 @@
+{
+  "note_id": "note_039",
+  "specialty": "ENT - Otolaryngology",
+  "source_row_index": 3724,
+  "diagnoses": [
+    {
+      "name_as_written": "parathyroid hyperplasia",
+      "normalised_name": "parathyroid hyperplasia",
+      "status": "active",
+      "span": [
+        141,
+        164
+      ],
+      "icd_code": "E21.0"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Tums",
+      "dose": "three Tums",
+      "route": "orally",
+      "frequency": "b.i.d.",
+      "status": "current",
+      "span": [
+        410,
+        414
+      ]
+    },
+    {
+      "name": "heparin",
+      "dose": null,
+      "route": "IV",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        518,
+        525
+      ]
+    },
+    {
+      "name": "prednisone",
+      "dose": "double her regular dose",
+      "route": "orally",
+      "frequency": "for the next five days",
+      "status": "current",
+      "span": [
+        609,
+        619
+      ]
+    },
+    {
+      "name": "Lortab Elixir",
+      "dose": "2 to 4 teaspoons",
+      "route": "orally",
+      "frequency": "every four hours p.r.n.",
+      "status": "newly_prescribed",
+      "span": [
+        912,
+        925
+      ]
+    },
+    {
+      "name": "calcium",
+      "dose": null,
+      "route": "orally",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1026,
+        1040
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "open parathyroid exploration",
+      "date": null,
+      "span": [
+        42,
+        70
+      ]
+    },
+    {
+      "name": "subtotal parathyroidectomy",
+      "date": null,
+      "span": [
+        76,
+        102
+      ]
+    },
+    {
+      "name": "intraoperative PTH monitoring",
+      "date": null,
+      "span": [
+        107,
+        136
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "calcium",
+      "value": "7.5",
+      "unit": "mg/dL",
+      "span": [
+        369,
+        372
+      ]
+    }
+  ]
+}

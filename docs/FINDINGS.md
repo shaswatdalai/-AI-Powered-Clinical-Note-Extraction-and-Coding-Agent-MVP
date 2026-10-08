@@ -215,4 +215,36 @@ Format per entry:
 - **Action:** Accepted. Documented as a verifier false-positive to
   discuss in the evaluation report.
 
+  ### Extractor fails on note_020 due to invalid medication status
+
+- **Severity:** medium (fixed pending)
+- **Where:** `src/extractor.py`, running on `data/note_020.txt`
+- **What:** The extractor LLM returned a medication whose `status` value
+  wasn't one of the three enum values (`current`, `discontinued`,
+  `newly_prescribed`). Pydantic rejected the whole response, so the note
+  was skipped entirely.
+- **Action:** Plan to add lenient parsing — normalize common status
+  variants before validation. Fallback: skip the bad item but keep the
+  rest of the note.
+- **Notes:** Free-tier Qwen sometimes returns enum-like values that
+  aren't in the specified set. Robustness against this is important
+  for the full eval (100 notes) since a single bad note cascades.
+
+  ### Extractor fails on note_020 due to invalid medication status
+
+- **Severity:** high (fixed 2026-10-09)
+- **Where:** `src/extractor.py`
+- **What:** The extractor LLM returned a medication whose `status` value
+  wasn't one of the three enum values. Pydantic rejected the whole
+  response and the note was skipped.
+- **Action:** Fixed by (1) adding a status normalization map that maps
+  LLM synonyms ("taking", "active", "past") to valid enums, and
+  (2) wrapping each item's Pydantic construction in try/except so a
+  single bad item is dropped without killing the note.
+- **Verified:** Note_020 now processes cleanly — 6 diagnoses and 3
+  medications extracted. Full eval on 27 notes completes with 0 skips.
+- **Notes:** This class of error (LLM returns a value near the enum but
+  not exactly) is common on the free-tier Qwen model. Robustness here
+  matters for the full 100-note eval.
+
 ---

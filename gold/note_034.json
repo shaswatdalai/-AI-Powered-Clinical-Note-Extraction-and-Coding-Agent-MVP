@@ -1,0 +1,71 @@
+{
+  "note_id": "note_034",
+  "specialty": "Cosmetic / Plastic Surgery",
+  "source_row_index": 4068,
+  "diagnoses": [
+    {
+      "name_as_written": "Bilateral mammary hypertrophy",
+      "normalised_name": "bilateral mammary hypertrophy",
+      "status": "active",
+      "span": [
+        26,
+        55
+      ],
+      "icd_code": "N62"
+    },
+    {
+      "name_as_written": "breast asymmetry",
+      "normalised_name": "breast asymmetry",
+      "status": "active",
+      "span": [
+        61,
+        77
+      ],
+      "icd_code": "N64.89"
+    }
+  ],
+  "medications": [
+    {
+      "name": "bacitracin",
+      "dose": null,
+      "route": "topical",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        3478,
+        3488
+      ]
+    },
+    {
+      "name": "Dermabond",
+      "dose": null,
+      "route": "topical",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        3752,
+        3761
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Bilateral reduction mammoplasty",
+      "date": null,
+      "span": [
+        234,
+        265
+      ]
+    },
+    {
+      "name": "Jackson-Pratt drain",
+      "date": null,
+      "span": [
+        3317,
+        3336
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

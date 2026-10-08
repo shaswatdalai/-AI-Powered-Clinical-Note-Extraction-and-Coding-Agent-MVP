@@ -1,0 +1,89 @@
+{
+  "note_id": "note_036",
+  "specialty": "Dermatology",
+  "source_row_index": 4015,
+  "diagnoses": [
+    {
+      "name_as_written": "Enlarging nevus of the left upper cheek.",
+      "normalised_name": "nevus of left upper cheek",
+      "status": "active",
+      "span": [
+        28,
+        68
+      ],
+      "icd_code": "D22.39"
+    },
+    {
+      "name_as_written": "Enlarging nevus 0.5 x 1 cm, left lower cheek.",
+      "normalised_name": "nevus of left lower cheek",
+      "status": "active",
+      "span": [
+        73,
+        118
+      ],
+      "icd_code": "D22.39"
+    },
+    {
+      "name_as_written": "Enlarging superficial nevus 0.5 x 1 cm, right nasal ala.",
+      "normalised_name": "superficial nevus of right nasal ala",
+      "status": "active",
+      "span": [
+        123,
+        179
+      ],
+      "icd_code": "D22.39"
+    }
+  ],
+  "medications": [
+    {
+      "name": "lidocaine",
+      "dose": "5 mL of 1%",
+      "route": "local",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        498,
+        507
+      ]
+    },
+    {
+      "name": "epinephrine",
+      "dose": "1:100,000",
+      "route": "local",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        523,
+        534
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Excision of left upper cheek skin neoplasm 0.5 x 1 cm with two layer closure.",
+      "date": null,
+      "span": [
+        205,
+        282
+      ]
+    },
+    {
+      "name": "Excision of the left lower cheek skin neoplasm 0.5 x 1 cm with a two layer plastic closure.",
+      "date": null,
+      "span": [
+        287,
+        378
+      ]
+    },
+    {
+      "name": "Shave excision of the right nasal ala 0.5 x 1 cm skin neoplasm.",
+      "date": null,
+      "span": [
+        383,
+        446
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

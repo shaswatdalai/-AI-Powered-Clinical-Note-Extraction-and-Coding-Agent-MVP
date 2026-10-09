@@ -1,0 +1,92 @@
+{
+  "note_id": "note_048",
+  "specialty": "Consult - History and Phy.",
+  "source_row_index": 4421,
+  "diagnoses": [
+    {
+      "name_as_written": "dry eyes",
+      "normalised_name": "dry eye syndrome",
+      "status": "ruled_out",
+      "span": [
+        784,
+        792
+      ],
+      "icd_code": "H04.123"
+    }
+  ],
+  "medications": [
+    {
+      "name": "amoxicillin-clavulanate",
+      "dose": "125 mg-31.25 mg",
+      "route": "tablet, chewable",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        226,
+        249
+      ]
+    },
+    {
+      "name": "Adrenocot",
+      "dose": "0.5 mg",
+      "route": "tablet",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        340,
+        349
+      ]
+    },
+    {
+      "name": "Vioxx",
+      "dose": "12.5 mg",
+      "route": "tablet",
+      "frequency": "BID",
+      "status": "current",
+      "span": [
+        421,
+        426
+      ]
+    },
+    {
+      "name": "Alphagan",
+      "dose": "0.2%",
+      "route": "ophthalmic",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1507,
+        1515
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "appendectomy",
+      "date": "1989",
+      "span": [
+        563,
+        575
+      ]
+    },
+    {
+      "name": "applanation tonometry",
+      "date": null,
+      "span": [
+        1458,
+        1479
+      ]
+    }
+  ],
+  "allergies": [
+    {
+      "substance": "aspirin",
+      "reaction": "disorientation, GI upset",
+      "span": [
+        129,
+        136
+      ]
+    }
+  ],
+  "vitals": []
+}

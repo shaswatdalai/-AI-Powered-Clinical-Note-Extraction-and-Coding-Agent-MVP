@@ -1,0 +1,250 @@
+{
+  "note_id": "note_043",
+  "specialty": "Allergy / Immunology",
+  "source_row_index": 4996,
+  "diagnoses": [
+    {
+      "name_as_written": "asthma",
+      "normalised_name": "asthma",
+      "status": "active",
+      "span": [
+        109,
+        115
+      ],
+      "icd_code": "J45.909"
+    },
+    {
+      "name_as_written": "urinary tract infection",
+      "normalised_name": "urinary tract infection",
+      "status": "historical",
+      "span": [
+        1178,
+        1201
+      ],
+      "icd_code": "N39.0"
+    },
+    {
+      "name_as_written": "allergic rhinitis",
+      "normalised_name": "allergic rhinitis",
+      "status": "active",
+      "span": [
+        1753,
+        1770
+      ],
+      "icd_code": "J30.9"
+    },
+    {
+      "name_as_written": "cervical dysplasia",
+      "normalised_name": "cervical dysplasia",
+      "status": "active",
+      "span": [
+        1775,
+        1793
+      ],
+      "icd_code": "N87.9"
+    },
+    {
+      "name_as_written": "stress incontinence",
+      "normalised_name": "stress incontinence",
+      "status": "active",
+      "span": [
+        1589,
+        1608
+      ],
+      "icd_code": "N39.3"
+    },
+    {
+      "name_as_written": "Premenstrual dysphoric disorder",
+      "normalised_name": "premenstrual dysphoric disorder",
+      "status": "active",
+      "span": [
+        3926,
+        3957
+      ],
+      "icd_code": "F32.81"
+    },
+    {
+      "name_as_written": "Hematuria",
+      "normalised_name": "hematuria",
+      "status": "active",
+      "span": [
+        4067,
+        4076
+      ],
+      "icd_code": "R31.9"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Proventil",
+      "dose": null,
+      "route": "inhaler",
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        1865,
+        1874
+      ]
+    },
+    {
+      "name": "Allegra",
+      "dose": null,
+      "route": null,
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        370,
+        377
+      ]
+    },
+    {
+      "name": "Flonase",
+      "dose": null,
+      "route": null,
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        467,
+        474
+      ]
+    },
+    {
+      "name": "Advair",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "discontinued",
+      "span": [
+        553,
+        559
+      ]
+    },
+    {
+      "name": "Flovent",
+      "dose": "44 mcg",
+      "route": "p.o.",
+      "frequency": "b.i.d.",
+      "status": "newly_prescribed",
+      "span": [
+        3408,
+        3415
+      ]
+    },
+    {
+      "name": "fluoxetine",
+      "dose": "20 mg",
+      "route": "p.o.",
+      "frequency": "q.d.",
+      "status": "newly_prescribed",
+      "span": [
+        4025,
+        4035
+      ]
+    },
+    {
+      "name": "calcium",
+      "dose": "1200 mg",
+      "route": null,
+      "frequency": "a day",
+      "status": "newly_prescribed",
+      "span": [
+        4506,
+        4513
+      ]
+    },
+    {
+      "name": "vitamin D",
+      "dose": "400 U",
+      "route": null,
+      "frequency": "a day",
+      "status": "newly_prescribed",
+      "span": [
+        4527,
+        4536
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Pap smear",
+      "date": null,
+      "span": [
+        4271,
+        4280
+      ]
+    },
+    {
+      "name": "screening mammogram",
+      "date": null,
+      "span": [
+        4401,
+        4420
+      ]
+    },
+    {
+      "name": "UA",
+      "date": null,
+      "span": [
+        4152,
+        4154
+      ]
+    }
+  ],
+  "allergies": [
+    {
+      "substance": "Sulfa",
+      "reaction": null,
+      "span": [
+        1901,
+        1906
+      ]
+    }
+  ],
+  "vitals": [
+    {
+      "name": "Weight",
+      "value": "151",
+      "unit": "pounds",
+      "span": [
+        1947,
+        1957
+      ]
+    },
+    {
+      "name": "Blood pressure",
+      "value": "110/60",
+      "unit": "mmHg",
+      "span": [
+        1978,
+        1984
+      ]
+    },
+    {
+      "name": "Pulse",
+      "value": "72",
+      "unit": "bpm",
+      "span": [
+        1987,
+        1998
+      ]
+    },
+    {
+      "name": "Temperature",
+      "value": "97.1",
+      "unit": "degrees",
+      "span": [
+        2016,
+        2028
+      ]
+    },
+    {
+      "name": "Respirations",
+      "value": "20",
+      "unit": "breaths/min",
+      "span": [
+        2031,
+        2050
+      ]
+    }
+  ]
+}

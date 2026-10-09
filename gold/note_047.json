@@ -1,0 +1,48 @@
+{
+  "note_id": "note_047",
+  "specialty": "Chiropractic",
+  "source_row_index": 4600,
+  "diagnoses": [
+    {
+      "name_as_written": "Left Chopart joint sprain",
+      "normalised_name": "chopart joint sprain",
+      "status": "active",
+      "span": [
+        2319,
+        2344
+      ],
+      "icd_code": "S93.492A"
+    },
+    {
+      "name_as_written": "fracture",
+      "normalised_name": "fracture",
+      "status": "ruled_out",
+      "span": [
+        1807,
+        1815
+      ],
+      "icd_code": "S92.909A"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "Radiographs",
+      "date": null,
+      "span": [
+        1868,
+        1879
+      ]
+    },
+    {
+      "name": "MR scan of the ankle",
+      "date": "12/01/05",
+      "span": [
+        1997,
+        2017
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

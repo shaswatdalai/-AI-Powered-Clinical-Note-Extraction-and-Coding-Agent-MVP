@@ -1,0 +1,50 @@
+{
+  "note_id": "note_057",
+  "specialty": "Gastroenterology",
+  "source_row_index": 3578,
+  "diagnoses": [
+    {
+      "name_as_written": "Anemia",
+      "normalised_name": "anemia",
+      "status": "active",
+      "span": [
+        26,
+        32
+      ],
+      "icd_code": "D64.9"
+    },
+    {
+      "name_as_written": "Severe duodenitis",
+      "normalised_name": "duodenitis",
+      "status": "active",
+      "span": [
+        110,
+        127
+      ],
+      "icd_code": "K29.80"
+    },
+    {
+      "name_as_written": "ulceration",
+      "normalised_name": "gastroesophageal junction ulcer",
+      "status": "active",
+      "span": [
+        165,
+        175
+      ],
+      "icd_code": "K22.10"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "Upper gastrointestinal endoscopy",
+      "date": null,
+      "span": [
+        47,
+        79
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

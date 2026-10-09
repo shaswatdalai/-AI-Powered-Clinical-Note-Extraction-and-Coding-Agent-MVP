@@ -1,0 +1,46 @@
+{
+  "note_id": "note_049",
+  "specialty": "Cosmetic / Plastic Surgery",
+  "source_row_index": 4067,
+  "diagnoses": [
+    {
+      "name_as_written": "Bilateral macromastia",
+      "normalised_name": "macromastia",
+      "status": "active",
+      "span": [
+        23,
+        44
+      ],
+      "icd_code": "N62"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "Bilateral reduction mammoplasty",
+      "date": null,
+      "span": [
+        103,
+        134
+      ]
+    },
+    {
+      "name": "mammogram",
+      "date": null,
+      "span": [
+        2283,
+        2292
+      ]
+    },
+    {
+      "name": "suction lipectomy",
+      "date": null,
+      "span": [
+        2989,
+        3006
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

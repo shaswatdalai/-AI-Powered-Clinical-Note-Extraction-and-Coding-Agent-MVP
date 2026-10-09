@@ -1,0 +1,126 @@
+{
+  "note_id": "note_053",
+  "specialty": "Discharge Summary",
+  "source_row_index": 3910,
+  "diagnoses": [
+    {
+      "name_as_written": "Microinvasive carcinoma of the cervix",
+      "normalised_name": "cervical carcinoma",
+      "status": "active",
+      "span": [
+        23,
+        60
+      ],
+      "icd_code": "C53.9"
+    },
+    {
+      "name_as_written": "cystotomy",
+      "normalised_name": "intraoperative bladder injury",
+      "status": "active",
+      "span": [
+        1232,
+        1241
+      ],
+      "icd_code": "N99.820"
+    },
+    {
+      "name_as_written": "urinary tract infection",
+      "normalised_name": "urinary tract infection",
+      "status": "active",
+      "span": [
+        1723,
+        1746
+      ],
+      "icd_code": "N39.0"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Vicodin",
+      "dose": null,
+      "route": "PO",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        1675,
+        1682
+      ]
+    },
+    {
+      "name": "Motrin",
+      "dose": null,
+      "route": "PO",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        1684,
+        1690
+      ]
+    },
+    {
+      "name": "Macrodantin",
+      "dose": null,
+      "route": "PO",
+      "frequency": "at bedtime",
+      "status": "newly_prescribed",
+      "span": [
+        1696,
+        1707
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Total vaginal hysterectomy",
+      "date": "04/02/2007",
+      "span": [
+        147,
+        173
+      ]
+    },
+    {
+      "name": "tubal ligation",
+      "date": null,
+      "span": [
+        303,
+        317
+      ]
+    },
+    {
+      "name": "cone biopsy",
+      "date": "02/12/2007",
+      "span": [
+        472,
+        483
+      ]
+    },
+    {
+      "name": "Chest x-ray",
+      "date": null,
+      "span": [
+        1012,
+        1023
+      ]
+    },
+    {
+      "name": "Pap smear",
+      "date": "80s",
+      "span": [
+        340,
+        349
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "hemoglobin",
+      "value": "10.8",
+      "unit": "g/dL",
+      "span": [
+        1046,
+        1061
+      ]
+    }
+  ]
+}

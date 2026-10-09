@@ -1,0 +1,94 @@
+{
+  "note_id": "note_052",
+  "specialty": "Diets and Nutritions",
+  "source_row_index": 3993,
+  "diagnoses": [
+    {
+      "name_as_written": "lipids are elevated",
+      "normalised_name": "hyperlipidemia",
+      "status": "active",
+      "span": [
+        201,
+        220
+      ],
+      "icd_code": "E78.5"
+    }
+  ],
+  "medications": [],
+  "procedures": [],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "Height",
+      "value": "6 foot 2 inches",
+      "unit": null,
+      "span": [
+        659,
+        674
+      ]
+    },
+    {
+      "name": "Weight",
+      "value": "204",
+      "unit": "pounds",
+      "span": [
+        686,
+        696
+      ]
+    },
+    {
+      "name": "BMI",
+      "value": "26.189",
+      "unit": null,
+      "span": [
+        836,
+        842
+      ]
+    },
+    {
+      "name": "Cholesterol",
+      "value": "251",
+      "unit": "mg/dL",
+      "span": [
+        884,
+        901
+      ]
+    },
+    {
+      "name": "LDL",
+      "value": "166",
+      "unit": "mg/dL",
+      "span": [
+        904,
+        913
+      ]
+    },
+    {
+      "name": "VLDL",
+      "value": "17",
+      "unit": "mg/dL",
+      "span": [
+        916,
+        925
+      ]
+    },
+    {
+      "name": "HDL",
+      "value": "68",
+      "unit": "mg/dL",
+      "span": [
+        928,
+        936
+      ]
+    },
+    {
+      "name": "Triglycerides",
+      "value": "87",
+      "unit": "mg/dL",
+      "span": [
+        939,
+        957
+      ]
+    }
+  ]
+}

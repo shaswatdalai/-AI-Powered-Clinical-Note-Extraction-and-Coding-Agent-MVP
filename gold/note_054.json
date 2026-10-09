@@ -1,0 +1,141 @@
+{
+  "note_id": "note_054",
+  "specialty": "ENT - Otolaryngology",
+  "source_row_index": 3733,
+  "diagnoses": [
+    {
+      "name_as_written": "Nasal septal deviation",
+      "normalised_name": "deviated nasal septum",
+      "status": "active",
+      "span": [
+        27,
+        49
+      ],
+      "icd_code": "J34.2"
+    },
+    {
+      "name_as_written": "bilateral inferior turbinate hypertrophy",
+      "normalised_name": "hypertrophy of nasal turbinates",
+      "status": "active",
+      "span": [
+        55,
+        95
+      ],
+      "icd_code": "J34.3"
+    },
+    {
+      "name_as_written": "Tonsillitis with hypertrophy",
+      "normalised_name": "tonsillitis with hypertrophy",
+      "status": "active",
+      "span": [
+        101,
+        129
+      ],
+      "icd_code": "J35.01"
+    },
+    {
+      "name_as_written": "Edema to the uvula and soft palate",
+      "normalised_name": "uvular and soft palate edema",
+      "status": "active",
+      "span": [
+        135,
+        169
+      ],
+      "icd_code": "K12.2"
+    },
+    {
+      "name_as_written": "tonsillolith",
+      "normalised_name": "tonsillolith",
+      "status": "active",
+      "span": [
+        742,
+        754
+      ],
+      "icd_code": "J35.8"
+    },
+    {
+      "name_as_written": "halitosis",
+      "normalised_name": "halitosis",
+      "status": "active",
+      "span": [
+        759,
+        768
+      ],
+      "icd_code": "R19.6"
+    }
+  ],
+  "medications": [
+    {
+      "name": "lidocaine",
+      "dose": "1%",
+      "route": "local",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        1204,
+        1213
+      ]
+    },
+    {
+      "name": "epinephrine",
+      "dose": "1:100,000",
+      "route": "local",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        1229,
+        1240
+      ]
+    },
+    {
+      "name": "Afrin",
+      "dose": null,
+      "route": "topical",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        1269,
+        1274
+      ]
+    },
+    {
+      "name": "bacitracin",
+      "dose": null,
+      "route": "topical",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        2309,
+        2319
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Nasal septoplasty",
+      "date": null,
+      "span": [
+        367,
+        384
+      ]
+    },
+    {
+      "name": "Bilateral submucous resection of the inferior turbinates",
+      "date": null,
+      "span": [
+        390,
+        446
+      ]
+    },
+    {
+      "name": "Tonsillectomy and resection of soft palate",
+      "date": null,
+      "span": [
+        452,
+        494
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

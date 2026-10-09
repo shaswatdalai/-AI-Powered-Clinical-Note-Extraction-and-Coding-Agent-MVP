@@ -1,0 +1,275 @@
+{
+  "note_id": "note_056",
+  "specialty": "Endocrinology",
+  "source_row_index": 3793,
+  "diagnoses": [
+    {
+      "name_as_written": "pneumonitis",
+      "normalised_name": "pneumonitis",
+      "status": "active",
+      "span": [
+        778,
+        789
+      ],
+      "icd_code": "J18.9"
+    },
+    {
+      "name_as_written": "left adrenal nodule",
+      "normalised_name": "adrenal adenoma",
+      "status": "suspected",
+      "span": [
+        806,
+        825
+      ],
+      "icd_code": "D35.02"
+    },
+    {
+      "name_as_written": "pancreatic lesion",
+      "normalised_name": "pancreatic cystic lesion",
+      "status": "active",
+      "span": [
+        207,
+        224
+      ],
+      "icd_code": "K86.89"
+    },
+    {
+      "name_as_written": "adenomatous polyps",
+      "normalised_name": "adenomatous colon polyps",
+      "status": "historical",
+      "span": [
+        1513,
+        1531
+      ],
+      "icd_code": "D12.6"
+    },
+    {
+      "name_as_written": "hypertension",
+      "normalised_name": "hypertension",
+      "status": "active",
+      "span": [
+        1783,
+        1795
+      ],
+      "icd_code": "I10"
+    },
+    {
+      "name_as_written": "type 2 diabetes mellitus",
+      "normalised_name": "type 2 diabetes mellitus",
+      "status": "active",
+      "span": [
+        1797,
+        1821
+      ],
+      "icd_code": "E11.9"
+    },
+    {
+      "name_as_written": "asthma",
+      "normalised_name": "asthma",
+      "status": "active",
+      "span": [
+        1823,
+        1829
+      ],
+      "icd_code": "J45.909"
+    },
+    {
+      "name_as_written": "high cholesterol",
+      "normalised_name": "hypercholesterolemia",
+      "status": "active",
+      "span": [
+        1835,
+        1851
+      ],
+      "icd_code": "E78.00"
+    },
+    {
+      "name_as_written": "obese",
+      "normalised_name": "obesity",
+      "status": "active",
+      "span": [
+        2912,
+        2917
+      ],
+      "icd_code": "E66.9"
+    },
+    {
+      "name_as_written": "bleeding disorders",
+      "normalised_name": "coagulation defect",
+      "status": "ruled_out",
+      "span": [
+        2825,
+        2843
+      ],
+      "icd_code": "D68.9"
+    }
+  ],
+  "medications": [
+    {
+      "name": "glipizide",
+      "dose": "5 mg",
+      "route": "PO",
+      "frequency": "b.i.d.",
+      "status": "current",
+      "span": [
+        1904,
+        1913
+      ]
+    },
+    {
+      "name": "metformin",
+      "dose": "500 mg",
+      "route": "PO",
+      "frequency": "b.i.d.",
+      "status": "current",
+      "span": [
+        1927,
+        1936
+      ]
+    },
+    {
+      "name": "Atacand",
+      "dose": "16 mg",
+      "route": "PO",
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        1952,
+        1959
+      ]
+    },
+    {
+      "name": "metoprolol",
+      "dose": "25 mg",
+      "route": "PO",
+      "frequency": "b.i.d.",
+      "status": "current",
+      "span": [
+        1973,
+        1983
+      ]
+    },
+    {
+      "name": "Lipitor",
+      "dose": "10 mg",
+      "route": "PO",
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        1998,
+        2005
+      ]
+    },
+    {
+      "name": "pantoprazole",
+      "dose": "40 mg",
+      "route": "PO",
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        2019,
+        2031
+      ]
+    },
+    {
+      "name": "Flomax",
+      "dose": "0.4 mg",
+      "route": "PO",
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        2045,
+        2051
+      ]
+    },
+    {
+      "name": "Detrol",
+      "dose": "4 mg",
+      "route": "PO",
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        2066,
+        2072
+      ]
+    },
+    {
+      "name": "Zyrtec",
+      "dose": "10 mg",
+      "route": "PO",
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        2085,
+        2091
+      ]
+    },
+    {
+      "name": "Advair Diskus",
+      "dose": "100/50 mcg",
+      "route": "inhalation",
+      "frequency": "one puff b.i.d.",
+      "status": "current",
+      "span": [
+        2105,
+        2118
+      ]
+    },
+    {
+      "name": "fluticasone spray",
+      "dose": "50 mcg",
+      "route": "nasal",
+      "frequency": "two sprays daily",
+      "status": "current",
+      "span": [
+        2151,
+        2168
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "CAT scan",
+      "date": null,
+      "span": [
+        707,
+        715
+      ]
+    },
+    {
+      "name": "MRI",
+      "date": null,
+      "span": [
+        926,
+        929
+      ]
+    },
+    {
+      "name": "colonoscopy",
+      "date": "September of last year",
+      "span": [
+        1447,
+        1458
+      ]
+    },
+    {
+      "name": "esophagogastroduodenoscopy",
+      "date": null,
+      "span": [
+        4250,
+        4276
+      ]
+    }
+  ],
+  "allergies": [
+    {
+      "substance": "ENVIRONMENTAL",
+      "reaction": null,
+      "span": [
+        1866,
+        1879
+      ]
+    }
+  ],
+  "vitals": []
+}

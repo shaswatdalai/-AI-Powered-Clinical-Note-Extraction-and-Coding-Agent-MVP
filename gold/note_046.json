@@ -1,0 +1,72 @@
+{
+  "note_id": "note_046",
+  "specialty": "Cardiovascular / Pulmonary",
+  "source_row_index": 4949,
+  "diagnoses": [
+    {
+      "name_as_written": "Bronchiolitis",
+      "normalised_name": "bronchiolitis",
+      "status": "active",
+      "span": [
+        15,
+        28
+      ],
+      "icd_code": "J21.0"
+    },
+    {
+      "name_as_written": "respiratory syncytial virus",
+      "normalised_name": "respiratory syncytial virus infection",
+      "status": "active",
+      "span": [
+        30,
+        57
+      ],
+      "icd_code": "B97.4"
+    },
+    {
+      "name_as_written": "Innocent heart murmur",
+      "normalised_name": "innocent heart murmur",
+      "status": "active",
+      "span": [
+        93,
+        114
+      ],
+      "icd_code": "R01.0"
+    }
+  ],
+  "medications": [
+    {
+      "name": "albuterol",
+      "dose": null,
+      "route": "inhalation",
+      "frequency": "as needed",
+      "status": "current",
+      "span": [
+        1420,
+        1429
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "chest x-ray",
+      "date": null,
+      "span": [
+        802,
+        813
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "Weight",
+      "value": "3.346",
+      "unit": "kg",
+      "span": [
+        2566,
+        2574
+      ]
+    }
+  ]
+}

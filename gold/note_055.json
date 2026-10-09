@@ -1,0 +1,322 @@
+{
+  "note_id": "note_055",
+  "specialty": "Emergency Room Reports",
+  "source_row_index": 3836,
+  "diagnoses": [
+    {
+      "name_as_written": "pneumonia",
+      "normalised_name": "pneumonia",
+      "status": "historical",
+      "span": [
+        132,
+        141
+      ],
+      "icd_code": "J18.9"
+    },
+    {
+      "name_as_written": "CHF",
+      "normalised_name": "congestive heart failure",
+      "status": "active",
+      "span": [
+        146,
+        149
+      ],
+      "icd_code": "I50.9"
+    },
+    {
+      "name_as_written": "atrial fibrillation",
+      "normalised_name": "atrial fibrillation",
+      "status": "active",
+      "span": [
+        177,
+        196
+      ],
+      "icd_code": "I48.91"
+    },
+    {
+      "name_as_written": "Renal insufficiency",
+      "normalised_name": "renal insufficiency",
+      "status": "active",
+      "span": [
+        690,
+        709
+      ],
+      "icd_code": "N18.9"
+    },
+    {
+      "name_as_written": "Coronary artery disease",
+      "normalised_name": "coronary artery disease",
+      "status": "active",
+      "span": [
+        715,
+        738
+      ],
+      "icd_code": "I25.10"
+    },
+    {
+      "name_as_written": "COPD",
+      "normalised_name": "chronic obstructive pulmonary disease",
+      "status": "active",
+      "span": [
+        769,
+        773
+      ],
+      "icd_code": "J44.9"
+    },
+    {
+      "name_as_written": "Bladder cancer",
+      "normalised_name": "bladder cancer",
+      "status": "active",
+      "span": [
+        801,
+        815
+      ],
+      "icd_code": "C67.9"
+    },
+    {
+      "name_as_written": "ruptured colon",
+      "normalised_name": "colon rupture",
+      "status": "historical",
+      "span": [
+        832,
+        846
+      ],
+      "icd_code": "K63.1"
+    },
+    {
+      "name_as_written": "Myocardial infarction",
+      "normalised_name": "myocardial infarction",
+      "status": "historical",
+      "span": [
+        852,
+        873
+      ],
+      "icd_code": "I21.9"
+    },
+    {
+      "name_as_written": "Coagulopathy",
+      "normalised_name": "anticoagulant-induced coagulopathy",
+      "status": "active",
+      "span": [
+        1569,
+        1581
+      ],
+      "icd_code": "D68.32"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Coumadin",
+      "dose": null,
+      "route": "PO",
+      "frequency": null,
+      "status": "discontinued",
+      "span": [
+        260,
+        268
+      ]
+    },
+    {
+      "name": "Simvastatin",
+      "dose": null,
+      "route": "PO",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        994,
+        1005
+      ]
+    },
+    {
+      "name": "Nitrofurantoin",
+      "dose": null,
+      "route": "PO",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1011,
+        1025
+      ]
+    },
+    {
+      "name": "Celebrex",
+      "dose": null,
+      "route": "PO",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1031,
+        1039
+      ]
+    },
+    {
+      "name": "Digoxin",
+      "dose": null,
+      "route": "PO",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1045,
+        1052
+      ]
+    },
+    {
+      "name": "Levothyroxine",
+      "dose": null,
+      "route": "PO",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1058,
+        1071
+      ]
+    },
+    {
+      "name": "Vicodin",
+      "dose": null,
+      "route": "PO",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1077,
+        1084
+      ]
+    },
+    {
+      "name": "Triamterene",
+      "dose": null,
+      "route": "PO",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1090,
+        1101
+      ]
+    },
+    {
+      "name": "hydrochlorothiazide",
+      "dose": null,
+      "route": "PO",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1106,
+        1125
+      ]
+    },
+    {
+      "name": "Carvedilol",
+      "dose": null,
+      "route": "PO",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1131,
+        1141
+      ]
+    },
+    {
+      "name": "vitamin K",
+      "dose": "10 mg in 100 mL of D5W",
+      "route": "IV",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        592,
+        601
+      ]
+    },
+    {
+      "name": "aspirin",
+      "dose": "one",
+      "route": "PO",
+      "frequency": "a day",
+      "status": "newly_prescribed",
+      "span": [
+        2108,
+        2115
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Hernia repair",
+      "date": null,
+      "span": [
+        880,
+        893
+      ]
+    },
+    {
+      "name": "Colon resection",
+      "date": null,
+      "span": [
+        900,
+        915
+      ]
+    },
+    {
+      "name": "Carpal tunnel repair",
+      "date": null,
+      "span": [
+        922,
+        942
+      ]
+    },
+    {
+      "name": "Knee surgery",
+      "date": null,
+      "span": [
+        949,
+        961
+      ]
+    },
+    {
+      "name": "PT/INR",
+      "date": null,
+      "span": [
+        34,
+        40
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "Blood pressure",
+      "value": "100/46",
+      "unit": "mmHg",
+      "span": [
+        1286,
+        1292
+      ]
+    },
+    {
+      "name": "Pulse",
+      "value": "75",
+      "unit": "bpm",
+      "span": [
+        1294,
+        1305
+      ]
+    },
+    {
+      "name": "Respirations",
+      "value": "12",
+      "unit": "breaths/min",
+      "span": [
+        1307,
+        1322
+      ]
+    },
+    {
+      "name": "Temperature",
+      "value": "98.2",
+      "unit": "\u00b0F",
+      "span": [
+        1340,
+        1344
+      ]
+    }
+  ]
+}

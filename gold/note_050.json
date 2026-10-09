@@ -1,0 +1,189 @@
+{
+  "note_id": "note_050",
+  "specialty": "Dentistry",
+  "source_row_index": 4022,
+  "diagnoses": [
+    {
+      "name_as_written": "ODONTALGIA",
+      "normalised_name": "odontalgia",
+      "status": "active",
+      "span": [
+        4499,
+        4509
+      ],
+      "icd_code": "K08.89"
+    },
+    {
+      "name_as_written": "MULTIPLE DENTAL CARIES",
+      "normalised_name": "dental caries",
+      "status": "active",
+      "span": [
+        4515,
+        4537
+      ],
+      "icd_code": "K02.9"
+    },
+    {
+      "name_as_written": "Ludwig's syndrome",
+      "normalised_name": "ludwig angina",
+      "status": "ruled_out",
+      "span": [
+        3655,
+        3672
+      ],
+      "icd_code": "K12.2"
+    },
+    {
+      "name_as_written": "dental fractures",
+      "normalised_name": "tooth fracture",
+      "status": "ruled_out",
+      "span": [
+        3396,
+        3412
+      ],
+      "icd_code": "M27.88"
+    },
+    {
+      "name_as_written": "abscess",
+      "normalised_name": "periapical abscess",
+      "status": "ruled_out",
+      "span": [
+        3369,
+        3376
+      ],
+      "icd_code": "K04.7"
+    }
+  ],
+  "medications": [
+    {
+      "name": "OxyContin",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        701,
+        710
+      ]
+    },
+    {
+      "name": "Vicodin",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        715,
+        722
+      ]
+    },
+    {
+      "name": "Dilaudid",
+      "dose": "4 mg",
+      "route": "IM",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        4434,
+        4442
+      ]
+    },
+    {
+      "name": "Percocet",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        4858,
+        4866
+      ]
+    },
+    {
+      "name": "clindamycin",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        4871,
+        4882
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "teeth pulled",
+      "date": null,
+      "span": [
+        188,
+        200
+      ]
+    }
+  ],
+  "allergies": [
+    {
+      "substance": "PENICILLIN",
+      "reaction": null,
+      "span": [
+        1860,
+        1870
+      ]
+    },
+    {
+      "substance": "CODEINE",
+      "reaction": null,
+      "span": [
+        1875,
+        1882
+      ]
+    }
+  ],
+  "vitals": [
+    {
+      "name": "Temperature",
+      "value": "97.9",
+      "unit": "\u00b0F",
+      "span": [
+        1983,
+        1987
+      ]
+    },
+    {
+      "name": "Blood pressure",
+      "value": "146/83",
+      "unit": "mmHg",
+      "span": [
+        2012,
+        2018
+      ]
+    },
+    {
+      "name": "Pulse",
+      "value": "74",
+      "unit": "bpm",
+      "span": [
+        2020,
+        2031
+      ]
+    },
+    {
+      "name": "Respirations",
+      "value": "16",
+      "unit": "breaths/min",
+      "span": [
+        2033,
+        2048
+      ]
+    },
+    {
+      "name": "O2 sat",
+      "value": "98%",
+      "unit": "%",
+      "span": [
+        2068,
+        2071
+      ]
+    }
+  ]
+}

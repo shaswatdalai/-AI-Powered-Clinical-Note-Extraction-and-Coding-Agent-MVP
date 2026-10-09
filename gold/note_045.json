@@ -1,0 +1,461 @@
+{
+  "note_id": "note_045",
+  "specialty": "Bariatrics",
+  "source_row_index": 2,
+  "diagnoses": [
+    {
+      "name_as_written": "overweight",
+      "normalised_name": "overweight",
+      "status": "active",
+      "span": [
+        166,
+        176
+      ],
+      "icd_code": "E66.3"
+    },
+    {
+      "name_as_written": "high cholesterol",
+      "normalised_name": "hypercholesterolemia",
+      "status": "active",
+      "span": [
+        1045,
+        1061
+      ],
+      "icd_code": "E78.00"
+    },
+    {
+      "name_as_written": "high blood pressure",
+      "normalised_name": "hypertension",
+      "status": "active",
+      "span": [
+        1067,
+        1086
+      ],
+      "icd_code": "I10"
+    },
+    {
+      "name_as_written": "asthma",
+      "normalised_name": "asthma",
+      "status": "active",
+      "span": [
+        1096,
+        1102
+      ],
+      "icd_code": "J45.909"
+    },
+    {
+      "name_as_written": "sleep apnea",
+      "normalised_name": "sleep apnea",
+      "status": "active",
+      "span": [
+        1174,
+        1185
+      ],
+      "icd_code": "G47.30"
+    },
+    {
+      "name_as_written": "diabetic",
+      "normalised_name": "diabetes mellitus",
+      "status": "active",
+      "span": [
+        1208,
+        1216
+      ],
+      "icd_code": "E11.9"
+    },
+    {
+      "name_as_written": "hemorrhoids",
+      "normalised_name": "hemorrhoids",
+      "status": "active",
+      "span": [
+        1327,
+        1338
+      ],
+      "icd_code": "K64.9"
+    },
+    {
+      "name_as_written": "gout",
+      "normalised_name": "gout",
+      "status": "active",
+      "span": [
+        2642,
+        2646
+      ],
+      "icd_code": "M10.9"
+    },
+    {
+      "name_as_written": "heart attack",
+      "normalised_name": "myocardial infarction",
+      "status": "ruled_out",
+      "span": [
+        1915,
+        1927
+      ],
+      "icd_code": "I21.9"
+    },
+    {
+      "name_as_written": "coronary artery disease",
+      "normalised_name": "coronary artery disease",
+      "status": "ruled_out",
+      "span": [
+        2685,
+        2708
+      ],
+      "icd_code": "I25.10"
+    },
+    {
+      "name_as_written": "congestive heart failure",
+      "normalised_name": "congestive heart failure",
+      "status": "ruled_out",
+      "span": [
+        2710,
+        2734
+      ],
+      "icd_code": "I50.9"
+    },
+    {
+      "name_as_written": "arrhythmia",
+      "normalised_name": "arrhythmia",
+      "status": "ruled_out",
+      "span": [
+        2736,
+        2746
+      ],
+      "icd_code": "I49.9"
+    },
+    {
+      "name_as_written": "atrial fibrillation",
+      "normalised_name": "atrial fibrillation",
+      "status": "ruled_out",
+      "span": [
+        2748,
+        2767
+      ],
+      "icd_code": "I48.91"
+    },
+    {
+      "name_as_written": "pulmonary embolism",
+      "normalised_name": "pulmonary embolism",
+      "status": "ruled_out",
+      "span": [
+        2780,
+        2798
+      ],
+      "icd_code": "I26.99"
+    },
+    {
+      "name_as_written": "CVA",
+      "normalised_name": "cerebrovascular accident",
+      "status": "ruled_out",
+      "span": [
+        2803,
+        2806
+      ],
+      "icd_code": "I63.9"
+    },
+    {
+      "name_as_written": "venous insufficiency",
+      "normalised_name": "venous insufficiency",
+      "status": "ruled_out",
+      "span": [
+        2819,
+        2839
+      ],
+      "icd_code": "I87.2"
+    },
+    {
+      "name_as_written": "thrombophlebitis",
+      "normalised_name": "thrombophlebitis",
+      "status": "ruled_out",
+      "span": [
+        2843,
+        2859
+      ],
+      "icd_code": "I80.9"
+    },
+    {
+      "name_as_written": "COPD",
+      "normalised_name": "chronic obstructive pulmonary disease",
+      "status": "ruled_out",
+      "span": [
+        2890,
+        2894
+      ],
+      "icd_code": "J44.9"
+    },
+    {
+      "name_as_written": "emphysema",
+      "normalised_name": "emphysema",
+      "status": "ruled_out",
+      "span": [
+        2899,
+        2908
+      ],
+      "icd_code": "J43.9"
+    },
+    {
+      "name_as_written": "osteoarthritis",
+      "normalised_name": "osteoarthritis",
+      "status": "ruled_out",
+      "span": [
+        2946,
+        2960
+      ],
+      "icd_code": "M19.90"
+    },
+    {
+      "name_as_written": "rheumatoid arthritis",
+      "normalised_name": "rheumatoid arthritis",
+      "status": "ruled_out",
+      "span": [
+        2962,
+        2982
+      ],
+      "icd_code": "M06.9"
+    },
+    {
+      "name_as_written": "GERD",
+      "normalised_name": "gastroesophageal reflux disease",
+      "status": "ruled_out",
+      "span": [
+        2984,
+        2988
+      ],
+      "icd_code": "K21.9"
+    },
+    {
+      "name_as_written": "hiatal hernia",
+      "normalised_name": "hiatal hernia",
+      "status": "ruled_out",
+      "span": [
+        2990,
+        3003
+      ],
+      "icd_code": "K44.9"
+    },
+    {
+      "name_as_written": "peptic ulcer disease",
+      "normalised_name": "peptic ulcer disease",
+      "status": "ruled_out",
+      "span": [
+        3005,
+        3025
+      ],
+      "icd_code": "K27.9"
+    },
+    {
+      "name_as_written": "gallstones",
+      "normalised_name": "cholelithiasis",
+      "status": "ruled_out",
+      "span": [
+        3027,
+        3037
+      ],
+      "icd_code": "K80.20"
+    },
+    {
+      "name_as_written": "infected gallbladder",
+      "normalised_name": "cholecystitis",
+      "status": "ruled_out",
+      "span": [
+        3039,
+        3059
+      ],
+      "icd_code": "K81.9"
+    },
+    {
+      "name_as_written": "pancreatitis",
+      "normalised_name": "pancreatitis",
+      "status": "ruled_out",
+      "span": [
+        3061,
+        3073
+      ],
+      "icd_code": "K85.90"
+    },
+    {
+      "name_as_written": "fatty liver",
+      "normalised_name": "fatty liver",
+      "status": "ruled_out",
+      "span": [
+        3075,
+        3086
+      ],
+      "icd_code": "K76.0"
+    },
+    {
+      "name_as_written": "hepatitis",
+      "normalised_name": "hepatitis",
+      "status": "ruled_out",
+      "span": [
+        3088,
+        3097
+      ],
+      "icd_code": "K75.9"
+    },
+    {
+      "name_as_written": "polyps",
+      "normalised_name": "polyps",
+      "status": "ruled_out",
+      "span": [
+        3116,
+        3122
+      ],
+      "icd_code": "K63.5"
+    },
+    {
+      "name_as_written": "urinary stress incontinence",
+      "normalised_name": "stress incontinence",
+      "status": "ruled_out",
+      "span": [
+        3147,
+        3174
+      ],
+      "icd_code": "N39.3"
+    },
+    {
+      "name_as_written": "cancer",
+      "normalised_name": "cancer",
+      "status": "ruled_out",
+      "span": [
+        3179,
+        3185
+      ],
+      "icd_code": "C80.1"
+    },
+    {
+      "name_as_written": "cellulitis",
+      "normalised_name": "cellulitis",
+      "status": "ruled_out",
+      "span": [
+        3198,
+        3208
+      ],
+      "icd_code": "L03.90"
+    },
+    {
+      "name_as_written": "pseudotumor cerebri",
+      "normalised_name": "pseudotumor cerebri",
+      "status": "ruled_out",
+      "span": [
+        3210,
+        3229
+      ],
+      "icd_code": "G93.2"
+    },
+    {
+      "name_as_written": "meningitis",
+      "normalised_name": "meningitis",
+      "status": "ruled_out",
+      "span": [
+        3231,
+        3241
+      ],
+      "icd_code": "G03.9"
+    },
+    {
+      "name_as_written": "encephalitis",
+      "normalised_name": "encephalitis",
+      "status": "ruled_out",
+      "span": [
+        3246,
+        3258
+      ],
+      "icd_code": "G04.90"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Diovan",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1810,
+        1816
+      ]
+    },
+    {
+      "name": "Crestor",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1818,
+        1825
+      ]
+    },
+    {
+      "name": "Tricor",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1831,
+        1837
+      ]
+    },
+    {
+      "name": "Chantix",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        2065,
+        2072
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "orthopedic or knee surgery",
+      "date": null,
+      "span": [
+        1374,
+        1400
+      ]
+    },
+    {
+      "name": "sleep study",
+      "date": null,
+      "span": [
+        4193,
+        4204
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "Weight",
+      "value": "344",
+      "unit": "pounds",
+      "span": [
+        107,
+        117
+      ]
+    },
+    {
+      "name": "Height",
+      "value": "5'9\"",
+      "unit": null,
+      "span": [
+        126,
+        130
+      ]
+    },
+    {
+      "name": "BMI",
+      "value": "51",
+      "unit": null,
+      "span": [
+        142,
+        151
+      ]
+    }
+  ]
+}

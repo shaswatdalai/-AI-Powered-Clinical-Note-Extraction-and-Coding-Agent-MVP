@@ -1,0 +1,53 @@
+{
+  "note_id": "note_051",
+  "specialty": "Dermatology",
+  "source_row_index": 4020,
+  "diagnoses": [
+    {
+      "name_as_written": "first and second degree burns",
+      "normalised_name": "first and second degree burns",
+      "status": "active",
+      "span": [
+        638,
+        667
+      ],
+      "icd_code": "T22.20XA"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Neosporin",
+      "dose": null,
+      "route": "topical",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        1336,
+        1345
+      ]
+    },
+    {
+      "name": "Tylenol No. 3",
+      "dose": "tabs #4",
+      "route": "PO",
+      "frequency": "every four hours p.r.n.",
+      "status": "newly_prescribed",
+      "span": [
+        1378,
+        1391
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "burn dressing",
+      "date": null,
+      "span": [
+        1306,
+        1319
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

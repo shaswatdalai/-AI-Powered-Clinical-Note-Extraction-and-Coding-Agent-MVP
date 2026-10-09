@@ -1,0 +1,40 @@
+{
+  "note_id": "note_044",
+  "specialty": "Autopsy",
+  "source_row_index": 4986,
+  "diagnoses": [
+    {
+      "name_as_written": "contusion",
+      "normalised_name": "contusion",
+      "status": "active",
+      "span": [
+        2920,
+        2929
+      ],
+      "icd_code": "S40.029A"
+    }
+  ],
+  "medications": [],
+  "procedures": [],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "Length",
+      "value": "71",
+      "unit": "inches",
+      "span": [
+        268,
+        277
+      ]
+    },
+    {
+      "name": "Weight",
+      "value": "178",
+      "unit": "pounds",
+      "span": [
+        289,
+        299
+      ]
+    }
+  ]
+}

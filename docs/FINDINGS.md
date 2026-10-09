@@ -194,3 +194,23 @@ Format per entry:
 - **Procedures precision is weak** (P = 0.43 on 42 notes). Extractor over-produces procedures; verifier category check doesn't currently address procedures specifically.
 - **ICD description wrapper text** is still in the index. Deferred.
 - **Extractor produces wrong-category items as diagnoses** despite the prompt's "DO NOT extract" list. The verifier catches most but not all. Ongoing tuning.
+
+
+### Orchestrator runs end-to-end on note_001
+
+- **Severity:** note (success)
+- **Where:** `src/orchestrator.py` running on `data/note_001.txt`
+- **What:** The orchestrator ties together section, mask, extract, ICD
+  lookup, verify, and reconcile into one function. On note_001:
+  - 8 sections detected
+  - 2 PII items masked, length preserved
+  - 9 items extracted
+  - Verifier accepted 8, rejected 1 (loratadine — "only mentioned as
+    another option to consider, not newly prescribed")
+  - Verifier recall check flagged 1 missed item (Claritin)
+  - Escalation False (flagged fraction 1/9 ≈ 11%)
+- **Action:** None. Milestone. Section 3.5 of the SOW is implemented.
+- **Notes:** Full trace recorded per note. This is what the reviewer UI
+  will display.
+
+  ---

@@ -27,7 +27,7 @@ Both datasets have been inspected with pandas; columns below are confirmed.
 | Clinical notes CSV (`mtsamples.csv`) | `Unnamed: 0`, `#`, `description`, `medical_specialty`, `sample_name`, `transcription`, `keywords` | 4,999 | Source of the 100 gold notes and all test sets. **Never fed to a model in bulk.** |
 | ICD-10 CSV (`icd10cm_data.csv`) | `code`, `description` | 74,260 | Indexed offline into BM25 and ChromaDB. The LLM only ever sees the top few candidates for one diagnosis. |
 
-Known data issues to document (SOW says this is graded): inconsistent or missing section headings, fragment notes, transcription typos, unreliable `keywords` column (do **not** use it as labels), residual names/dates/ids, duplicate or near-duplicate notes, out-of-domain notes.
+Known data issues to document (SOW says this is graded): inconsistent or missing section headings, fragment notes, transcription typos, unreliable `keywords` column (do **not** use it as labels), residual names/dates/ids, duplicate or near-duplicate notes, out-of-domain notes. Observed in practice: `note_041` is a verbatim duplicate of `note_024` (same content under two specialties in the source dataset).
 
 **How the LLM "goes through" data:** it does not. Per note, code builds a prompt = instructions + schema + one masked note. For coding, code searches the ICD index and returns a short candidate list. This is retrieval-augmented generation (RAG) applied to code lookup.
 
@@ -58,7 +58,7 @@ flowchart TD
         PYD --> ICDLOOK[ICD lookup<br/>BM25 + vectors + RRF<br/>top-3 or NO_CONFIDENT_MATCH]
         BM -.-> ICDLOOK
         CH -.-> ICDLOOK
-        PYD --> VER[Verifier LLM<br/>Gemini 3.8 Flash<br/>masked note + items only]
+        PYD --> VER[Verifier LLM<br/>Gemini 3.5 Flash Lite<br/>masked note + items only]
         ICDLOOK --> VER
         VER --> REC{Reconcile<br/>bounded retries<br/>max 1-2 per item}
         REC -- both agree --> ACC[ACCEPT]
@@ -72,13 +72,8 @@ flowchart TD
     EXT -.-> LOG[(Audit log<br/>masked JSONL)]
     VER -.-> LOG
     REC -.-> LOG
-```
 
-**Narration (walk through in one breath):** "One note goes in. Section, mask, shield, extract with Qwen, validate and resolve spans in code, look up ICD candidates from a pre-built index, verify with Gemini, then reconcile. Accept, flag, or escalate. Everything is logged masked. The two datasets never go to either model in bulk — the notes CSV is read one row per prompt, the ICD table is queried per diagnosis and only the top-3 candidates are shown."
-
----
-
-## 4. Components and responsibilities
+    ## 4. Components and responsibilities
 
 | Component | Responsibility | Input | Output | Failure mode and handling |
 |---|---|---|---|---|
@@ -182,11 +177,13 @@ Post-validation rule in code: every item must have `evidence.span` set and `note
 
 **How independence is enforced**
 
-- The verifier is a **different model family** (errors are less correlated). Justify with evidence from your own eval, not just theory.
+- The verifier is a **different model family** (Google Gemini vs Alibaba Qwen). Errors are less correlated.
 - The verifier never receives the extractor's prompt, chain-of-thought, or confidence.
-- The verifier prompt asks it to judge "does the quoted span *state* this item?", not "is this plausible?".
+- The verifier prompt asks it to judge "does the quoted span *state* this item, and is it of the correct category?", not "is this plausible?".
 - The verifier cannot edit items; it can only judge them. Code applies the verdicts.
-- Both components can be run and scored alone (the verifier can be tested on planted fake items).
+- Both components can be run and scored alone. The verifier is tested on planted-fake items in the eval.
+
+**Category check:** the verifier's prompt enforces the same "DO NOT extract" rules as the extractor prompt. If the extractor produces a mechanism of injury, radiology finding, exam finding, lab value, or social fact as a diagnosis, the verifier rejects it. This was added on 9 Oct after observing that category errors were the extractor's dominant failure mode.
 
 ---
 
@@ -224,10 +221,12 @@ write trace
 
 ## 8. ICD-10 retrieval design
 
-1. **Build once at startup:** BM25 index over code descriptions; ChromaDB with embeddings of the same descriptions.
+1. **Build once at startup:** BM25 index over code descriptions; ChromaDB with embeddings of the same descriptions. Built in ~17 minutes on CPU (encoding 74,260 descriptions with bge-small-en). Persisted to disk; loads in ~7 seconds.
 2. **Query:** the normalised diagnosis name. Run BM25 (lexical rank) and vector search (semantic rank).
 3. **Fuse:** Reciprocal Rank Fusion, `score = sum(1 / (k + rank))`, `k = 60`.
-4. **Confidence (important):** RRF scores are small numbers (about 0.01 to 0.03), so a flat "0.70" cutoff on the RRF score will not work. Use a **calibrated confidence**: e.g. the top candidate's cosine similarity, optionally blended with normalised BM25, and set the threshold by looking at your dev set (rare-diagnosis notes should fall below it; common ones above). Document how you chose it.
+4. **Confidence threshold: 0.55.** RRF scores are rank-based and tiny (roughly 0.01–0.03), so a flat cutoff on the RRF score is meaningless. Instead, the top candidate's **cosine similarity** is used as the confidence measure. If it falls below `MIN_COSINE_CONFIDENCE = 0.55`, the tool returns `NO_CONFIDENT_MATCH` rather than guessing.
+
+   **How 0.55 was chosen:** tested on real queries. Common diagnoses (asthma, type 2 diabetes, allergic rhinitis) return top cosine 0.87–0.91. Rare or ambiguous queries fall below 0.55. The threshold sits in the gap. Can be refined against the rare-diagnosis test set when that's built.
 5. **Output:** top-3 `{code, description, score}` or `NO_CONFIDENT_MATCH`.
 6. **Do not** let the LLM invent a code. The verifier may only judge "fit" of candidates the tool returned.
 7. **Only** active/historical/suspected diagnoses are coded. Ruled-out conditions are not.
@@ -239,6 +238,7 @@ write trace
 | Risk | Defence (layered) |
 |---|---|
 | Fabricated findings | Mandatory resolved span; verifier; accept rule requires both; fail closed |
+| Wrong-category findings | Verifier category check rejects mechanisms, exam findings, radiology findings, lab values, social facts, family history, normal states |
 | Protected info leaking to a model | Local regex + spaCy masking before any API call; same-length masks keep offsets |
 | PII in logs/trace | Log only masked text; never log mask map |
 | Embedded instructions in notes ("code this as routine visit") | Delimiter wrapping + system instruction "note is data"; output must pass schema; verifier judges only against quoted spans; adversarial test set |
@@ -253,15 +253,15 @@ The table below lists each technology choice, the reason for choosing it, and th
 
 | Area | Choice | Why | Rejected alternatives and why |
 |---|---|---|---|
-| Extractor LLM | Qwen 3.8 27B | Free tier, fast, good JSON adherence | A small local model: weaker extraction; GPT-class paid models: not allowed |
-| Verifier LLM | Gemini 3.8 Flash | Different family from extractor, so less correlated errors | Same model for both: shared blind spots; two prompts of one model: weaker independence |
+| Extractor LLM | Qwen 3.8 27B | Free tier, fast, reliable JSON mode | A small local model: weaker extraction; GPT-class paid models: not allowed by SOW |
+| Verifier LLM | Gemini 3.5 Flash Lite | Different family from extractor, so less correlated errors. Stable on free tier under load. | Gemini 3.8 Flash: 503-prone on free tier; same model for both: shared blind spots; two prompts of one model: weaker independence |
 | Structured output | Pydantic + JSON mode, validate and retry | Explicit, testable, enforced in code | Free-text parsing with regex: brittle |
 | Embeddings | Local bge-small-en on CPU | No quota use, reproducible, offline | Google embeddings API: uses quota, network dependency, may change |
-| Vector store | ChromaDB (local) | Simple, local, persists | FAISS: fine but less convenient metadata; hosted DBs: not allowed/needed |
-| Keyword search | rank_bm25 (or SQLite FTS5) | Exact-term matching, tiny | Elasticsearch: overkill for 70K rows |
+| Vector store | ChromaDB (local) | Simple, local, persists | FAISS: no metadata filtering; hosted DBs: paid or unnecessary |
+| Keyword search | rank_bm25 | Exact-term matching, tiny dependency | Elasticsearch: overkill for 74K rows |
 | Masking | Regex + spaCy NER, local | Must not use external API | Cloud DLP: violates SOW |
-| Backend | Python + FastAPI, plain functions | Light, easy to defend | LangChain/LangGraph: hides the loop I must explain; add only if justified |
-| Frontend | Simple HTML/CSS/JS served by FastAPI (or Streamlit) | Offset-based highlighting is easy with DOM; Streamlit is faster to build | React: build overhead for a one-user MVP |
+| Backend | Python + FastAPI, plain functions | Light, easy to defend | LangChain/LangGraph: hides the loop I must explain |
+| Frontend | Simple HTML/CSS/JS served by FastAPI | Offset-based highlighting is easy with DOM; no build step | React: build overhead for a one-user MVP; Streamlit: less precise offset control |
 | Tracing | Structured JSON per note | Human-readable, shown in UI | Heavy observability stacks: overkill |
 | Testing | pytest | Standard | none |
 
@@ -271,7 +271,7 @@ The table below lists each technology choice, the reason for choosing it, and th
 
 **Gold standard:** 100+ notes, 10+ specialties, labelled before prompt tuning, with written guidelines. Each diagnosis, medication, procedure has span, status, and (for diagnoses) the ICD-10 code or "NO_CODE".
 
-**Matching rules (write these down exactly):**
+**Matching rules:**
 
 - **Exact match:** same entity type, same normalised name, span overlap IoU ≥ 0.5.
 - **Partial match:** same type, token-level overlap (Jaccard) ≥ 0.5 OR span IoU ≥ 0.3. Counts as 0.5 TP in the "lenient" score; report strict and lenient both.
@@ -279,18 +279,24 @@ The table below lists each technology choice, the reason for choosing it, and th
 
 **Metrics:** precision, recall, F1 for diagnoses, meds, procedures; span faithfulness (programmatic, 100% required); status accuracy; ICD top-1, top-3 and correct no-match rate; baseline comparison (single prompt, no verification) on the same notes; flagging precision and recall; difficulty comparison of flagged vs accepted items; per-note model calls and wall-clock time.
 
-**Special sets:** 20 contradiction notes with expected flags, 10 rare-diagnosis notes, 10 adversarial notes (embedded instructions and protected info). Plus 3 or more written failure analyses.
+**Special sets:** 20 contradiction notes with expected flags, 10 rare-diagnosis notes, 10 adversarial notes (embedded instructions and protected info). Plus 3 or more written failure analyses drawn from `docs/FINDINGS.md`.
 
-**Reproducibility:** `make eval` (or one script) with temperature 0 and cached calls; fixed seeds; the report states the commit hash.
+**Reproducibility:** `python -m src.eval.run_eval` with temperature 0 and cached calls; fixed seeds; the report states the commit hash.
+
+**Current baselines (raw extractor, no verifier):**
+
+- 42 notes: diagnoses F1 0.720, medications F1 0.589, procedures F1 0.531, vitals F1 0.156.
+- The verified pipeline (verifier applied) lifts precision on diagnoses and medications — the actual numbers appear in the eval report once the full 100-note run is complete.
 
 ---
 
 ## 12. Rate limits, budget, caching
 
-- Cache every model response on disk keyed by `hash(model + prompt + schema version)`; re-running eval costs zero quota.
-- Backoff: 1s, 2s, 4s, 8s with jitter, max 4 tries; then queue the note and tell the UI.
+- Cache every model response on disk keyed by `hash(model + prompt + note)`. Re-running eval costs zero quota for already-processed notes.
+- Groq free tier for Qwen 3.8 27B: ~30 RPM, ~8,000 TPM, ~1,000 RPD. The TPM limit is the binding constraint — each note uses ~800–1,200 tokens, so the effective throughput is ~7 fresh notes per minute. Pacing is required for batch eval.
+- Backoff on 429: reads `Retry-After` header, sleeps and retries. On 503: exponential backoff up to 60 seconds, up to 6 attempts.
 - Per-note budget (target): about 4 to 8 model calls and under 30 s median; trace records actuals.
-- Evaluation run is batched with a pacing delay to stay below requests-per-minute.
+- Evaluation runs are batched with pacing to stay within the token-per-minute budget.
 
 ---
 
@@ -298,84 +304,65 @@ The table below lists each technology choice, the reason for choosing it, and th
 
 | Risk | Impact | Mitigation |
 |---|---|---|
-| Gold labelling takes longer than planned | Eval incomplete | Start Tue 6; daily quota of notes; reduce labelling scope in writing and document the reason in the evaluation report if behind; LLM may *suggest* pre-labels but every one is corrected manually and disclosed in the report |
-| Free-tier limits or model deprecation | Pipeline halts | Cache, fallback model listed, queue |
+| Gold labelling takes longer than planned | Eval incomplete | Daily quota of notes; reduce scope in writing and document the reason in the eval report if behind; LLM may *suggest* pre-labels but every one is corrected manually and disclosed |
+| Free-tier limits | Pipeline slow but functional | Cache every response; pace batch eval; run overnight if needed |
+| Model deprecation or availability change | Pipeline halts | Fallback model listed; per-model caching keyed separately; observed: Llama 3.3 70B unavailable on this account, Gemini 3.8 Flash became unstable — the fallback to Gemini 3.5 Flash Lite was made in response |
 | Offset drift from masking | Wrong highlights | Same-length masking + offset tests |
-| LLM wrong offsets | Invalid items | Quote-to-offset resolver in code |
-| Verifier agrees with extractor's mistakes | Missed errors | Different model family, planted-error tests, recall check |
+| LLM wrong offsets | Invalid items | Quote-to-offset resolver in code; LLM never emits offsets |
+| Verifier agrees with extractor's mistakes | Missed errors | Different model family, verifier category check, planted-error tests, recall check |
 | Scope too big for the time | Missed deliverables | Cut order: UI polish, then smaller special sets (in writing); never cut span check, guardrails, eval |
 
 ---
 
 ## 14. Day-by-day plan
 
-Project duration: Tue 6 Oct 2026 → Mon 13 Oct 2026. Code freeze Mon 13 Oct, 6:00 PM. Defense Tue 13 Oct, evening.
-
-Each day ends with a commit to the private repo, an end-of-day update (done / blocked / next), and the checkable output listed below.
-
-### Phase 0 — Understand and Design
+Project duration: Tue 6 Oct 2026 → Tue 13 Oct 2026. Code freeze Mon 13 Oct, 6:00 PM. Defense Tue 13 Oct.
 
 | Day | Date | Work | Checkable output |
 |---|---|---|---|
-| Tue | 6 Oct (afternoon) | Final architecture + timeline + tech stack presented for sign-off | Sign-off received |
-
-### Phase 1 — Data, Gold Standard, Extraction
-
-| Day | Date | Work | Checkable output |
-|---|---|---|---|
-| Tue | 6 Oct | Ingestion + sectioning with offsets; Pydantic schema; labelling guidelines v1; label 12 notes | Offset tests pass; guidelines written; 12 gold notes |
+| Tue | 6 Oct | Architecture sign-off; ingestion + sectioning; Pydantic schema; labelling guidelines v1; label 12 notes | Offset tests pass; guidelines written; 12 gold notes |
 | Wed | 7 Oct | Extractor on Groq with quote resolver and retry; ICD index (BM25 + Chroma) and RRF tool; label 15 notes | Extractor runs on 10 notes; ICD top-3 works; 27 gold notes |
-
-Mid-point review with Zuhair on Wed 7 Oct per SOW section 10.
-
-### Phase 2 — Verification and Agent
-
-| Day | Date | Work | Checkable output |
-|---|---|---|---|
-| Wed | 8 Oct | Naive baseline; masker; injection shield; eval skeleton with matching rules; label 15 notes | Baseline numbers on labelled notes; 42 gold notes |
-| Thu | 9 Oct | Verifier with contract, contradictions, recall check; label 15 notes | Verifier rejects planted fakes; 57 gold notes |
-| Fri | 10 Oct | Orchestrator: plan, reconcile, bounded retry, abstain, escalate, trace, budget; label 15 notes | End-to-end run with trace JSON; 72 gold notes |
-| Sat | 11 Oct | Reviewer UI; build contradiction, rare, adversarial sets; label 15 notes | UI works on 3 demo notes; 87 gold notes |
-
-### Phase 3 — Evaluation, Documentation, Freeze
-
-| Day | Date | Work | Checkable output |
-|---|---|---|---|
-| Sun | 12 Oct | Finish remaining gold labels; special sets finalized | 100 gold notes |
+| Thu | 8 Oct | Naive baseline; masker; injection shield; eval skeleton; label 15 notes | Baseline numbers on labelled notes; 42 gold notes |
+| Fri | 9 Oct | Verifier with contract, contradictions, recall check; verifier integrated into eval; orchestrator; label 15 notes | Verifier rejects planted fakes; 57 gold notes |
+| Sat | 10 Oct | Reviewer UI; build contradiction, rare, adversarial sets; label 15 notes | UI works on 3 demo notes; 72 gold notes |
+| Sun | 11 Oct | Finish remaining gold labels; special sets finalized | 87–100 gold notes |
 | Mon | 13 Oct | Full eval; report with 3+ failures; README; user guide; demo video; **freeze 6 PM** | One-command eval; report; video |
-| Tue | 13 Oct (evening) | Present and defend | Slides on the six SOW sections |
+| Tue | 13 Oct | Present and defend | Slides on the six SOW sections |
 
 ### Riskiest pieces (scheduled early)
 
-1. **Span resolver** (Tue 6 Oct) — every downstream display and metric depends on correct offsets.
-2. **ICD index + RRF** (Wed 7 Oct) — the retrieval layer.
-3. **Verifier independence** (Thu 9 Oct) — the SOW's central requirement.
+1. **Span resolver** — every downstream display and metric depends on correct offsets.
+2. **ICD index + RRF** — the retrieval layer.
+3. **Verifier independence** — the SOW's central requirement.
 
 ### Gold-standard labelling plan
 
 - Target: 100 notes across 10+ specialties.
 - Daily quota: 12–15 notes.
-- Running total: 12 (Tue) → 27 (Wed) → 42 (Thu) → 57 (Fri) → 72 (Sat) → 87 (Sun) → 100 (Mon).
-- Fallback: if the target is unreachable by Monday, reduce labelling scope in writing and document the reason in the evaluation report.
+- Running total: 12 → 27 → 42 → 57 → 72 → 87 → 100.
+- Fallback: if the target is unreachable by Sunday, reduce labelling scope in writing and document the reason in the evaluation report.
 
 ---
 
 ## 15. Token and context management
 
 **Extractor prompt budget:**
+
 - System instruction + schema description: ~500 tokens
 - One masked note: typically 200–2,000 tokens, capped at 4,000 tokens
-- Total per extractor call: under 5,000 tokens — well within Qwen 3.8 27B's 131K context window
+- Total per extractor call: under 5,000 tokens — well within Qwen 3.8 27B's 128K context window
 
 **Verifier prompt budget:**
-- System instruction + contract description: ~300 tokens
+
+- System instruction + contract description: ~400 tokens
 - Masked note: same as extractor (up to 4,000 tokens)
 - Extracted items + ICD candidates: ~200–800 tokens
-- Total per verifier call: under 6,000 tokens — within Gemini's context window
+- Total per verifier call: under 6,000 tokens — well within Gemini 3.5 Flash Lite's context window
 
 **Handling long notes:** if a note exceeds 4,000 tokens, the sectioner splits it into sections and extracts each section independently, then merges results. Section boundaries are preserved as offsets so downstream spans remain valid.
 
 **Per-note budget:**
+
 - Max model calls: 12 (typically 4–8)
 - Max wall-clock: 30 s median
 - Max tokens per note across all calls: ~30,000 (bounded by the per-section cap × number of sections)

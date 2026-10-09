@@ -1,73 +1,144 @@
-# AI-Powered Clinical Note Extraction & Coding Agent MVP
+# README
 
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688.svg)](https://fastapi.tiangolo.com/)
-[![Pydantic V2](https://img.shields.io/badge/Validation-Pydantic%20V2-e92063.svg)](https://docs.pydantic.dev/)
-[![ChromaDB](https://img.shields.io/badge/VectorStore-ChromaDB-purple.svg)](https://www.trychroma.com/)
-[![Architecture Approved](https://img.shields.io/badge/Phase%200-Design%20Ready-success.svg)]()
+**AI-Powered Clinical Note Extraction & Coding Agent — MVP**
 
-> **Autonomous, zero-fabrication clinical documentation agent that ingests raw EHR notes, performs span-anchored structured entity extraction, maps diagnoses to ICD-10 via hybrid lexical/semantic retrieval, runs decoupled adversarial verification, and reconciles conflicts.**
+An agent that reads free-text clinical notes, extracts structured medical entities (diagnoses, medications, procedures, allergies, vitals), maps diagnoses to ICD-10 codes via hybrid retrieval, verifies every extracted item with an independent second model, and flags anything it cannot prove for human review.
+
+Built for the Mirai Labs SOW (Clinical Note Extraction and ICD-10 Coding Agent MVP).
 
 ---
 
-## 🏥 Project Overview
+## Overview
 
-In clinical note processing and medical coding, **unverified hallucination is a critical patient safety and legal hazard**. This project solves that via an **asymmetric multi-agent architecture**:
+Medical coding staff read clinical notes by hand and turn them into structured records with ICD-10 codes for billing. This work is slow, error-prone, and previous attempts at automation hallucinated — they invented findings that were not in the note. This system addresses that problem by making every accepted item *provable*.
 
-1. **100% Span Faithfulness:** Every extracted entity (diagnoses, medications, procedures, allergies, vitals) is strictly anchored to verbatim character offsets in the original note. Unanchored items are programmatically discarded.
-2. **Decoupled Verification:** A secondary LLM pass independently audits candidate entities without visibility into the extractor's reasoning scratchpad, catching status misattributions, negations, and planted contradictions.
-3. **Hybrid ICD-10 Retrieval:** Combines BM25 lexical keyword matching with ChromaDB dense semantic vector search under Reciprocal Rank Fusion (RRF), yielding top-3 candidate codes or an explicit `"no confident match"`.
-4. **Interactive Reviewer Cockpit:** FastAPI backend paired with a lightweight browser UI featuring span highlighting and full decision tracing.
+Every accepted extraction carries:
+
+- A **verbatim quote** from the source note
+- A **character span** `[start, end]` into the original note
+- A **verdict** from an independent verifier model (different family from the extractor)
+
+Anything that cannot be proven — or that fails verification — is flagged with a reason for human review. Nothing is accepted silently.
 
 ---
 
-## 📁 Repository Structure
+## Design principles
 
-```text
-├── docs/
-│   ├── ARCHITECTURE.md              # System design, contracts, decisions
-│   ├── TIMELINE.md                  # Day-by-day plan and deliverables
-│   ├── TECH_STACK.md                # Tech choices + rejected alternatives
-│   └── labelling_guidelines.md      # Annotation rules for the 100-note Gold Standard
-├── src/
-│   ├── prompts/                     # Prompt templates (system + user)
-│   ├── utils/                       # Shared helpers
-│   ├── schema.py                    # Pydantic extraction schema
-│   ├── sectioner.py                 # Note ingestion, section detection, offset tracking
-│   ├── masker.py                    # Local PII masking (regex + spaCy)
-│   ├── extractor.py                 # Groq Qwen 3.8 27B caller + span resolver
-│   ├── icd_index.py                 # Hybrid BM25 + ChromaDB ICD-10 retrieval
-│   ├── verifier.py                  # Gemini 3.8 Flash independent verification
-│   ├── orchestrator.py              # Agent loop, retries, reconciliation, budget
-│   └── ui/                          # FastAPI endpoints + reviewer interface
-├── tests/
-│   ├── test_schema.py
-│   ├── test_sectioner.py
-│   ├── test_masker.py
-│   ├── test_extractor.py
-│   ├── test_icd.py
-│   ├── test_verifier.py
-│   └── test_orchestrator.py
-├── data/
-│   ├── mtsamples.csv                # Clinical notes (~5,000 rows)
-│   ├── icd10cm_data.csv             # ICD-10-CM code table (~74,000 rows)
-│   └── note_*.txt                   # Per-note excerpts used for gold labelling
-├── gold/                            # Hand-labelled 100-note gold standard
-├── results/                         # Per-note JSON outputs and traces (gitignored)
-├── .env.example                     # Environment variable template
+1. **Fail closed.** Uncertain, broken, or unverified → flag for review, never accept.
+2. **Offsets are the single source of truth.** Every highlight, export, and metric is computed from character offsets into the original note.
+3. **Code checks the LLM, not the other way around.** Span existence, schema shape, status values, and thresholds are enforced in plain code.
+4. **Independence.** Extractor and verifier are separate models with a written contract. The verifier never sees the extractor's reasoning.
+5. **The LLM never sees a dataset.** The extractor sees one masked note per call. The verifier sees one masked note + the extractor's items. The ICD code table is never sent to any model in bulk.
+6. **Reproducible.** Temperature 0, cached model responses, one-command evaluation.
+
+---
+
+## Architecture at a glance
+
+```
+Raw clinical note
+   │
+   ▼
+Sectioner         → detects headings, records offsets
+   │
+   ▼
+PII Masker        → regex + spaCy, same-length replacement
+   │
+   ▼
+Injection Shield  → delimiter wrapping + system instruction
+   │
+   ▼
+Extractor LLM     → Qwen 3.8 27B (Groq) → JSON with verbatim quotes
+   │
+   ▼
+Span Resolver     → code computes character offsets from quotes
+   │
+   ▼
+ICD Lookup        → BM25 + ChromaDB + RRF → top-3 candidates or NO_CONFIDENT_MATCH
+   │
+   ▼
+Verifier LLM      → Gemini 3.5 Flash Lite → SUPPORTED / REJECTED per item
+   │
+   ▼
+Reconcile         → ACCEPT (both agree) or FLAG (disagreement)
+   │
+   ▼
+Reviewer UI + trace + audit log
+```
+
+Full design in [`ARCHITECTURE.md`](./ARCHITECTURE.md). Technology choices and rejected alternatives in [`TECH_STACK.md`](./TECH_STACK.md).
+
+---
+
+## Repository structure
+
+```
+.
+├── ARCHITECTURE.md              Full system design and decisions
+├── TIMELINE.md                  Day-by-day plan and current status
+├── TECH_STACK.md                Tech choices + rejected alternatives
+├── README.md                    This file
+├── requirements.txt             Python dependencies
+├── conftest.py                  Pytest project root marker
+├── .env.example                 Environment variable template
 ├── .gitignore
-├── requirements.txt
-└── README.md
+├── data/
+│   ├── mtsamples.csv            ~5,000 clinical notes (source)
+│   ├── icd10cm_data.csv         ~74,260 ICD-10 codes (source)
+│   ├── note_001.txt … note_042.txt       Selected notes for gold labelling
+│   └── note_*.meta.json         Metadata sidecars
+├── docs/
+│   ├── labelling_guidelines.md  Rules for hand-labelling gold notes
+│   ├── FINDINGS.md              Running log of issues and fixes
+│   └── eval_baseline.md         Evaluation metrics across stages
+├── gold/
+│   └── note_001.json … note_042.json     Hand-labelled gold annotations
+├── src/
+│   ├── schema.py                Pydantic models (extraction + verifier contracts)
+│   ├── sectioner.py             Section detection with offset preservation
+│   ├── masker.py                PII masking (regex + spaCy, same-length)
+│   ├── guardrails.py            Injection shield (delimiter wrapping)
+│   ├── extractor.py             Extractor LLM caller + span resolver
+│   ├── icd_index.py             Hybrid BM25 + ChromaDB + RRF
+│   ├── verifier.py              Verifier LLM caller (fail-closed)
+│   ├── orchestrator.py          Agent loop: extract → ICD → verify → reconcile
+│   ├── prompts/
+│   │   ├── extractor_system.txt
+│   │   ├── extractor_user.txt
+│   │   ├── verifier_system.txt
+│   │   └── verifier_user.txt
+│   ├── eval/
+│   │   ├── matching.py          Exact / partial matching, P/R/F1
+│   │   └── run_eval.py          One-command evaluation
+│   └── utils/
+│       ├── select_notes.py      Note selection for gold labelling
+│       ├── find_spans.py        Helper for computing spans
+│       ├── verify_gold.py       Assert every gold span slices correctly
+│       ├── check_groq.py        Groq API key + model availability check
+│       ├── try_extractor.py     Smoke test: extractor on one note
+│       ├── try_verifier.py      Smoke test: extract + ICD + verify on one note
+│       ├── try_pipeline.py      End-to-end smoke test
+│       └── eval_batch.py        Run pipeline on all gold notes
+└── tests/
+    ├── test_schema.py
+    ├── test_sectioner.py
+    ├── test_masker.py
+    ├── test_extractor.py
+    ├── test_verifier.py
+    ├── test_guardrails.py
+    └── test_icd.py
 ```
 
 ---
 
-## ⚡ Quick Start
+## Quick start
 
 ### 1. Prerequisites
 
 - Python 3.10+
 - Git
+- A Groq API key (https://console.groq.com/keys) — free tier
+- A Google AI Studio key (https://aistudio.google.com/app/apikey) — free tier
 
 ### 2. Installation
 
@@ -86,16 +157,14 @@ pip install -r requirements.txt
 python -m spacy download en_core_web_sm
 ```
 
-### 3. Environment Configuration
+### 3. Environment configuration
 
-Copy `.env.example` to `.env` and insert your free-tier API keys:
+Copy `.env.example` to `.env` and fill in:
 
-```bash
-cp .env.example .env
 ```
-
-- **Groq API key (extractor, Qwen 3.8 27B):** https://console.groq.com/keys
-- **Google AI Studio key (verifier, Gemini 3.8 Flash):** https://aistudio.google.com/app/apikey
+GROQ_API_KEY=<your_groq_key>
+GOOGLE_API_KEY=<your_google_ai_studio_key>
+```
 
 ### 4. Build the ICD index
 
@@ -103,40 +172,84 @@ cp .env.example .env
 python -m src.icd_index --build
 ```
 
-This reads `data/icd10cm_data.csv`, builds the BM25 index and ChromaDB collection, and persists both to `chroma_db/` and `bm25_index.pkl`.
+Reads `data/icd10cm_data.csv`, builds BM25 + ChromaDB indexes, persists to disk. Takes ~17 minutes on CPU (encoding 74,260 descriptions). Subsequent loads take ~7 seconds.
 
-### 5. Run the reviewer UI
+### 5. Run the pipeline on one note
 
 ```bash
-uvicorn src.ui.app:app --reload
+python -m src.utils.try_pipeline
 ```
 
-Then open `http://localhost:8000`.
+Runs note → mask → extract → ICD lookup on `data/note_001.txt`.
+
+### 6. Run the full evaluation
+
+```bash
+# Raw extractor (no verifier)
+python -m src.eval.run_eval 42 60
+
+# With verifier applied
+python -m src.eval.run_eval 42 60 --verify
+```
+
+First number is the note limit; second is the pacing in seconds (for rate-limit safety on free tiers). Cached notes process instantly.
 
 ---
 
-## 📋 SOW Compliance
+## Requirements from the SOW (compliance summary)
 
-| Milestone | Target Window | Deliverables | Status |
+| SOW section | Requirement | Status |
+|---|---|---|
+| 3.1 | Note ingestion and sectioning with offset preservation | ✅ Implemented |
+| 3.2 | Structured extraction with enforced schema and mandatory spans | ✅ Implemented |
+| 3.3 | ICD-10 hybrid retrieval tool with no-confident-match path | ✅ Implemented |
+| 3.4 | Independent verification agent with contradictions and recall check | ✅ Implemented |
+| 3.5 | Agent orchestration with reconciliation, retries, escalation, trace | ✅ Implemented |
+| 3.6 | Reviewer interface | ⚠️ In progress |
+| 3.7 | Gold standard of 100 hand-labelled notes | ⚠️ 42/100 and growing |
+| 3.8 | Guardrails: no fabrication, PII masking, injection resistance | ✅ Implemented (adversarial test set pending) |
+| 3.9 | Evaluation harness with metrics, baseline, special sets | ⚠️ Metrics implemented; special sets pending |
+
+---
+
+## Current metrics
+
+Raw extractor, 42 gold notes (no verifier applied):
+
+| Entity | Precision | Recall | F1 |
 |---|---|---|---|
-| **Phase 0** | Wed 30 Sep – Tue 6 Oct | SOW review, questions raised, architecture doc, timeline, tech stack, sign-off | **Sign-off requested** |
-| **Phase 1** | Wed 7 Oct – Thu 8 Oct | Ingestion pipeline, labelling guidelines, Pydantic schema, extractor, ICD index, first 27 gold notes, mid-point review | Planned |
-| **Phase 2** | Fri 9 Oct – Mon 12 Oct | Naive baseline, masker, injection shield, verifier, orchestrator, eval skeleton, up to 87 gold notes | Planned |
-| **Phase 3** | Tue 13 Oct | Full evaluation harness, reviewer cockpit UI, demo video, README, freeze 6 PM | Planned |
-| **Phase 4** | Wed 14 Oct | Live presentation & defense with Mirai Labs | Planned |
+| Diagnoses | 0.655 | 0.800 | 0.720 |
+| Medications | 0.550 | 0.635 | 0.589 |
+| Procedures | 0.429 | 0.698 | 0.531 |
+| Vitals | 0.147 | 0.167 | 0.156 |
+
+Verifier applied, 5 notes (category check active):
+
+| Entity | Precision | Recall | F1 |
+|---|---|---|---|
+| Diagnoses | 0.778 | 0.583 | 0.667 |
+| Medications | 0.667 | 0.667 | 0.667 |
+
+Full baseline and gap analysis in [`docs/eval_baseline.md`](./docs/eval_baseline.md).
 
 ---
 
-## 🔑 Key Design Decisions
+## Known limitations
 
-- **LLM never sees a dataset.** One masked note per prompt. The ICD-10 code table is never sent to any model — only the top-3 candidates per diagnosis.
-- **Quotes, not offsets, from the LLM.** The extractor returns verbatim `evidence_quote` strings. Code resolves those to `[start, end]` offsets against the original note. Offsets are the single source of truth for all downstream display, export, and metrics.
-- **Two independent model families.** Extractor is Groq Qwen 3.8 27B. Verifier is Gemini 3.8 Flash. Different training data → decorrelated errors. Enforced by prompt isolation: the verifier never sees the extractor's reasoning.
-- **Fail closed.** If a span does not resolve, if the verifier rejects, if the pipeline errors — the item is flagged for human review, never accepted silently.
-- **Reproducible evaluation.** Temperature 0, all model responses cached on disk keyed by `hash(model + prompt + schema_version)`, one-command eval, gold standard frozen before prompt tuning.
+- **Vitals extraction is weak** — F1 ≈ 0.16 on the current baseline. Both over- and under-extraction. Extractor prompt needs tighter vitals rules.
+- **Procedures precision is weak** — extractor over-produces procedures from routine exam components.
+- **Free-tier rate limits constrain batch evaluation** — pacing is required. Caching makes reruns free.
+- **Verifier category check does not yet cover procedures or vitals** — only diagnoses and medications.
+- **Gold standard is not yet complete** — currently at 42 notes; the target is 100.
+- **No adversarial test set yet** — SOW Section 3.9 requires notes with embedded instructions and protected info.
+
+Detailed per-item analysis in [`docs/FINDINGS.md`](./docs/FINDINGS.md).
 
 ---
 
-## 🛡️ License & Compliance
+## Compliance and confidentiality
 
-Built strictly in accordance with the Mirai Labs Clinical Extraction Agent MVP Statement of Work. All rights reserved.
+The repository is private and shared only with the Mirai Labs reviewers. Model choices and configurations respect the SOW's constraint of free-tier APIs only. See `.env.example` for the required keys (no keys are committed).
+
+
+---

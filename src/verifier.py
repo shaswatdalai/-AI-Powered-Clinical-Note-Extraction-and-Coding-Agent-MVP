@@ -36,7 +36,7 @@ SYSTEM_PROMPT = (PROMPTS_DIR / "verifier_system.txt").read_text(encoding="utf-8"
 USER_PROMPT_TEMPLATE = (PROMPTS_DIR / "verifier_user.txt").read_text(encoding="utf-8")
 
 GOOGLE_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
-GOOGLE_MODEL = "gemini-3.8-flash"   # adjust to actual model name
+GOOGLE_MODEL = "gemini-3.5-flash-lite"
 MAX_RETRIES = 6
 CACHE_DIR = Path("cache") / "verifier"
 
@@ -70,7 +70,6 @@ def _call_gemini(note_masked: str, items_json: str) -> dict:
     if not api_key:
         raise RuntimeError("GOOGLE_API_KEY is not set")
 
-    from src.guardrails import wrap_note
     wrapped_note = wrap_note(note_masked)
     user_prompt = USER_PROMPT_TEMPLATE.format(
         note_masked=wrapped_note,
@@ -94,12 +93,18 @@ def _call_gemini(note_masked: str, items_json: str) -> dict:
         timeout=60.0,
     )
 
-    if response.status_code == 429:
-        raise RuntimeError(f"429 rate limited; retry-after={response.headers.get('retry-after', '30')}")
+    # If not 200, print the full response body so we can see why
+    if response.status_code != 200:
+        body_text = response.text[:500]
+        raise RuntimeError(f"HTTP {response.status_code}: {body_text}")
 
-    response.raise_for_status()
     body = response.json()
-    text = body["candidates"][0]["content"]["parts"][0]["text"]
+    try:
+        text = body["candidates"][0]["content"]["parts"][0]["text"]
+    except (KeyError, IndexError) as e:
+        raise RuntimeError(
+            f"Malformed Gemini response structure: {e}; body={json.dumps(body)[:400]}"
+        )
     return json.loads(text)
 
 
@@ -121,8 +126,6 @@ def verify(note_masked: str, items: list[dict]) -> VerifierResponse:
     Verify each item against the masked note.
 
     items: list of dicts, each with at least {"id": str, ...}.
-           The full item dict is passed to the verifier so it can judge
-           status, ICD fit, etc.
 
     Returns a VerifierResponse. On failure, returns a response where all
     items are marked REJECTED with reason "verifier unavailable".
@@ -143,20 +146,21 @@ def verify(note_masked: str, items: list[dict]) -> VerifierResponse:
                 break
             except Exception as e:
                 last_error = e
+                err_str = str(e)[:250]
+                print(f"  [verifier error] attempt {attempt + 1}: {err_str}")
                 is_rate = "429" in str(e)
                 is_503 = "503" in str(e) or "Service Unavailable" in str(e)
                 if attempt < MAX_RETRIES:
-                   if is_rate:
+                    if is_rate:
                         sleep_for = 30
-                   elif is_503:
-                        sleep_for = min(2 ** (attempt + 2), 60)   # 4, 8, 16, 32, 60, 60 seconds
-                   else:
+                    elif is_503:
+                        sleep_for = min(2 ** (attempt + 2), 60)
+                    else:
                         sleep_for = 2 ** attempt
-                   print(f"  [verifier retry] attempt {attempt + 1}/{MAX_RETRIES}; sleeping {sleep_for}s")
-                   time.sleep(sleep_for)
+                    print(f"  [verifier retry] sleeping {sleep_for}s before next attempt")
+                    time.sleep(sleep_for)
         if cached is None:
-            # Fail closed: mark every item as unverified
-            print(f"  [verifier] failed after {MAX_RETRIES + 1} attempts; marking all items unverified")
+            print(f"  [verifier] FAILED after {MAX_RETRIES + 1} attempts. Last error: {str(last_error)[:300]}")
             cached = _empty_unverified_response(
                 [item.get("id", "?") for item in items],
                 str(last_error)[:100],

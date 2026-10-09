@@ -247,4 +247,144 @@ Format per entry:
   not exactly) is common on the free-tier Qwen model. Robustness here
   matters for the full 100-note eval.
 
+  ### ICD confidence threshold is 0.55, calibrated on test queries
+
+- **Severity:** note (design decision)
+- **Where:** `src/icd_index.py`, `MIN_COSINE_CONFIDENCE = 0.55`
+- **What:** The SOW requires a "no confident match" path but doesn't
+  specify the threshold. I chose 0.55 based on test queries: common
+  diagnoses (asthma, type 2 diabetes, allergic rhinitis) return top
+  cosine 0.87–0.91; rare or ambiguous queries fall below 0.55.
+- **Action:** Documented in ARCHITECTURE.md Section 8. Threshold can be
+  refined against the rare-diagnosis test set when that's built.
+- **Notes:** `CONFIDENCE_THRESHOLD=0.70` in `.env` is a separate value
+  (not currently used). Consider consolidating or removing.
+
+
+  ### Verifier model stability — switched to Gemini 3.5 Flash Lite
+
+- **Severity:** high (fixed 2026-10-09)
+- **Where:** `src/verifier.py`
+- **What:** Gemini 3.8 Flash returned HTTP 503 ("model experiencing
+  high demand") on nearly every call. Google's infrastructure for
+  that specific model was overloaded. Retries with exponential
+  backoff didn't recover within the retry budget.
+- **Action:** Switched verifier to Gemini 3.5 Flash Lite — same
+  Google family (independence from Qwen extractor maintained),
+  lower traffic tier, markedly more stable. Verifier now runs
+  reliably with no retries required.
+- **Notes:** Model availability on the free tier varies by demand.
+  The SOW requires a Google Gemini Flash variant for independence;
+  3.5 Flash Lite satisfies this while being stable enough for
+  batch processing.
+
+### Verifier disagreements across Gemini versions
+
+- **Severity:** note (documented)
+- **Where:** `src/verifier.py`, verifier verdicts on note_001
+- **What:** The same input produced different verdicts across Gemini
+  model versions:
+  - Gemini 3.8 Flash: `m4 (loratadine)` → REJECTED (mentioned as
+    option, not prescribed)
+  - Gemini 3.5 Flash Lite: `m4 (loratadine)` → SUPPORTED (mentioned
+    in plan)
+  Both positions are defensible — the note says "another option will
+  be to use loratadine," which is ambiguous between consideration
+  and prescription.
+- **Action:** Accepted. Documented as evidence that verifier verdicts
+  are model-dependent on ambiguous items. The SOW expects this; the
+  evaluation report should note it.
+- **Notes:** This is why caching verifier outputs matters. Changing
+  the verifier model invalidates the cache and produces different
+  metrics — the eval must be run with one model consistently.
+
+### Verifier correctly identifies missed vitals on note_001
+
+- **Severity:** note (success)
+- **Where:** `src/verifier.py` running on note_001
+- **What:** The verifier's recall check flagged two vitals the
+  extractor missed:
+  - Weight 130 pounds
+  - Blood pressure 124/78
+  The extractor produced zero vitals for this note despite the note
+  stating both. This is the recall-check feature working as intended.
+- **Action:** Accepted. Evidence that the verifier adds value beyond
+  simple approval/rejection.
+- **Notes:** Also flagged "no known medicine allergies" as missed,
+  which is a false positive (a negation is not an allergy). Verifier
+  isn't perfect; documented.
+
+### Verifier model stability — switched to Gemini 3.5 Flash Lite
+
+- **Severity:** high (fixed 2026-10-09)
+- **Where:** `src/verifier.py`
+- **What:** Gemini 3.8 Flash returned HTTP 503 ("model experiencing
+  high demand") on nearly every call. Google's infrastructure for
+  that specific model was overloaded. Retries with exponential
+  backoff didn't recover within the retry budget.
+- **Action:** Switched verifier to Gemini 3.5 Flash Lite — same
+  Google family (independence from Qwen extractor maintained),
+  lower traffic tier, markedly more stable. Verifier now runs
+  reliably with no retries required.
+- **Notes:** Model availability on the free tier varies by demand.
+  The SOW requires a Google Gemini Flash variant for independence;
+  3.5 Flash Lite satisfies this while being stable enough for
+  batch processing.
+
+### Verifier disagreements across Gemini versions
+
+- **Severity:** note (documented)
+- **Where:** `src/verifier.py`, verifier verdicts on note_001
+- **What:** The same input produced different verdicts across Gemini
+  model versions:
+  - Gemini 3.8 Flash: `m4 (loratadine)` → REJECTED (mentioned as
+    option, not prescribed)
+  - Gemini 3.5 Flash Lite: `m4 (loratadine)` → SUPPORTED (mentioned
+    in plan)
+  Both positions are defensible — the note says "another option will
+  be to use loratadine," which is ambiguous between consideration
+  and prescription.
+- **Action:** Accepted. Documented as evidence that verifier verdicts
+  are model-dependent on ambiguous items. The SOW expects this; the
+  evaluation report should note it.
+- **Notes:** This is why caching verifier outputs matters. Changing
+  the verifier model invalidates the cache and produces different
+  metrics — the eval must be run with one model consistently.
+
+### Verifier correctly identifies missed vitals on note_001
+
+- **Severity:** note (success)
+- **Where:** `src/verifier.py` running on note_001
+- **What:** The verifier's recall check flagged two vitals the
+  extractor missed:
+  - Weight 130 pounds
+  - Blood pressure 124/78
+  The extractor produced zero vitals for this note despite the note
+  stating both. This is the recall-check feature working as intended.
+- **Action:** Accepted. Evidence that the verifier adds value beyond
+  simple approval/rejection.
+- **Notes:** Also flagged "no known medicine allergies" as missed,
+  which is a false positive (a negation is not an allergy). Verifier
+  isn't perfect; documented.
+
+  ### Verifier category-check improvement
+
+- **Severity:** high (improvement)
+- **Where:** `src/prompts/verifier_system.txt`
+- **What:** Initial verifier prompt only asked "is this item supported by
+  the note?" The extractor's dominant error mode was category confusion
+  (mechanisms of injury, radiology findings, lab values labelled as
+  diagnoses). The permissive prompt let these pass through.
+- **Action:** Tightened the verifier prompt to explicitly reject
+  incorrect categories (mechanism of injury, physical exam finding,
+  radiology finding, lab value, social fact, family history, normal
+  state).
+- **Result on 5 notes:**
+  - Diagnoses precision: 0.636 -> 0.778 (+0.142)
+  - Medications precision: 0.571 -> 0.667 (+0.096)
+  - Recall unchanged
+- **Notes:** Procedures and vitals unchanged. Could be addressed with
+  category checks for those entity types too. Deferred.
+
+
 ---

@@ -1,4 +1,4 @@
-"""Check that the Groq API key works and list available Qwen models.
+"""Check that the Groq API key works and list available models.
 
 Run from the project root:
     python -m src.utils.check_groq
@@ -32,15 +32,7 @@ if r.status_code != 200:
     raise SystemExit(1)
 
 models = r.json().get("data", [])
-qwen_models = [m["id"] for m in models if "qwen" in m["id"].lower()]
-
 print(f"Total models available: {len(models)}")
-print(f"Qwen models available:  {len(qwen_models)}")
-for m in qwen_models:
-    print(f"  - {m}")
-
-if not qwen_models:
-    print("\nNo Qwen models found. Consider using a fallback like:")
-    print("  llama-3.3-70b-versatile")
-    print("  openai/gpt-oss-120b")
-    print("Run this script again after switching to see the full list.")
+print("All model IDs:")
+for m in models:
+    print(f"  - {m['id']}")

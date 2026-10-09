@@ -75,3 +75,40 @@ Matching: exact match only (name match + span IoU >= 0.5)
 2. Tighten vitals section in the extractor prompt.
 3. Tighten procedures definition (exclude exam components).
 4. Add lenient match reporting alongside strict.
+
+# Evaluation Baseline
+
+Date: 9 Oct 2026
+Notes evaluated: 42
+Extractor model: Qwen 3.8 27B (via Groq)
+Verifier: not applied
+Matching: exact match only
+
+## Metrics
+
+| Entity | Precision | Recall | F1 | TP | FP | FN |
+|---|---|---|---|---|---|---|
+| Diagnoses   | 0.655 | 0.800 | 0.720 | 76 | 40 | 19 |
+| Medications | 0.550 | 0.635 | 0.589 | 33 | 27 | 19 |
+| Procedures  | 0.429 | 0.698 | 0.531 | 30 | 40 | 13 |
+| Allergies   | 1.000 | 1.000 | 1.000 | 2 | 0 | 0 |
+| Vitals      | 0.147 | 0.167 | 0.156 | 5 | 29 | 25 |
+
+## SOW targets
+
+- Diagnoses F1 >= 0.80
+- Medications F1 >= 0.85
+
+## Gap analysis
+
+- Diagnoses: 0.08 below target
+- Medications: 0.26 below target
+- Vitals: dramatically below target (F1 0.16)
+- Procedures: moderate (0.53)
+
+## Improvement hypotheses
+
+1. Apply verifier before evaluation (filter FPs)
+2. Tighten vitals in extractor prompt
+3. Tighten procedures definition
+4. Consider lenient matching (partial credit)

@@ -93,7 +93,6 @@ def _call_gemini(note_masked: str, items_json: str) -> dict:
         timeout=60.0,
     )
 
-    # If not 200, print the full response body so we can see why
     if response.status_code != 200:
         body_text = response.text[:500]
         raise RuntimeError(f"HTTP {response.status_code}: {body_text}")
@@ -119,6 +118,80 @@ def _empty_unverified_response(item_ids: list[str], reason: str) -> dict:
         "contradictions": [],
         "missed_items": [],
     }
+
+
+def _coerce_verdicts(raw_verdicts: list[dict]) -> list[Verdict]:
+    """
+    Convert raw verdict dicts from the LLM into Verdict objects.
+
+    Handles common LLM deviations:
+    - Missing `status_correct` → inferred from verdict field.
+    - Missing `verdict` → defaulted to REJECTED (fail closed).
+    - Missing `id` → skipped (cannot match to an item).
+    - Missing `reason` → defaulted to empty string.
+    """
+    out: list[Verdict] = []
+    for v in raw_verdicts:
+        if not isinstance(v, dict):
+            continue
+        if "id" not in v:
+            continue
+
+        verdict_val = v.get("verdict", "REJECTED")
+        if verdict_val not in ("SUPPORTED", "REJECTED"):
+            verdict_val = "REJECTED"
+
+        if "status_correct" not in v:
+            v["status_correct"] = (verdict_val == "SUPPORTED")
+
+        if "reason" not in v or v["reason"] is None:
+            v["reason"] = ""
+
+        try:
+            out.append(Verdict(**v))
+        except Exception as e:
+            # Last-resort fallback: emit a REJECTED verdict rather than
+            # dropping the item entirely.
+            out.append(Verdict(
+                id=v.get("id", "?"),
+                verdict="REJECTED",
+                status_correct=False,
+                icd_fit=None,
+                reason=f"verdict parse error: {str(e)[:80]}",
+            ))
+    return out
+
+
+def _coerce_contradictions(raw: list[dict]) -> list[Contradiction]:
+    out: list[Contradiction] = []
+    for c in raw:
+        if not isinstance(c, dict):
+            continue
+        items = c.get("items", [])
+        if not isinstance(items, list):
+            items = [str(items)]
+        description = c.get("description", "") or ""
+        try:
+            out.append(Contradiction(items=items, description=description))
+        except Exception:
+            continue
+    return out
+
+
+def _coerce_missed(raw: list[dict]) -> list[MissedItem]:
+    out: list[MissedItem] = []
+    for m in raw:
+        if not isinstance(m, dict):
+            continue
+        try:
+            out.append(MissedItem(
+                type=m.get("type", "unknown") or "unknown",
+                text=m.get("text", "") or "",
+                span_text=m.get("span_text", "") or "",
+            ))
+        except Exception:
+            continue
+    return out
 
 
 def verify(note_masked: str, items: list[dict]) -> VerifierResponse:
@@ -150,15 +223,26 @@ def verify(note_masked: str, items: list[dict]) -> VerifierResponse:
                 print(f"  [verifier error] attempt {attempt + 1}: {err_str}")
                 is_rate = "429" in str(e)
                 is_503 = "503" in str(e) or "Service Unavailable" in str(e)
+                is_parse_error = (
+                    isinstance(e, (json.JSONDecodeError,))
+                    or "Expecting" in str(e)
+                    or "delimiter" in str(e).lower()
+                )
+
                 if attempt < MAX_RETRIES:
                     if is_rate:
                         sleep_for = 30
                     elif is_503:
                         sleep_for = min(2 ** (attempt + 2), 60)
+                    elif is_parse_error:
+                        # Malformed JSON: retry sooner, but still give
+                        # the model a chance to produce different output.
+                        sleep_for = min(2 ** attempt, 8)
                     else:
                         sleep_for = 2 ** attempt
                     print(f"  [verifier retry] sleeping {sleep_for}s before next attempt")
                     time.sleep(sleep_for)
+
         if cached is None:
             print(f"  [verifier] FAILED after {MAX_RETRIES + 1} attempts. Last error: {str(last_error)[:300]}")
             cached = _empty_unverified_response(
@@ -166,20 +250,23 @@ def verify(note_masked: str, items: list[dict]) -> VerifierResponse:
                 str(last_error)[:100],
             )
 
-    # Parse into the schema
+    # Parse into the schema with coercion for common LLM deviations
     try:
+        verdicts = _coerce_verdicts(cached.get("verdicts", []))
+        contradictions = _coerce_contradictions(cached.get("contradictions", []))
+        missed_items = _coerce_missed(cached.get("missed_items", []))
         return VerifierResponse(
-            verdicts=[Verdict(**v) for v in cached.get("verdicts", [])],
-            contradictions=[Contradiction(**c) for c in cached.get("contradictions", [])],
-            missed_items=[MissedItem(**m) for m in cached.get("missed_items", [])],
+            verdicts=verdicts,
+            contradictions=contradictions,
+            missed_items=missed_items,
         )
     except Exception as e:
-        print(f"  [verifier] malformed response: {e}")
+        print(f"  [verifier] malformed response (unrecoverable): {e}")
         return VerifierResponse(
             verdicts=[
                 Verdict(id=item.get("id", "?"), verdict="REJECTED",
                         status_correct=False, icd_fit=None,
-                        reason=f"malformed verifier response: {e}")
+                        reason=f"malformed verifier response: {str(e)[:80]}")
                 for item in items
             ],
         )

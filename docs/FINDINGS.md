@@ -213,4 +213,24 @@ Format per entry:
 - **Notes:** Full trace recorded per note. This is what the reviewer UI
   will display.
 
+
+  ### Masker over-masking fixed
+
+- **Severity:** medium (fixed 2026-10-09)
+- **Where:** `src/masker.py`
+- **What:** The masker was replacing drug names like "Nasonex" and
+  "Ortho Tri-Cyclen" with X's because spaCy's NER occasionally
+  classifies unusual capitalized words as PERSON. This weakened the
+  verifier's judgment on those items (it saw "XXXXXXXXXXXXX" instead
+  of the drug name).
+- **Action:** Fixed by (1) correcting the `CLINICAL_BLOCKLIST` (it was
+  accidentally one concatenated string due to missing commas), and
+  (2) checking the blocklist inside the spaCy NER loop — if any token
+  in the NER span matches a blocklist entry, the span is skipped.
+- **Verified:** `CLINICAL_BLOCKLIST` now has 46 entries. On note_001,
+  0 items are masked (correct — the note contains no true PII).
+  Previously 2 drug names were being masked.
+- **Notes:** This is a real correctness fix — it makes the verifier's
+  input cleaner and improves its judgments on those items.
+
   ---

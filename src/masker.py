@@ -63,12 +63,23 @@ _REGEX_PATTERNS = [
     ("ZIP", re.compile(r"\b\d{5}(?:-\d{4})?\b")),
 ]
 
+
+# Clinical and drug terms that spaCy sometimes mislabels as PERSON or ORG.
+# If any token inside a candidate NER span matches an entry here, the span
+# is skipped and NOT masked.
 CLINICAL_BLOCKLIST = {
+    # Clinical terms
     "allergic", "rhinitis", "asthma", "diabetes", "hypertension",
     "pneumonia", "bronchitis", "sinusitis", "dermatitis", "arthritis",
     "anemia", "cardiac", "renal", "hepatic", "pulmonary", "gastric",
+    # Common drug names that could be misclassified by NER
+    "nasonex", "allegra", "zyrtec", "claritin", "loratadine",
+    "metformin", "aspirin", "ibuprofen", "tylenol", "advil",
+    "ortho", "tri-cyclen", "depakote", "geodon", "xanax",
+    "norco", "clindamycin", "bacitracin", "bactrim", "hibiclens",
+    "bactroban", "ancef", "vancomycin", "lorcet", "kefzol",
+    "gentamicin", "novolog", "protamine", "heparin", "papaverine",
 }
-
 
 
 def _same_length_filler(length: int) -> str:
@@ -105,6 +116,11 @@ def mask_pii(note_text: str) -> tuple[str, list[MaskEntry]]:
         # Skip single-token entities — too many false positives from
         # capitalized medical terms and adjectives.
         if len(ent.text.split()) < 2:
+            continue
+        # Skip if any token inside the entity matches a clinical or drug
+        # term from the blocklist.
+        tokens = ent.text.lower().split()
+        if any(tok in CLINICAL_BLOCKLIST for tok in tokens):
             continue
         spacy_spans.append((ent.start_char, ent.end_char, ent.label_))
 

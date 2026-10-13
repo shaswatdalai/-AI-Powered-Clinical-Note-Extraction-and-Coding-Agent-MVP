@@ -8,7 +8,9 @@ Design rules:
   confidence. That is what "independent" means here.
 - If the verifier fails or returns invalid JSON, all items are marked
   UNVERIFIED and flagged. Fail closed.
-- Every response is cached on disk keyed by hash(model + prompt + items).
+- Every response is cached on disk keyed by hash of
+  (model + system prompt + user prompt template + schema fingerprint +
+  note + items).
 """
 
 import hashlib
@@ -41,8 +43,33 @@ MAX_RETRIES = 6
 CACHE_DIR = Path("cache") / "verifier"
 
 
+def _schema_fingerprint() -> str:
+    """Short hash of src/schema.py.
+
+    Included in the cache key because the verifier's inputs are shaped by
+    the schema and cached verdicts reference schema-defined fields. If
+    the schema changes, cached verdicts for the old shape are stale.
+    """
+    p = Path(__file__).parent / "schema.py"
+    return hashlib.sha256(p.read_bytes()).hexdigest()[:16]
+
+
 def _cache_key(note_masked: str, items_json: str) -> str:
-    payload = f"{GOOGLE_MODEL}|{SYSTEM_PROMPT}|{note_masked}|{items_json}"
+    """Hash (model + system prompt + user prompt template + schema + note + items).
+
+    Both prompt files and the schema module are included so that any
+    change to verification behaviour invalidates every cached response.
+    Previously only SYSTEM_PROMPT was included, which meant edits to
+    verifier_user.txt silently reused stale results.
+    """
+    payload = "|".join([
+        GOOGLE_MODEL,
+        SYSTEM_PROMPT,
+        USER_PROMPT_TEMPLATE,
+        _schema_fingerprint(),
+        note_masked,
+        items_json,
+    ])
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 

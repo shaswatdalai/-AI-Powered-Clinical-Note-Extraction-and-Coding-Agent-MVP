@@ -1,6 +1,10 @@
 import json
 import glob
-from src.icd_index import load_index, icd_lookup
+from src.icd_index import (
+    load_index, icd_lookup,
+    _vector_search, _bm25_descs, _bm25_codes,
+    _meaningful_tokens, MIN_TOKEN_OVERLAP, MIN_COSINE_FLOOR,
+)
 
 load_index()
 
@@ -15,19 +19,31 @@ targets = [
 ]
 
 for name in targets:
-    res = icd_lookup(name)
     print("=" * 70)
     print(f"QUERY: {name!r}")
-    if not res:
-        print("  (empty)")
+
+    vr = _vector_search(name)
+    if not vr:
+        print("  no vector results")
         continue
-    for c in res[:3]:
-        if isinstance(c, dict):
-            code = c.get("code")
-            score = c.get("score")
-            tc = c.get("top_cosine")
-            desc = (c.get("description") or "")[:100]
-            print(f"  {code:8s} score={score} top_cosine={tc}")
-            print(f"           {desc}")
-        else:
-            print(f"  raw: {c}")
+
+    top_idx, top_cosine = vr[0]
+    code = _bm25_codes[top_idx]
+    desc = _bm25_descs[top_idx]
+    print(f"  top-1 vector: {code}  cos={top_cosine:.4f}")
+    print(f"                {desc!r}")
+    print(f"  query tokens: {sorted(_meaningful_tokens(name))}")
+    print(f"  cand tokens:  {sorted(_meaningful_tokens(desc))}")
+    q = _meaningful_tokens(name)
+    c = _meaningful_tokens(desc)
+    overlap = len(q & c) / len(q) if q else 0.0
+    print(f"  overlap = {overlap:.3f}  (threshold {MIN_TOKEN_OVERLAP})")
+    print(f"  cosine gate: {top_cosine:.4f} >= {MIN_COSINE_FLOOR}? {top_cosine >= MIN_COSINE_FLOOR}")
+
+    res = icd_lookup(name)
+    if isinstance(res, str):
+        print(f"  -> RETURNED STRING: {res!r}")
+    else:
+        print(f"  -> returned {len(res)} candidates")
+        for c in res[:3]:
+            print(f"     {c['code']:8s} score={c['score']} cos={c.get('top_cosine')}  {c['description'][:80]}")

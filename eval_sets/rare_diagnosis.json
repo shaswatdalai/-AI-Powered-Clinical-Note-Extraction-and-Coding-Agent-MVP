@@ -1,0 +1,84 @@
+{
+  "set_name": "rare_diagnosis",
+  "description": "Gold notes whose diagnoses are absent from or poorly represented in the ICD-10 code table. Purpose: measure the rate of correct NO_CONFIDENT_MATCH abstentions (SOW 8.4b).",
+  "created": "2026-10-13",
+  "sow_requirement": "Section 3.9: 'A rare-diagnosis set of at least 10 notes whose diagnoses are absent from or poorly represented in the code table.' Section 8.4b: 'correct no confident match on at least 80% of the rare-diagnosis set.'",
+  "excluded_from_candidates": [
+    "hypertension (codes cleanly to I10)",
+    "obesity (codes cleanly to E66.9)",
+    "peptic ulcer disease (codes cleanly to K27.9)",
+    "polyps, cancer (generic terms with clean ICD coverage)"
+  ],
+  "notes": [
+    {
+      "note_id": "note_002",
+      "specialty": "Autopsy",
+      "rare_diagnoses": ["ligature mark", "hyoid bone fracture"],
+      "expected_outcome": "NO_CONFIDENT_MATCH",
+      "rationale": "Forensic findings; not clinical diagnoses; ICD-10 has no direct code."
+    },
+    {
+      "note_id": "note_003",
+      "specialty": "Bariatrics",
+      "rare_diagnoses": ["status post lap band placement"],
+      "expected_outcome": "NO_CONFIDENT_MATCH",
+      "rationale": "Post-procedural state phrase; ICD Z-codes cover encounters, not this phrasing."
+    },
+    {
+      "note_id": "note_005",
+      "specialty": "Chiropractic",
+      "rare_diagnoses": ["lumbosacral contusion/strain"],
+      "expected_outcome": "NO_CONFIDENT_MATCH",
+      "rationale": "Compound phrase mixing contusion and strain; ICD codes these separately."
+    },
+    {
+      "note_id": "note_012",
+      "specialty": "ENT - Otolaryngology",
+      "rare_diagnoses": ["stapedial fixation due to otosclerosis"],
+      "expected_outcome": "NO_CONFIDENT_MATCH",
+      "rationale": "Very specific phrase; ICD has H80.8 for otosclerosis but not for stapedial fixation as the primary term."
+    },
+    {
+      "note_id": "note_014",
+      "specialty": "Autopsy",
+      "rare_diagnoses": ["blunt force traumatic injury"],
+      "expected_outcome": "NO_CONFIDENT_MATCH",
+      "rationale": "Mechanism of injury, excluded by labelling guideline; ICD has external-cause codes but not as a diagnosis."
+    },
+    {
+      "note_id": "note_034",
+      "specialty": "Cosmetic / Plastic Surgery",
+      "rare_diagnoses": ["bilateral mammary hypertrophy"],
+      "expected_outcome": "NO_CONFIDENT_MATCH",
+      "rationale": "ICD has N62 for hypertrophy of breast but not the bilateral phrasing; token-overlap gate correctly abstains."
+    },
+    {
+      "note_id": "note_036",
+      "specialty": "Dermatology",
+      "rare_diagnoses": ["nevus of left lower cheek", "superficial nevus of right nasal ala"],
+      "expected_outcome": "NO_CONFIDENT_MATCH",
+      "rationale": "Site-specific descriptive phrases; gold codes to D22.39 but the phrase is over-specified."
+    },
+    {
+      "note_id": "note_050",
+      "specialty": "Dentistry",
+      "rare_diagnoses": ["odontalgia"],
+      "expected_outcome": "NO_CONFIDENT_MATCH",
+      "rationale": "Rare synonym; ICD uses K08.8 for other specified disorders of teeth."
+    },
+    {
+      "note_id": "note_054",
+      "specialty": "Emergency Room Reports",
+      "rare_diagnoses": ["tonsillolith", "uvular and soft palate edema"],
+      "expected_outcome": "NO_CONFIDENT_MATCH",
+      "rationale": "Rare entity and compound phrasing; no direct ICD-10 match for these exact terms."
+    },
+    {
+      "note_id": "note_057",
+      "specialty": "Gastroenterology",
+      "rare_diagnoses": ["gastroesophageal junction ulcer"],
+      "expected_outcome": "NO_CONFIDENT_MATCH",
+      "rationale": "ICD has K22.1 for gastric ulcer but the junction phrasing is unusual."
+    }
+  ]
+}

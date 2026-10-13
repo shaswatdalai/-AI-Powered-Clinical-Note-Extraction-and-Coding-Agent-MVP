@@ -20,6 +20,9 @@ RULES:
 6. If a section is titled "Medications Given During Procedure" or the
    drug is clearly described as given for anesthesia, do not extract it
    as a medication.
+7. For procedures: if the note describes two distinct procedures joined
+   by "and" or commas, emit them as separate items with separate names
+   and separate evidence_quotes.
 
 EXTRACT THESE ENTITY TYPES:
 
@@ -86,9 +89,29 @@ procedures: surgeries, imaging, tests, interventions.
   - Vital sign measurements (BP, HR, temperature) — those go under vitals
 
   Required fields:
-    - name: procedure name
+    - name: the procedure name only. Keep it under 8 words. Use the
+      shortest phrase from the note that names the procedure, NOT a
+      full description. Do NOT include:
+        - Tooth numbers, sizes, or counts ("tooth #3, #5, #6...",
+          "0.5 x 1 cm", "all four quadrants")
+        - Multiple procedures joined by "and" or commas — emit each as
+          a separate item (see Rule 7)
+        - Anatomical detail beyond the procedure name ("... of the left
+          upper cheek")
+        - Laterality, staging, or measurements
+      GOOD: "full-mouth extraction"
+      GOOD: "lap band placement"
+      GOOD: "excision of skin neoplasm"
+      BAD:  "Full-mouth extraction of tooth #3,5,6, 7, 8, 9, 10, 11,
+             12, 13, 14, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 31,
+             and alveoloplasty in all four quadrants"
+      BAD:  "Excision of left upper cheek skin neoplasm 0.5 x 1 cm
+             with two layer closure"
     - date: as written, or null
-    - evidence_quote: verbatim text
+    - evidence_quote: verbatim text from the note that supports the
+      procedure. This is where the full description belongs. It MUST
+      be a superset (or equal) of name and MUST appear verbatim in
+      the note.
 
 allergies: substances the patient is allergic to.
   Required fields:

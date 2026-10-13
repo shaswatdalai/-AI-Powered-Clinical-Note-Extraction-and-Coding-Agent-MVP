@@ -279,3 +279,61 @@ Format per entry:
 - **Severity:** high (finding)
 - **Where:** `src/eval/run_eval.py`, both modes
 - **What:** With the new matcher:
+
+
+### ICD-10 confidence gate is not firing (critical)
+
+- **Severity:** critical (SOW 3.3, 8.4b)
+- **Where:** `src/icd_index.py`, function `icd_lookup`, lines ~210-213
+- **What:** The confidence gate compares the top vector-search cosine
+  against `MIN_COSINE_CONFIDENCE = 0.55`. Diagnostic on 7 queries
+  (5 rare + 2 common) shows every query returns top_cosine between
+  0.85 and 0.89, regardless of whether the top candidate is clinically
+  related. Examples:
+    - "ligature mark" (forensic) → Y652 "misadventures during surgical
+      care", top_cosine 0.8611
+    - "hyoid bone fracture" (neck) → S92211K "Displaced fracture of
+      cuboid bone of right foot", top_cosine 0.8784
+    - "hypertension" → I152 "Secondary hypertension", top_cosine 0.8834
+  The gate never fires because no query falls below 0.55. The system
+  returns codes for everything; the "no confident match" path is dead.
+- **Root cause:** `bge-small-en` produces embeddings in a narrow angular
+  cone for short clinical phrases. Cosine similarity does not
+  discriminate between semantically related and unrelated clinical
+  terms. The gate is comparing against the wrong signal.
+- **Action:** Fix pending. Candidate fixes: (a) replace the cosine gate
+  with a token-overlap gate (query tokens must appear in the top
+  candidate's description); (b) strip the "Header: ... | Specific long
+  description..." wrapper text from descriptions before indexing; (c)
+  swap to a biomedical embedding model. (a) and (b) are cheap; (c)
+  requires rebuilding 74,260 embeddings.
+- **Notes:** The extraction eval reports diagnoses F1 0.720 because it
+  measures name matching, not code matching. The coding track is
+  broken and was not caught until `icd_eval.py` was built.
+
+### ICD-10 "Other X" bias
+
+- **Severity:** high (SOW 8.4a)
+- **Where:** `src/icd_index.py`, `_rrf_fuse` output ordering
+- **What:** Query "asthma" returns `J45998 "Other asthma"` as the top
+  candidate instead of `J45.909 "Unspecified asthma"`. Both are in the
+  J45 chapter, but the correct top-1 for an unqualified "asthma" query
+  is the unspecified code. The ranking prefers "Other" because BM25
+  matches the literal token "asthma" in the description of the
+  "Other asthma" code.
+- **Action:** Fix pending, tied to the description-wrapper strip.
+- **Notes:** Top-1 accuracy will be low until this is addressed. Top-3
+  accuracy may be acceptable (both candidates are in the top-3).
+
+### BM25 scores are not discriminating
+
+- **Severity:** medium (SOW 8.4a)
+- **Where:** `src/icd_index.py`, `_bm25_search`
+- **What:** BM25 candidate scores are in a very narrow range
+  (0.016-0.033) across all queries, both common and rare. The
+  description wrapper text ("Header: ... | Specific long description
+  about this code: ...") introduces shared stopwords into every
+  document, flattening the BM25 signal.
+- **Action:** Fix pending, tied to the description-wrapper strip.
+
+---

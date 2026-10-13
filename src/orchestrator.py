@@ -13,7 +13,7 @@ The ICD index is loaded lazily on the first run() call so that callers
 (the eval harness, the reviewer UI, a REPL) do not need to remember to
 call load_index() themselves.
 """
-
+import time
 from src.masker import mask_pii
 from src.extractor import extract
 from src.icd_index import icd_lookup, load_index
@@ -163,6 +163,7 @@ def run(note_text: str) -> dict:
     # ------------------------------------------------------------------
     # 3. Extract
     # ------------------------------------------------------------------
+    t_extract_start = time.perf_counter()
     try:
         extraction = extract(masked)
     except Exception as e:

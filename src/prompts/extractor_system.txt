@@ -91,6 +91,9 @@ RULES:
 3. Do not paraphrase the quote. Copy it character-for-character.
 4. Do NOT output character offsets. Code will compute them.
 5. If the note is empty or contains no clinical content, return empty lists.
+6. If a section is titled "Medications Given During Procedure" or the
+   drug is clearly described as given for anesthesia, do not extract it
+   as a medication.
 
 EXTRACT THESE ENTITY TYPES:
 
@@ -110,6 +113,11 @@ diagnoses: ACTIVE or HISTORICAL medical conditions the patient has,
   - Normal states ("pregnant" when not a complication, "given birth")
   - Social facts ("smokes", "recent sexual activity")
   - Occupational or travel history
+    - Symptoms without a formal diagnosis name ("allergies" when used as a
+    complaint, "diminished taste", "xerostomia", "headaches",
+    "GI irritability")
+  - Lab values ("BMI is 38.5")
+  - Social facts ("substance abuse" when not formally diagnosed)
 
   If the note says "rule out X" or "concern for X", extract X with
   status "suspected".
@@ -132,11 +140,30 @@ medications: drugs the patient is taking or was prescribed.
     - status: "current" | "discontinued" | "newly_prescribed"
     - evidence_quote: verbatim text
 
+      DO NOT extract:
+  - Drugs given during a procedure for anesthesia or local numbing
+    (lidocaine, epinephrine, Marcaine, bupivacaine, Xylocaine, Kefzol,
+    cefazolin when described as given "during surgery" or "for the
+    procedure")
+  - Drugs described as "considered", "an option", "if needed", or
+    "will consider" — these are not prescribed
+  - Antibiotic ointment or "antibiotic ointment" as a generic reference
+    (only extract a specific named drug)
+
 procedures: surgeries, imaging, tests, interventions.
   Required fields:
     - name: procedure name
     - date: as written, or null
     - evidence_quote: verbatim text
+
+    DO NOT extract:
+  - Laboratory tests (CBC, Chem-7, U/A, blood alcohol, cultures and
+    sensitivities) — these are lab orders, not procedures
+  - Toxicology panels and their results
+  - Autopsy as a procedure (the autopsy is the subject of the report,
+    not a procedure performed on the patient)
+  - Postmortem x-rays
+  - Vital sign measurements (BP, HR, temperature) — those go under vitals
 
 allergies: substances the patient is allergic to.
   Required fields:

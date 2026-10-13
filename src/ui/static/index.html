@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Clinical Extraction Reviewer</title>
+<style>
+/* ============================================================
+   Design tokens
+   ============================================================ */
+:root {
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Consolas, monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+
+  --transition-fast: 120ms ease;
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html[data-theme="light"] {
+  --bg-app: #f5f7fa;
+  --bg-surface: #ffffff;
+  --bg-surface-2: #fafbfc;
+  --bg-elevated: #ffffff;
+  --bg-hover: #eef2f7;
+  --bg-inset: #f0f3f7;
+
+  --border-subtle: #e5e9ef;
+  --border-default: #d5dbe3;
+  --border-strong: #b8c0cc;
+
+  --text-primary: #0f1720;
+  --text-secondary: #4a5461;
+  --text-tertiary: #7a8593;
+  --text-inverse: #ffffff;
+
+  --accent: #3b6fe0;
+  --accent-hover: #2f5cc4;
+  --accent-soft: #e8efff;
+
+  --success: #16803c;
+  --success-soft: #dcf5e5;
+  --warning: #b26300;
+  --warning-soft: #fff2da;
+  --danger: #c92a2a;
+  --danger-soft: #ffe3e3;
+  --info: #5b21b6;
+  --info-soft: #ede9fe;
+
+  --highlight-accepted: rgba(22, 128, 60, 0.14);
+  --highlight-accepted-border: #16803c;
+  --highlight-flagged: rgba(178, 99, 0, 0.16);
+  --highlight-flagged-border: #b26300;
+  --highlight-hover: rgba(59, 111, 224, 0.12);
+}
+
+html[data-theme="dark"] {
+  --bg-app: #0e1116;
+  --bg-surface: #161a22;
+  --bg-surface-2: #1c212a;
+  --bg-elevated: #1f242e;
+  --bg-hover: #232936;
+  --bg-inset: #12161d;
+
+  --border-subtle: #262c38;
+  --border-default: #333a48;
+  --border-strong: #4a5466;
+
+  --text-primary: #eef2f8;
+  --text-secondary: #b3bccb;
+  --text-tertiary: #7b8595;
+  --text-inverse: #0e1116;
+
+  --accent: #6b92ff;
+  --accent-hover: #8aa8ff;
+  --accent-soft: #1e2942;
+
+  --success: #4ade80;
+  --success-soft: #14361f;
+  --warning: #fbbf24;
+  --warning-soft: #3d2c0a;
+  --danger: #f87171;
+  --danger-soft: #3a1414;
+  --info: #a78bfa;
+  --info-soft: #2a1f4d;
+
+  --highlight-accepted: rgba(74, 222, 128, 0.18);
+  --highlight-accepted-border: #4ade80;
+  --highlight-flagged: rgba(251, 191, 36, 0.20);
+  --highlight-flagged-border: #fbbf24;
+  --highlight-hover: rgba(107, 146, 255, 0.20);
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--text-primary);
+  background: var(--bg-app);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+button, input, select { font: inherit; color: inherit; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
+
+/* ============================================================
+   App shell
+   ============================================================ */
+.app {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  grid-template-rows: 56px 1fr;
+  height: 100vh;
+}
+
+/* --- Top bar --- */
+.topbar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: 0 var(--space-5);
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-sm);
+  z-index: 10;
+}
+.brand {
+  display: flex; align-items: center; gap: var(--space-3);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+}
+.brand-logo {
+  width: 26px; height: 26px;
+  background: linear-gradient(135deg, var(--accent), var(--info));
+  border-radius: 8px;
+  display: grid; place-items: center;
+  color: white; font-weight: 700; font-size: 13px;
+  box-shadow: 0 2px 6px rgba(59, 111, 224, 0.35);
+}
+.brand-sub {
+  color: var(--text-tertiary);
+  font-size: 11.5px;
+  font-weight: 400;
+  padding-left: var(--space-3);
+  border-left: 1px solid var(--border-subtle);
+  margin-left: var(--space-2);
+}
+
+.topbar-actions {
+  margin-left: auto;
+  display: flex; align-items: center; gap: var(--space-2);
+}
+.status-text {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+  margin-right: var(--space-3);
+}
+
+/* --- Sidebar --- */
+.sidebar {
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border-subtle);
+  padding: var(--space-4) var(--space-3);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+.sidebar-section h3 {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  padding: 0 var(--space-2);
+  margin-bottom: var(--space-2);
+}
+.note-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.note-list button {
+  width: 100%;
+  text-align: left;
+  padding: 7px 10px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 12.5px;
+  font-family: var(--font-mono);
+  transition: background var(--transition-fast), color var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.note-list button:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+.note-list button.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+.note-list .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--border-strong);
+  flex-shrink: 0;
+  transition: background var(--transition-base);
+}
+.note-list button.has-run .dot {
+  background: var(--success);
+  box-shadow: 0 0 0 3px var(--success-soft);
+}
+
+/* --- Buttons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 500;
+  transition: background var(--transition-fast), border-color var(--transition-fast),
+              box-shadow var(--transition-fast), transform var(--transition-fast);
+  white-space: nowrap;
+}
+.btn:hover:not(:disabled) {
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+}
+.btn:active:not(:disabled) { transform: translateY(1px); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.btn.primary {
+  background: var(--accent);
+  color: var(--text-inverse);
+  border-color: var(--accent);
+  box-shadow: 0 1px 3px rgba(59, 111, 224, 0.3);
+}
+.btn.primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+.btn.ghost {
+  background: transparent;
+  border-color: transparent;
+}
+.btn.ghost:hover:not(:disabled) { background: var(--bg-hover); }
+.btn.icon { padding: 7px; width: 32px; height: 32px; justify-content: center; }
+
+/* --- Main split --- */
+.main {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  overflow: hidden;
+  background: var(--bg-app);
+}
+.pane {
+  overflow-y: auto;
+  padding: var(--space-5);
+  min-width: 0;
+}
+.divider {
+  background: var(--border-subtle);
+  cursor: col-resize;
+  position: relative;
+  transition: background var(--transition-fast);
+}
+.divider:hover, .divider.dragging { background: var(--accent); }
+
+/* --- Empty state --- */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 300px;
+  color: var(--text-tertiary);
+  gap: var(--space-3);
+  text-align: center;
+  padding: var(--space-6);
+}
+.empty-state .icon-lg {
+  width: 56px; height: 56px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-inset);
+  display: grid; place-items: center;
+  color: var(--text-tertiary);
+}
+.empty-state h2 {
+  font-size: 15px; font-weight: 600; color: var(--text-secondary);
+}
+.empty-state p { font-size: 13px; max-width: 340px; }
+
+/* ============================================================
+   Note view
+   ============================================================ */
+.note-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: var(--space-4);
+  gap: var(--space-3);
+}
+.note-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex; align-items: center; gap: var(--space-3);
+}
+.note-id {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-tertiary);
+  background: var(--bg-inset);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+}
+.note-meta {
+  display: flex; gap: var(--space-2); align-items: center;
+  font-size: 12px; color: var(--text-tertiary);
+}
+.pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+.pill.success { background: var(--success-soft); color: var(--success); }
+.pill.warning { background: var(--warning-soft); color: var(--warning); }
+.pill.danger  { background: var(--danger-soft);  color: var(--danger); }
+.pill.info    { background: var(--info-soft);    color: var(--info); }
+.pill.neutral { background: var(--bg-inset);     color: var(--text-tertiary); }
+
+.note-text {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.75;
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: var(--space-5);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+mark {
+  background: transparent;
+  color: inherit;
+  padding: 1px 2px;
+  margin: 0 -2px;
+  border-radius: 3px;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: background var(--transition-fast), outline-color var(--transition-fast);
+  outline: 2px solid transparent;
+  outline-offset: 1px;
+}
+mark.accepted {
+  background: var(--highlight-accepted);
+  border-bottom-color: var(--highlight-accepted-border);
+}
+mark.flagged {
+  background: var(--highlight-flagged);
+  border-bottom-color: var(--highlight-flagged-border);
+}
+mark:hover, mark.hover {
+  outline-color: var(--accent);
+}
+
+/* ============================================================
+   Cards / panels
+   ============================================================ */
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  margin-bottom: var(--space-4);
+  transition: box-shadow var(--transition-base);
+}
+.card:hover { box-shadow: var(--shadow-md); }
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-surface-2);
+}
+.card-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--text-primary);
+  display: flex; align-items: center; gap: var(--space-2);
+}
+.card-title .count {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  background: var(--bg-inset);
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+}
+.card-body { padding: var(--space-4); }
+.card-body.flush { padding: 0; }
+
+/* ============================================================
+   Item table
+   ============================================================ */
+.item-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.item-table thead th {
+  text-align: left;
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  padding: var(--space-2) var(--space-4);
+  background: var(--bg-surface-2);
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+}
+.item-table tbody tr {
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background var(--transition-fast);
+  cursor: default;
+}
+.item-table tbody tr:last-child { border-bottom: none; }
+.item-table tbody tr:hover, .item-table tbody tr.hover {
+  background: var(--bg-hover);
+}
+.item-table td {
+  padding: var(--space-3) var(--space-4);
+  vertical-align: top;
+}
+.item-table .cell-id {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text-tertiary);
+  width: 44px;
+}
+.item-table .cell-name {
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 3px;
+}
+.item-table .cell-sub {
+  font-size: 11.5px;
+  color: var(--text-tertiary);
+}
+
+/* Type badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.badge.diagnosis { background: var(--accent-soft);   color: var(--accent); }
+.badge.medication { background: var(--success-soft); color: var(--success); }
+.badge.procedure  { background: var(--warning-soft); color: var(--warning); }
+.badge.allergy    { background: var(--info-soft);    color: var(--info); }
+.badge.vital      { background: var(--danger-soft);  color: var(--danger); }
+
+/* ICD candidate list */
+.icd-list {
+  margin-top: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.icd-item {
+  display: flex; align-items: center; gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  padding: 3px 7px;
+  background: var(--bg-inset);
+  border-radius: var(--radius-sm);
+}
+.icd-item .code {
+  font-weight: 600;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+.icd-item .desc {
+  color: var(--text-tertiary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Reason / status */
+.reason {
+  font-size: 11.5px;
+  color: var(--text-tertiary);
+  font-style: italic;
+  line-height: 1.5;
+}
+.status-chip {
+  display: inline-block;
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--bg-inset);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+/* Row actions */
+.row-actions { display: flex; gap: 4px; justify-content: flex-end; }
+.row-actions .btn {
+  padding: 4px 8px;
+  font-size: 11.5px;
+  min-width: 32px;
+  justify-content: center;
+}
+.btn.accept-on {
+  background: var(--success-soft);
+  color: var(--success);
+  border-color: transparent;
+}
+.btn.reject-on {
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-color: transparent;
+}
+
+/* ============================================================
+   Trace timeline
+   ============================================================ */
+.trace {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  padding: var(--space-4) var(--space-4) var(--space-4) 0;
+  max-height: 380px;
+  overflow-y: auto;
+}
+.trace-line {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: var(--space-3);
+  padding: 3px var(--space-4) 3px 0;
+  position: relative;
+}
+.trace-line .idx {
+  text-align: right;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  padding-top: 2px;
+  user-select: none;
+}
+.trace-line .msg { color: var(--text-secondary); }
+.trace-line::before {
+  content: "";
+  position: absolute;
+  left: 34px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--border-subtle);
+}
+.trace-line:first-child::before { top: 50%; }
+.trace-line:last-child::before  { bottom: 50%; }
+.trace-line .idx::before {
+  content: "";
+  position: absolute;
+  left: 30px;
+  top: 8px;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  border: 2px solid var(--border-default);
+}
+.trace-line.emphasis .idx::before {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+.trace-line.warn .idx::before { border-color: var(--warning); background: var(--warning); }
+.trace-line.error .idx::before { border-color: var(--danger); background: var(--danger); }
+
+/* ============================================================
+   Escalation banner
+   ============================================================ */
+.escalated-banner {
+  display: none;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  background: var(--danger-soft);
+  border-bottom: 1px solid var(--danger);
+  color: var(--danger);
+  font-weight: 600;
+  font-size: 13px;
+  grid-column: 1 / -1;
+}
+.escalated-banner.show { display: flex; }
+.escalated-banner .icon {
+  width: 18px; height: 18px; flex-shrink: 0;
+}
+
+/* ============================================================
+   Spinner
+   ============================================================ */
+.spinner {
+  width: 14px; height: 14px;
+  border: 2px solid var(--border-default);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============================================================
+   Responsive fallback
+   ============================================================ */
+@media (max-width: 1000px) {
+  .app { grid-template-columns: 200px 1fr; }
+  .main { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+  .divider { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">CX</div>
+      Clinical Extraction Reviewer
+      <span class="brand-sub">Mirai Labs MVP</span>
+    </div>
+    <div class="topbar-actions">
+      <span class="status-text" id="status-text">Ready</span>
+      <button class="btn icon ghost" id="theme-toggle" title="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="btn" id="export-btn" disabled>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export JSON
+      </button>
+      <button class="btn primary" id="run-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Run pipeline
+      </button>
+    </div>
+  </header>
+
+  <div class="escalated-banner" id="escalated-banner">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <span id="escalation-text">Note escalated — review every item manually.</span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <h3>Notes</h3>
+      <ul class="note-list" id="note-list">
+        <li><div class="empty-state" style="min-height:auto;padding:var(--space-4);"><span class="spinner"></span></div></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <h3>Legend</h3>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:11.5px;color:var(--text-tertiary);padding:0 var(--space-2);">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="width:12px;height:12px;background:var(--highlight-accepted);border-bottom:2px solid var(--highlight-accepted-border);border-radius:3px;"></span>
+          Accepted
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="width:12px;height:12px;background:var(--highlight-flagged);border-bottom:2px solid var(--highlight-flagged-border);border-radius:3px;"></span>
+          Flagged
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main" id="main">
+    <!-- LEFT: note -->
+    <section class="pane" id="pane-left">
+      <div class="empty-state" id="note-empty">
+        <div class="icon-lg">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <h2>No note loaded</h2>
+        <p>Select a note from the sidebar and click "Run pipeline" to extract diagnoses, medications, procedures, allergies, and vitals.</p>
+      </div>
+      <div id="note-view" style="display:none;">
+        <div class="note-header">
+          <div class="note-title">
+            <span class="note-id" id="note-id-label">—</span>
+            <span id="note-title-text">Clinical note</span>
+          </div>
+          <div class="note-meta" id="note-meta"></div>
+        </div>
+        <div class="note-text" id="note-text"></div>
+      </div>
+    </section>
+
+    <!-- Drag handle -->
+    <div class="divider" id="divider"></div>
+
+    <!-- RIGHT: results -->
+    <section class="pane" id="pane-right">
+      <div class="empty-state" id="results-empty">
+        <div class="icon-lg">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <h2>No results yet</h2>
+        <p>Run the pipeline to see accepted items, flagged items, and the agent trace.</p>
+      </div>
+
+      <div id="results-view" style="display:none;">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              Accepted items
+              <span class="count" id="accepted-count">0</span>
+            </div>
+            <div id="accepted-summary" style="font-size:11.5px;color:var(--text-tertiary);"></div>
+          </div>
+          <div class="card-body flush">
+            <table class="item-table" id="accepted-table">
+              <thead>
+                <tr>
+                  <th style="width:50px;">ID</th>
+                  <th style="width:100px;">Type</th>
+                  <th>Item</th>
+                  <th style="width:180px;">Reason</th>
+                  <th style="width:80px;"></th>
+                </tr>
+              </thead>
+              <tbody id="accepted-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              Flagged items
+              <span class="count" id="flagged-count">0</span>
+            </div>
+          </div>
+          <div class="card-body flush">
+            <table class="item-table" id="flagged-table">
+              <thead>
+                <tr>
+                  <th style="width:50px;">ID</th>
+                  <th style="width:100px;">Type</th>
+                  <th>Item</th>
+                  <th>Reason</th>
+                </tr>
+              </thead>
+              <tbody id="flagged-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Agent trace</div>
+            <div style="font-size:11.5px;color:var(--text-tertiary);" id="trace-count"></div>
+          </div>
+          <div class="card-body flush">
+            <div class="trace" id="trace-body"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+/* ============================================================
+   State
+   ============================================================ */
+const state = {
+  notes: [],
+  noteId: null,
+  noteText: "",
+  accepted: [],
+  flagged: [],
+  trace: [],
+  escalated: false,
+  decisions: {},
+  runNotes: new Set(),
+};
+
+const $ = (id) => document.getElementById(id);
+
+function escapeHtml(s) {
+  return (s ?? "").replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
+}
+
+function setStatus(text, spin = false) {
+  $("status-text").innerHTML = spin
+    ? `<span class="spinner"></span> ${escapeHtml(text)}`
+    : escapeHtml(text);
+}
+
+/* ============================================================
+   Notes sidebar
+   ============================================================ */
+async function loadNotes() {
+  try {
+    const res = await fetch("/api/notes");
+    const data = await res.json();
+    state.notes = data.notes || [];
+    renderNoteList();
+    if (state.notes.length) {
+      state.noteId = state.notes[0];
+      markActiveNote();
+    }
+  } catch (e) {
+    setStatus(`Failed to load notes: ${e.message}`);
+  }
+}
+
+function renderNoteList() {
+  const list = $("note-list");
+  list.innerHTML = "";
+  for (const n of state.notes) {
+    const li = document.createElement("li");
+    const btn = document.createElement("button");
+    btn.dataset.id = n;
+    btn.className = n === state.noteId ? "active" : "";
+    if (state.runNotes.has(n)) btn.classList.add("has-run");
+    btn.innerHTML = `<span>${escapeHtml(n)}</span><span class="dot"></span>`;
+    btn.addEventListener("click", () => {
+      state.noteId = n;
+      markActiveNote();
+    });
+    li.appendChild(btn);
+    list.appendChild(li);
+  }
+}
+
+function markActiveNote() {
+  document.querySelectorAll(".note-list button").forEach(b => {
+    b.classList.toggle("active", b.dataset.id === state.noteId);
+  });
+}
+
+/* ============================================================
+   Run pipeline
+   ============================================================ */
+async function runPipeline() {
+  if (!state.noteId) { setStatus("No note selected"); return; }
+  const noteId = state.noteId;
+
+  $("run-btn").disabled = true;
+  $("export-btn").disabled = true;
+  setStatus(`Running ${noteId}…`, true);
+
+  try {
+    const res = await fetch(`/api/notes/${noteId}/run`, { method: "POST" });
+    if (!res.ok) {
+      const err = await res.text();
+      setStatus(`Error: ${err.slice(0, 120)}`);
+      return;
+    }
+    const data = await res.json();
+    state.noteText = data.note_text;
+    state.accepted = data.accepted;
+    state.flagged = data.flagged;
+    state.trace = data.trace;
+    state.escalated = data.escalated;
+    state.runNotes.add(noteId);
+    renderAll();
+    setStatus(
+      `${noteId} · ${data.accepted.length} accepted · ${data.flagged.length} flagged` +
+      (data.escalated ? " · escalated" : "")
+    );
+    $("export-btn").disabled = false;
+    renderNoteList();
+  } catch (e) {
+    setStatus(`Fetch error: ${e.message}`);
+  } finally {
+    $("run-btn").disabled = false;
+  }
+}
+
+/* ============================================================
+   Render note with spans
+   ============================================================ */
+function renderNote() {
+  $("note-empty").style.display = "none";
+  $("note-view").style.display = "block";
+  $("note-id-label").textContent = state.noteId || "—";
+
+  // Build a flat list of spans from accepted + flagged
+  const items = [
+    ...state.accepted.map(it => ({
+      id: it.id,
+      kind: "accepted",
+      type: it.type,
+      text: it.text || "",
+      span: it.span,
+      reason: it.reason || "",
+    })),
+    ...state.flagged.map(f => {
+      const it = f.item || {};
+      return {
+        id: f.id,
+        kind: "flagged",
+        type: it.type,
+        text: it.text || "",
+        span: it.span,
+        reason: f.reason || "",
+      };
+    }),
+  ].filter(it => Array.isArray(it.span) && it.span.length === 2 && it.span[0] < it.span[1]);
+
+  // Meta pills
+  const esc = state.escalated;
+  const pillsHtml = `
+    <span class="pill ${esc ? 'danger' : 'success'}">${esc ? 'Escalated' : 'Ready'}</span>
+    <span class="pill neutral">${items.length} spans</span>
+  `;
+  $("note-meta").innerHTML = pillsHtml;
+
+  // Escape the raw text ONCE and compute the offset-mapping.
+  // Note: escapeHtml expands &<>"' to entities, so raw offsets shift.
+  // We compute per-character positions on the escaped string by walking
+  // the raw text and accumulating the length of each escaped char.
+  const raw = state.noteText;
+  let escaped = "";
+  const offsetMap = new Array(raw.length + 1);
+  for (let i = 0; i < raw.length; i++) {
+    offsetMap[i] = escaped.length;
+    escaped += escapeHtml(raw[i]);
+  }
+  offsetMap[raw.length] = escaped.length;
+
+  // Insert marks in reverse order (from last to first) so earlier offsets remain valid
+  items.sort((a, b) => b.span[0] - a.span[0]);
+  let html = escaped;
+  const seen = new Set();
+  for (const it of items) {
+    const key = `${it.span[0]}-${it.span[1]}`;
+    if (seen.has(key)) continue;   // skip duplicate spans
+    seen.add(key);
+    const s = offsetMap[it.span[0]];
+    const e = offsetMap[it.span[1]];
+    if (s == null || e == null || s >= e) continue;
+    const before = html.slice(0, s);
+    const mid = html.slice(s, e);
+    const after = html.slice(e);
+    const tooltip = `${it.type || "item"}: ${it.text}` + (it.reason ? ` — ${it.reason}` : "");
+    html = `${before}<mark class="${it.kind}" data-id="${escapeHtml(it.id)}" title="${escapeHtml(tooltip)}">${mid}</mark>${after}`;
+  }
+  $("note-text").innerHTML = html;
+
+  document.querySelectorAll("mark").forEach(el => {
+    el.addEventListener("mouseenter", () => highlightRow(el.dataset.id, true));
+    el.addEventListener("mouseleave", () => highlightRow(el.dataset.id, false));
+    el.addEventListener("click", () => scrollRowIntoView(el.dataset.id));
+  });
+}
+
+function highlightRow(id, on) {
+  document.querySelectorAll(`tr[data-id="${cssEscape(id)}"]`).forEach(row => {
+    row.classList.toggle("hover", on);
+  });
+}
+
+function scrollRowIntoView(id) {
+  const row = document.querySelector(`tr[data-id="${cssEscape(id)}"]`);
+  if (row) row.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function cssEscape(s) {
+  return String(s).replace(/["\\]/g, "\\$&");
+}
+
+/* ============================================================
+   Accepted table
+   ============================================================ */
+function renderAccepted() {
+  $("accepted-count").textContent = state.accepted.length;
+
+  const typeCounts = {};
+  for (const it of state.accepted) {
+    typeCounts[it.type] = (typeCounts[it.type] || 0) + 1;
+  }
+  $("accepted-summary").textContent = Object.entries(typeCounts)
+    .map(([k, v]) => `${v} ${k}${v > 1 ? "s" : ""}`).join(" · ");
+
+  const tbody = $("accepted-tbody");
+  if (!state.accepted.length) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-tertiary);padding:var(--space-5);">No accepted items.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = state.accepted.map(it => {
+    const id = it.id;
+    const decision = state.decisions[id];
+
+    const icdHtml = (it.icd_candidates && Array.isArray(it.icd_candidates) && it.icd_candidates.length)
+      ? `<div class="icd-list">${it.icd_candidates.slice(0, 3).map(c =>
+          `<div class="icd-item"><span class="code">${escapeHtml(c.code || "")}</span><span class="desc">${escapeHtml((c.description || "").slice(0, 70))}</span></div>`
+        ).join("")}</div>`
+      : "";
+
+    const statusHtml = it.status
+      ? `<span class="status-chip">${escapeHtml(it.status)}</span>`
+      : "";
+
+    return `<tr data-id="${escapeHtml(id)}">
+      <td class="cell-id">${escapeHtml(id)}</td>
+      <td><span class="badge ${escapeHtml(it.type || "")}">${escapeHtml(it.type || "")}</span></td>
+      <td>
+        <div class="cell-name">${escapeHtml(it.text || "")}</div>
+        ${statusHtml ? `<div class="cell-sub">${statusHtml}</div>` : ""}
+        ${icdHtml}
+      </td>
+      <td class="reason">${escapeHtml(it.reason || "")}</td>
+      <td>
+        <div class="row-actions">
+          <button class="btn ${decision === "accepted" ? "accept-on" : ""}" data-decide="accepted" data-id="${escapeHtml(id)}" title="Accept">✓</button>
+          <button class="btn ${decision === "rejected" ? "reject-on" : ""}" data-decide="rejected" data-id="${escapeHtml(id)}" title="Reject">✗</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join("");
+
+  document.querySelectorAll('[data-decide]').forEach(btn => {
+    btn.addEventListener("click", () => decide(btn.dataset.id, btn.dataset.decide));
+  });
+
+  attachRowHover();
+}
+
+/* ============================================================
+   Flagged table
+   ============================================================ */
+function renderFlagged() {
+  $("flagged-count").textContent = state.flagged.length;
+  const tbody = $("flagged-tbody");
+  if (!state.flagged.length) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--text-tertiary);padding:var(--space-5);">No flagged items.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = state.flagged.map(f => {
+    const it = f.item || {};
+    return `<tr data-id="${escapeHtml(f.id)}">
+      <td class="cell-id">${escapeHtml(f.id)}</td>
+      <td><span class="badge ${escapeHtml(it.type || "")}">${escapeHtml(it.type || "")}</span></td>
+      <td><div class="cell-name">${escapeHtml(it.text || "")}</div></td>
+      <td class="reason">${escapeHtml(f.reason || "")}</td>
+    </tr>`;
+  }).join("");
+  attachRowHover();
+}
+
+function attachRowHover() {
+  document.querySelectorAll("tbody tr[data-id]").forEach(row => {
+    row.addEventListener("mouseenter", () => {
+      document.querySelectorAll(`mark[data-id="${cssEscape(row.dataset.id)}"]`).forEach(m => m.classList.add("hover"));
+    });
+    row.addEventListener("mouseleave", () => {
+      document.querySelectorAll(`mark[data-id="${cssEscape(row.dataset.id)}"]`).forEach(m => m.classList.remove("hover"));
+    });
+  });
+}
+
+/* ============================================================
+   Trace timeline
+   ============================================================ */
+function renderTrace() {
+  $("trace-count").textContent = `${state.trace.length} step${state.trace.length === 1 ? "" : "s"}`;
+  const body = $("trace-body");
+  if (!state.trace.length) {
+    body.innerHTML = `<div style="padding:var(--space-4);color:var(--text-tertiary);font-style:italic;">No trace.</div>`;
+    return;
+  }
+  body.innerHTML = state.trace.map((line, i) => {
+    const l = line.toLowerCase();
+    let cls = "";
+    if (l.includes("escalat") || l.includes("fail") || l.includes("error")) cls = "error";
+    else if (l.includes("flag") || l.includes("contradiction") || l.includes("missed")) cls = "warn";
+    else if (l.includes("accept") || l.includes("extracted") || l.includes("sectioned")) cls = "emphasis";
+    return `<div class="trace-line ${cls}">
+      <span class="idx">${String(i).padStart(2, "0")}</span>
+      <span class="msg">${escapeHtml(line)}</span>
+    </div>`;
+  }).join("");
+}
+
+/* ============================================================
+   Escalation banner
+   ============================================================ */
+function renderEscalation() {
+  const banner = $("escalated-banner");
+  if (state.escalated) {
+    banner.classList.add("show");
+    $("escalation-text").textContent =
+      "Note escalated — flagged fraction exceeds 40%. Review every item manually.";
+  } else {
+    banner.classList.remove("show");
+  }
+}
+
+function renderAll() {
+  $("results-empty").style.display = "none";
+  $("results-view").style.display = "block";
+  renderNote();
+  renderAccepted();
+  renderFlagged();
+  renderTrace();
+  renderEscalation();
+}
+
+/* ============================================================
+   Reviewer decisions
+   ============================================================ */
+async function decide(itemId, decision) {
+  try {
+    await fetch(`/api/decide/${encodeURIComponent(itemId)}?decision=${decision}`, { method: "POST" });
+    if (decision === "clear") delete state.decisions[itemId];
+    else state.decisions[itemId] = decision;
+    renderAccepted();
+  } catch (e) {
+    setStatus(`Decision failed: ${e.message}`);
+  }
+}
+
+/* ============================================================
+   Export
+   ============================================================ */
+async function exportJson() {
+  if (!state.noteId) return;
+  try {
+    const res = await fetch(`/api/notes/${state.noteId}/export`, { method: "POST" });
+    if (!res.ok) { setStatus("Export failed"); return; }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${state.noteId}_accepted.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    setStatus("Exported");
+  } catch (e) {
+    setStatus(`Export error: ${e.message}`);
+  }
+}
+
+/* ============================================================
+   Theme toggle
+   ============================================================ */
+function initTheme() {
+  const saved = localStorage.getItem("theme");
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  document.documentElement.dataset.theme = saved || (prefersDark ? "dark" : "light");
+  $("theme-toggle").addEventListener("click", () => {
+    const cur = document.documentElement.dataset.theme;
+    const next = cur === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem("theme", next);
+  });
+}
+
+/* ============================================================
+   Divider drag
+   ============================================================ */
+function initDivider() {
+  const main = $("main");
+  const divider = $("divider");
+  let dragging = false;
+
+  divider.addEventListener("mousedown", (e) => {
+    dragging = true;
+    divider.classList.add("dragging");
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    e.preventDefault();
+  });
+
+  window.addEventListener("mousemove", (e) => {
+    if (!dragging) return;
+    const rect = main.getBoundingClientRect();
+    const ratio = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0.25), 0.75);
+    main.style.gridTemplateColumns = `${ratio}fr 1px ${1 - ratio}fr`;
+  });
+
+  window.addEventListener("mouseup", () => {
+    if (!dragging) return;
+    dragging = false;
+    divider.classList.remove("dragging");
+    document.body.style.cursor = "";
+    document.body.style.userSelect = "";
+  });
+}
+
+/* ============================================================
+   Init
+   ============================================================ */
+$("run-btn").addEventListener("click", runPipeline);
+$("export-btn").addEventListener("click", exportJson);
+initTheme();
+initDivider();
+loadNotes();
+</script>
+</body>
+</html>

@@ -8,17 +8,32 @@ For each note, produces:
 
 Bounded retries: rejected items get up to 1 re-extraction attempt (deferred).
 Escalation: if flagged fraction > 0.4, the whole note is flagged.
+
+The ICD index is loaded lazily on the first run() call so that callers
+(the eval harness, the reviewer UI, a REPL) do not need to remember to
+call load_index() themselves.
 """
 
 from src.masker import mask_pii
 from src.extractor import extract
-from src.icd_index import icd_lookup
+from src.icd_index import icd_lookup, load_index
 from src.verifier import verify
 from src.sectioner import section_note
 
 
 MAX_ITEMS_PER_NOTE = 50
 ESCALATION_THRESHOLD = 0.4
+
+_INDEX_LOADED = False
+
+
+def _ensure_index_loaded() -> None:
+    """Load the ICD index once per process, lazily."""
+    global _INDEX_LOADED
+    if _INDEX_LOADED:
+        return
+    load_index()
+    _INDEX_LOADED = True
 
 
 def _build_verifier_items(extraction) -> list[dict]:
@@ -106,9 +121,31 @@ def run(note_text: str) -> dict:
             "flagged": [items with reason...],  # rejected or unverifiable
             "trace": [strings...],        # decision log
             "escalated": bool,            # True if flagged fraction > 0.4
+            "error": str | None,          # set when the pipeline itself failed
         }
+
+    The `error` field distinguishes "the pipeline crashed" (error is set,
+    escalated is False) from "the pipeline ran and disagreed with itself
+    a lot" (error is None, escalated is True). Callers that only care
+    about whether the note is risky should check `escalated`; callers
+    that want to distinguish crashes should check `error`.
     """
     trace: list[str] = []
+
+    # ------------------------------------------------------------------
+    # 0. Ensure the ICD index is loaded (idempotent)
+    # ------------------------------------------------------------------
+    try:
+        _ensure_index_loaded()
+    except Exception as e:
+        trace.append(f"ICD index load failed: {type(e).__name__}: {str(e)[:120]}")
+        return {
+            "accepted": [],
+            "flagged": [],
+            "trace": trace,
+            "escalated": False,
+            "error": f"icd index load failed: {type(e).__name__}: {str(e)[:200]}",
+        }
 
     # ------------------------------------------------------------------
     # 1. Section
@@ -129,8 +166,15 @@ def run(note_text: str) -> dict:
     try:
         extraction = extract(masked)
     except Exception as e:
-        trace.append(f"extractor failed: {type(e).__name__}: {str(e)[:80]}")
-        return {"accepted": [], "flagged": [], "trace": trace, "escalated": True}
+        err = f"{type(e).__name__}: {str(e)[:200]}"
+        trace.append(f"extractor failed: {err}")
+        return {
+            "accepted": [],
+            "flagged": [],
+            "trace": trace,
+            "escalated": False,
+            "error": err,
+        }
 
     n_items = (
         len(extraction.diagnoses)
@@ -143,11 +187,23 @@ def run(note_text: str) -> dict:
 
     if n_items == 0:
         trace.append("no items; nothing to verify")
-        return {"accepted": [], "flagged": [], "trace": trace, "escalated": False}
+        return {
+            "accepted": [],
+            "flagged": [],
+            "trace": trace,
+            "escalated": False,
+            "error": None,
+        }
 
     if n_items > MAX_ITEMS_PER_NOTE:
         trace.append(f"item count {n_items} > {MAX_ITEMS_PER_NOTE}; escalating note")
-        return {"accepted": [], "flagged": [], "trace": trace, "escalated": True}
+        return {
+            "accepted": [],
+            "flagged": [],
+            "trace": trace,
+            "escalated": True,
+            "error": None,
+        }
 
     # ------------------------------------------------------------------
     # 4. Build verifier items (includes ICD lookups per diagnosis)
@@ -155,8 +211,15 @@ def run(note_text: str) -> dict:
     try:
         items = _build_verifier_items(extraction)
     except Exception as e:
-        trace.append(f"item building failed: {type(e).__name__}: {str(e)[:80]}")
-        return {"accepted": [], "flagged": [], "trace": trace, "escalated": True}
+        err = f"{type(e).__name__}: {str(e)[:200]}"
+        trace.append(f"item building failed: {err}")
+        return {
+            "accepted": [],
+            "flagged": [],
+            "trace": trace,
+            "escalated": False,
+            "error": err,
+        }
 
     # ------------------------------------------------------------------
     # 5. Verify
@@ -164,7 +227,8 @@ def run(note_text: str) -> dict:
     try:
         verifier_resp = verify(masked, items)
     except Exception as e:
-        trace.append(f"verifier failed: {type(e).__name__}; all items flagged")
+        err = f"{type(e).__name__}: {str(e)[:200]}"
+        trace.append(f"verifier failed: {err}; all items flagged")
         return {
             "accepted": [],
             "flagged": [
@@ -172,7 +236,8 @@ def run(note_text: str) -> dict:
                 for it in items
             ],
             "trace": trace,
-            "escalated": True,
+            "escalated": False,
+            "error": err,
         }
 
     verdicts_by_id = {v.id: v for v in verifier_resp.verdicts}
@@ -247,4 +312,5 @@ def run(note_text: str) -> dict:
         "flagged": flagged,
         "trace": trace,
         "escalated": escalated,
+        "error": None,
     }

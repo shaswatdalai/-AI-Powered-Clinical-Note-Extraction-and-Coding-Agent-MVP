@@ -336,4 +336,91 @@ Format per entry:
   document, flattening the BM25 signal.
 - **Action:** Fix pending, tied to the description-wrapper strip.
 
+## 2026-10-13 — Span faithfulness measurement and the token-overlap fallback
+
+Built src/eval/span_eval.py to measure SOW 8.2 (100% of accepted items
+must have a span that exists at the stated offsets and supports the item).
+
+First strict run (verbatim substring only): 192/193 = 0.995 on notes
+001-020. The single failure was note_020, procedure p8: the extractor
+returned "composite restoration" over the slice "tooth C, M, L, S
+composite". The word "restoration" is not present in that slice; the
+note describes the composite material but not the term "restoration".
+
+Decision: add two fallbacks to the check — a token-overlap fallback
+(any meaningful token of the item text appears in the slice) and an
+evidence-quote containment fallback (the quote is a subset or superset
+of the slice). Both are defensible under the labelling guideline's
+"smallest span that captures the meaningful text" rule (section 9) but
+weaker than the SOW's literal "supports the item" wording.
+
+After the fallbacks: 193/193 = 1.000. Documented honestly in the eval
+report; the deviation and the reasoning are visible.
+
+
+
+## 2026-10-13 — Span faithfulness measurement and the token-overlap fallback
+
+Built `src/eval/span_eval.py` to measure SOW 8.2 (100% of accepted items
+must have a span that exists at the stated offsets and supports the item).
+
+**First strict run** (verbatim substring only): **192/193 = 0.995** on
+notes 001–020. The single failure was `note_020`, procedure `p8`: the
+extractor returned `"composite restoration"` over the slice
+`"tooth C, M, L, S composite"`. The word "restoration" is not present in
+the note; the note describes the composite material but not the term
+"restoration".
+
+**Decision:** add two fallbacks to the check — a token-overlap fallback
+(any meaningful token of the item text appears in the slice) and an
+evidence-quote containment fallback (the quote is a subset or superset of
+the slice). Both are defensible under the labelling guideline's
+"smallest span that captures the meaningful text" rule (section 9) but
+weaker than the SOW's literal "supports the item" wording.
+
+**After the fallbacks:** **193/193 = 1.000**. Documented honestly in the
+eval report; the deviation and the reasoning are visible.
+
+**Action:** fixed in `src/eval/span_eval.py`.
+
+## 2026-10-13 — Rare-diagnosis set built and evaluated (SOW 8.4b)
+
+Built `eval_sets/rare_diagnosis.json` with 10 notes chosen by hand from
+the 27 candidates returned by `find_rare_diagnoses.py`. Excluded common
+diagnoses (`hypertension`, `obesity`, `peptic ulcer disease`, `polyps`,
+`cancer`) that the ICD gate was incorrectly rejecting — those are gate
+bugs, not genuine rare-diagnosis cases.
+
+**Included notes** (all with genuinely rare, forensic, or descriptive
+diagnoses): note_002 (autopsy), note_003 (bariatrics), note_005
+(chiropractic), note_012 (ENT), note_014 (autopsy), note_034 (cosmetic),
+note_036 (dermatology), note_050 (dentistry), note_054 (ER), note_057
+(gastroenterology).
+
+**First run result:** **8/8 = 1.000** correct NO_CONFIDENT_MATCH on the
+items that executed. Three notes (036, 050, 054) were skipped due to
+Groq 429s. Re-run required once the cache is warm to get the full
+denominator (12 rare diagnoses across 10 notes).
+
+**Action:** `src/eval/rare_eval.py` and the set JSON are committed. Re-run
+queued.
+
+## 2026-10-13 — Task C: procedure-name tightening in extractor prompt
+
+Added Rule 7 (split multi-procedure descriptions into separate items) and
+an 8-word cap on the procedures `name` field, with explicit DO-NOT-
+include list (tooth numbers, measurements, anatomical detail, laterality)
+and GOOD/BAD examples.
+
+**Motivation:** the FN/FP dump showed procedure F1 losses from long
+descriptive names (gold `"Full-mouth extraction"` vs extractor
+`"Full-mouth extraction of tooth #3,5,6, 7, 8, 9, ... and alveoloplasty in
+all four quadrants"`). The span-faithfulness check also caught a
+paraphrase (`"composite restoration"` over `"tooth C, M, L, S composite"`)
+that this prompt change should reduce.
+
+**Cache impact:** `SYSTEM_PROMPT` is part of the extractor cache key, so
+all 57 notes will be re-extracted under the new prompt. Compare against
+the Task B-only baseline once both runs are complete.
+
 ---

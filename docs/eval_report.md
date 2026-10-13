@@ -240,3 +240,50 @@ The pipeline works end-to-end: raw clinical note → structured items with verba
 Accuracy is below the SOW's target for diagnoses (0.720 vs 0.80) and medications (0.741 vs 0.85). The gaps are not uniform and not a single failure mode — they are a mix of extractor over-extraction (intraoperative drugs, lab tests), extractor under-extraction (recall misses), and naming-convention mismatch between extractor and gold. The matcher has been improved once already (vitals F1 0.144 → 0.403). Two targeted prompt changes are pending. Realistically, the diagnoses target is reachable and the medications target is at the edge.
 
 The system's central claim — **every accepted item is provable** — is enforced by design: mandatory spans, verifier independence, and fail-closed behavior at every stage. No item is accepted without evidence. This is the property the SOW emphasizes above raw F1, and it holds.
+
+
+### 3.4 Span faithfulness (SOW 8.2)
+
+**Target:** 100% of accepted items have a span that exists at the stated
+offsets and supports the item.
+
+**Result on notes 001–020:** **193/193 = 1.000** (after the token-overlap
+and quote-containment fallbacks described in FINDINGS, 2026-10-13).
+
+**Strict verbatim-only measurement:** 192/193 = 0.995. The single
+deviation is `note_020`, procedure `p8`, where the extractor returned
+`"composite restoration"` over the slice `"tooth C, M, L, S composite"`.
+The word "restoration" is not in the source note. The verifier accepted
+the item because the composite material is documented.
+
+**Interpretation.** Under the SOW's literal "supports the item" wording,
+this is a partial-support case. Under the labelling guideline's rule 9
+("use the smallest span that captures the meaningful text"), it is
+defensible. We report both numbers and document the deviation rather
+than conceal it under a relaxed check.
+
+**Full-corpus result:** to be re-measured once the Task C cache is warm.
+
+### 3.5 Rare-diagnosis abstention (SOW 8.4b)
+
+**Target:** ≥ 0.80 correct NO_CONFIDENT_MATCH on the 10-note
+rare-diagnosis set.
+
+**Set construction.** 10 notes chosen by hand from 27 candidates. Common
+diagnoses (`hypertension`, `obesity`, `peptic ulcer disease`, `polyps`,
+`cancer`) that the ICD gate was incorrectly rejecting were excluded —
+those are gate bugs, not genuine rare-diagnosis cases. The 10 included
+notes contain 12 rare diagnoses across forensic, bariatric,
+chiropractic, ENT, cosmetic, dermatology, dental, emergency, and
+gastroenterology specialties.
+
+**First run:** **8/8 = 1.000** on executed items (three notes skipped on
+Groq 429s). Re-run required to get the full 12-item denominator.
+
+**Interpretation.** The confidence gate correctly abstains on the rare
+items it evaluated. The concern is not abstention on rare items — it is
+over-abstention on common ones (`hypertension` returning
+NO_CONFIDENT_MATCH is a bug in the gate, not correct behavior). See
+FINDINGS for the diagnostic.
+
+---

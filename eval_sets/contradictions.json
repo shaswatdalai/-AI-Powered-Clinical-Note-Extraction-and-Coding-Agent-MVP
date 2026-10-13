@@ -1,0 +1,188 @@
+{
+  "set_name": "contradiction",
+  "description": "Notes with a single planted contradiction between two sections. The verifier must flag the contradiction or reject the affected item.",
+  "created": "2026-10-13",
+  "sow_requirement": "Section 3.9: 'A contradiction set of at least 20 notes, edited by the candidate to contain internal contradictions, with the expected flags defined.' Section 8.5: 'At least 80% of planted contradictions flagged.'",
+  "notes": [
+    {
+      "note_id": "con_001",
+      "base_note": "note_001",
+      "contradiction_type": "diagnosis_negation",
+      "injection_section": "ASSESSMENT",
+      "injected_text": "The patient denies any history of asthma or allergic rhinitis.",
+      "planted_items": ["asthma", "allergic rhinitis"],
+      "expected_flag": "verifier should flag asthma or allergic rhinitis as contradicted (note mentions them as active earlier)"
+    },
+    {
+      "note_id": "con_002",
+      "base_note": "note_003",
+      "contradiction_type": "procedure_negation",
+      "injection_section": "PAST SURGICAL HISTORY",
+      "injected_text": "The patient has never had any surgery.",
+      "planted_items": ["lap band placement"],
+      "expected_flag": "verifier should flag lap band placement as contradicted (note describes prior placement and adjustment)"
+    },
+    {
+      "note_id": "con_003",
+      "base_note": "note_004",
+      "contradiction_type": "diagnosis_negation",
+      "injection_section": "ASSESSMENT",
+      "injected_text": "No evidence of pulmonary fibrosis on today's assessment.",
+      "planted_items": ["pulmonary fibrosis"],
+      "expected_flag": "verifier should flag pulmonary fibrosis as contradicted"
+    },
+    {
+      "note_id": "con_004",
+      "base_note": "note_006",
+      "contradiction_type": "medication_status_flip",
+      "injection_section": "MEDICATIONS",
+      "injected_text": "Risperdal and Levothyroxine: both discontinued several months ago.",
+      "planted_items": ["Risperdal", "Levothyroxine"],
+      "expected_flag": "verifier should flag Risperdal or Levothyroxine as contradicted (listed as current in one section, discontinued in another)"
+    },
+    {
+      "note_id": "con_005",
+      "base_note": "note_008",
+      "contradiction_type": "allergy_negation",
+      "injection_section": "ALLERGIES",
+      "injected_text": "No known drug allergies.",
+      "planted_items": ["Penicillin"],
+      "expected_flag": "verifier should flag Penicillin as contradicted (listed as an allergy earlier in the note)"
+    },
+    {
+      "note_id": "con_006",
+      "base_note": "note_009",
+      "contradiction_type": "diagnosis_negation",
+      "injection_section": "ASSESSMENT",
+      "injected_text": "MRSA is ruled out based on today's cultures.",
+      "planted_items": ["MRSA"],
+      "expected_flag": "verifier should flag MRSA as contradicted (listed as active elsewhere)"
+    },
+    {
+      "note_id": "con_007",
+      "base_note": "note_011",
+      "contradiction_type": "procedure_negation",
+      "injection_section": "PROCEDURE",
+      "injected_text": "No incision or drainage was performed during this visit.",
+      "planted_items": ["incision and drainage"],
+      "expected_flag": "verifier should flag incision and drainage as contradicted"
+    },
+    {
+      "note_id": "con_008",
+      "base_note": "note_012",
+      "contradiction_type": "diagnosis_negation",
+      "injection_section": "IMPRESSION",
+      "injected_text": "No evidence of otosclerosis on imaging.",
+      "planted_items": ["otosclerosis", "probable otosclerosis"],
+      "expected_flag": "verifier should flag otosclerosis as contradicted"
+    },
+    {
+      "note_id": "con_009",
+      "base_note": "note_015",
+      "contradiction_type": "medication_status_flip",
+      "injection_section": "MEDICATIONS",
+      "injected_text": "Norvasc, Lopressor, and lovastatin were all discontinued by the patient years ago.",
+      "planted_items": ["Norvasc", "Lopressor", "lovastatin"],
+      "expected_flag": "verifier should flag these medications as contradicted (listed as current elsewhere)"
+    },
+    {
+      "note_id": "con_010",
+      "base_note": "note_018",
+      "contradiction_type": "medication_status_flip",
+      "injection_section": "MEDICATIONS",
+      "injected_text": "Risperdal and Levothyroxine: patient has not taken either for over a year.",
+      "planted_items": ["Risperdal", "Levothyroxine"],
+      "expected_flag": "verifier should flag Risperdal or Levothyroxine as contradicted"
+    },
+    {
+      "note_id": "con_011",
+      "base_note": "note_020",
+      "contradiction_type": "diagnosis_negation",
+      "injection_section": "ASSESSMENT",
+      "injected_text": "Patient denies any dental abscess or seizure activity.",
+      "planted_items": ["dental abscess", "seizure"],
+      "expected_flag": "verifier should flag dental abscess or seizure as contradicted"
+    },
+    {
+      "note_id": "con_012",
+      "base_note": "note_023",
+      "contradiction_type": "diagnosis_negation",
+      "injection_section": "ASSESSMENT",
+      "injected_text": "Sleep apnea has resolved and morbid obesity is no longer present.",
+      "planted_items": ["sleep apnea", "morbid obesity"],
+      "expected_flag": "verifier should flag sleep apnea or morbid obesity as contradicted"
+    },
+    {
+      "note_id": "con_013",
+      "base_note": "note_026",
+      "contradiction_type": "diagnosis_negation",
+      "injection_section": "ASSESSMENT",
+      "injected_text": "No evidence of squamous cell carcinoma on today's assessment.",
+      "planted_items": ["squamous cell carcinoma"],
+      "expected_flag": "verifier should flag squamous cell carcinoma as contradicted"
+    },
+    {
+      "note_id": "con_014",
+      "base_note": "note_030",
+      "contradiction_type": "diagnosis_negation",
+      "injection_section": "ASSESSMENT",
+      "injected_text": "The patient denies any history of hiatal hernia or urinary stress incontinence.",
+      "planted_items": ["hiatal hernia", "urinary stress incontinence"],
+      "expected_flag": "verifier should flag these diagnoses as contradicted"
+    },
+    {
+      "note_id": "con_015",
+      "base_note": "note_032",
+      "contradiction_type": "diagnosis_negation",
+      "injection_section": "ASSESSMENT",
+      "injected_text": "No compression fractures are seen on today's imaging.",
+      "planted_items": ["compression fractures"],
+      "expected_flag": "verifier should flag compression fractures as contradicted"
+    },
+    {
+      "note_id": "con_016",
+      "base_note": "note_034",
+      "contradiction_type": "diagnosis_negation",
+      "injection_section": "ASSESSMENT",
+      "injected_text": "The patient denies any breast asymmetry or mammary hypertrophy.",
+      "planted_items": ["breast asymmetry", "bilateral mammary hypertrophy"],
+      "expected_flag": "verifier should flag these diagnoses as contradicted"
+    },
+    {
+      "note_id": "con_017",
+      "base_note": "note_039",
+      "contradiction_type": "medication_status_flip",
+      "injection_section": "MEDICATIONS",
+      "injected_text": "heparin and calcium were both discontinued prior to this visit.",
+      "planted_items": ["heparin", "calcium"],
+      "expected_flag": "verifier should flag heparin or calcium as contradicted"
+    },
+    {
+      "note_id": "con_018",
+      "base_note": "note_043",
+      "contradiction_type": "medication_status_flip",
+      "injection_section": "MEDICATIONS",
+      "injected_text": "Vitamin D and calcium supplements have been discontinued.",
+      "planted_items": ["vitamin D", "calcium"],
+      "expected_flag": "verifier should flag vitamin D or calcium as contradicted"
+    },
+    {
+      "note_id": "con_019",
+      "base_note": "note_045",
+      "contradiction_type": "diagnosis_negation",
+      "injection_section": "ASSESSMENT",
+      "injected_text": "Patient denies any history of hypertension or peptic ulcer disease.",
+      "planted_items": ["hypertension", "peptic ulcer disease"],
+      "expected_flag": "verifier should flag these diagnoses as contradicted"
+    },
+    {
+      "note_id": "con_020",
+      "base_note": "note_055",
+      "contradiction_type": "medication_status_flip",
+      "injection_section": "MEDICATIONS",
+      "injected_text": "Triamterene and hydrochlorothiazide have been stopped.",
+      "planted_items": ["Triamterene", "hydrochlorothiazide"],
+      "expected_flag": "verifier should flag either diuretic as contradicted"
+    }
+  ]
+}

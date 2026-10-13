@@ -65,7 +65,7 @@ html[data-theme="light"] {
   --highlight-accepted-border: #16803c;
   --highlight-flagged: rgba(178, 99, 0, 0.16);
   --highlight-flagged-border: #b26300;
-  --highlight-hover: rgba(59, 111, 224, 0.12);
+  --highlight-hover: rgba(59, 111, 224, 0.14);
 }
 
 html[data-theme="dark"] {
@@ -102,7 +102,7 @@ html[data-theme="dark"] {
   --highlight-accepted-border: #4ade80;
   --highlight-flagged: rgba(251, 191, 36, 0.20);
   --highlight-flagged-border: #fbbf24;
-  --highlight-hover: rgba(107, 146, 255, 0.20);
+  --highlight-hover: rgba(107, 146, 255, 0.22);
 }
 
 /* ============================================================
@@ -135,7 +135,6 @@ button, input, select { font: inherit; color: inherit; }
   height: 100vh;
 }
 
-/* --- Top bar --- */
 .topbar {
   grid-column: 1 / -1;
   display: flex;
@@ -169,7 +168,6 @@ button, input, select { font: inherit; color: inherit; }
   border-left: 1px solid var(--border-subtle);
   margin-left: var(--space-2);
 }
-
 .topbar-actions {
   margin-left: auto;
   display: flex; align-items: center; gap: var(--space-2);
@@ -181,7 +179,6 @@ button, input, select { font: inherit; color: inherit; }
   margin-right: var(--space-3);
 }
 
-/* --- Sidebar --- */
 .sidebar {
   background: var(--bg-surface);
   border-right: 1px solid var(--border-subtle);
@@ -243,7 +240,6 @@ button, input, select { font: inherit; color: inherit; }
   box-shadow: 0 0 0 3px var(--success-soft);
 }
 
-/* --- Buttons --- */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -266,7 +262,6 @@ button, input, select { font: inherit; color: inherit; }
 }
 .btn:active:not(:disabled) { transform: translateY(1px); }
 .btn:disabled { opacity: 0.45; cursor: not-allowed; }
-
 .btn.primary {
   background: var(--accent);
   color: var(--text-inverse);
@@ -284,7 +279,6 @@ button, input, select { font: inherit; color: inherit; }
 .btn.ghost:hover:not(:disabled) { background: var(--bg-hover); }
 .btn.icon { padding: 7px; width: 32px; height: 32px; justify-content: center; }
 
-/* --- Main split --- */
 .main {
   display: grid;
   grid-template-columns: 1fr 1px 1fr;
@@ -304,7 +298,6 @@ button, input, select { font: inherit; color: inherit; }
 }
 .divider:hover, .divider.dragging { background: var(--accent); }
 
-/* --- Empty state --- */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -324,9 +317,7 @@ button, input, select { font: inherit; color: inherit; }
   display: grid; place-items: center;
   color: var(--text-tertiary);
 }
-.empty-state h2 {
-  font-size: 15px; font-weight: 600; color: var(--text-secondary);
-}
+.empty-state h2 { font-size: 15px; font-weight: 600; color: var(--text-secondary); }
 .empty-state p { font-size: 13px; max-width: 340px; }
 
 /* ============================================================
@@ -372,7 +363,7 @@ button, input, select { font: inherit; color: inherit; }
 .note-text {
   font-family: var(--font-mono);
   font-size: 12.5px;
-  line-height: 1.75;
+  line-height: 1.85;
   white-space: pre-wrap;
   word-break: break-word;
   padding: var(--space-5);
@@ -382,28 +373,39 @@ button, input, select { font: inherit; color: inherit; }
   box-shadow: var(--shadow-sm);
 }
 
+/* Mark styles: soft background, thin underline via box-shadow so adjacent
+   marks don't visually merge. Truncated spans get a subtle "…" marker. */
 mark {
   background: transparent;
   color: inherit;
-  padding: 1px 2px;
-  margin: 0 -2px;
-  border-radius: 3px;
-  border-bottom: 2px solid transparent;
+  padding: 1px 3px;
+  margin: 0 1px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background var(--transition-fast), outline-color var(--transition-fast);
-  outline: 2px solid transparent;
-  outline-offset: 1px;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: inset 0 -1px 0 0 transparent;
+  position: relative;
 }
 mark.accepted {
   background: var(--highlight-accepted);
-  border-bottom-color: var(--highlight-accepted-border);
+  box-shadow: inset 0 -2px 0 0 var(--highlight-accepted-border);
 }
 mark.flagged {
   background: var(--highlight-flagged);
-  border-bottom-color: var(--highlight-flagged-border);
+  box-shadow: inset 0 -2px 0 0 var(--highlight-flagged-border);
 }
 mark:hover, mark.hover {
-  outline-color: var(--accent);
+  box-shadow:
+    inset 0 -2px 0 0 currentColor,
+    0 0 0 2px var(--highlight-hover);
+  z-index: 1;
+}
+mark.truncated::after {
+  content: "…";
+  color: var(--text-tertiary);
+  font-size: 11px;
+  padding-left: 2px;
+  letter-spacing: -1px;
 }
 
 /* ============================================================
@@ -444,12 +446,23 @@ mark:hover, mark.hover {
   font-variant-numeric: tabular-nums;
 }
 .card-body { padding: var(--space-4); }
-.card-body.flush { padding: 0; }
+/* Scrollable table containers: horizontal scroll so all columns are
+   reachable when the pane is narrow. */
+.card-body.flush {
+  padding: 0;
+  overflow-x: auto;
+  overflow-y: visible;
+}
 
 /* ============================================================
    Item table
    ============================================================ */
-.item-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.item-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  table-layout: fixed;
+}
 .item-table thead th {
   text-align: left;
   font-size: 10.5px;
@@ -475,24 +488,40 @@ mark:hover, mark.hover {
 .item-table td {
   padding: var(--space-3) var(--space-4);
   vertical-align: top;
+  overflow-wrap: anywhere;
 }
 .item-table .cell-id {
   font-family: var(--font-mono);
   font-size: 11.5px;
   color: var(--text-tertiary);
-  width: 44px;
 }
 .item-table .cell-name {
   font-weight: 500;
   color: var(--text-primary);
   margin-bottom: 3px;
+  overflow-wrap: anywhere;
 }
 .item-table .cell-sub {
   font-size: 11.5px;
   color: var(--text-tertiary);
 }
+.item-table .cell-reason {
+  overflow-wrap: anywhere;
+}
 
-/* Type badges */
+/* Column widths for the accepted table */
+.accepted-table col.col-id     { width: 48px; }
+.accepted-table col.col-type   { width: 100px; }
+.accepted-table col.col-item   { width: auto; }
+.accepted-table col.col-reason { width: 200px; }
+.accepted-table col.col-actions{ width: 84px; }
+
+/* Column widths for the flagged table */
+.flagged-table col.col-id     { width: 48px; }
+.flagged-table col.col-type   { width: 100px; }
+.flagged-table col.col-item   { width: auto; }
+.flagged-table col.col-reason { width: 220px; }
+
 .badge {
   display: inline-flex;
   align-items: center;
@@ -510,12 +539,12 @@ mark:hover, mark.hover {
 .badge.allergy    { background: var(--info-soft);    color: var(--info); }
 .badge.vital      { background: var(--danger-soft);  color: var(--danger); }
 
-/* ICD candidate list */
 .icd-list {
   margin-top: var(--space-2);
   display: flex;
   flex-direction: column;
   gap: 3px;
+  min-width: 0;
 }
 .icd-item {
   display: flex; align-items: center; gap: var(--space-2);
@@ -525,6 +554,7 @@ mark:hover, mark.hover {
   padding: 3px 7px;
   background: var(--bg-inset);
   border-radius: var(--radius-sm);
+  min-width: 0;
 }
 .icd-item .code {
   font-weight: 600;
@@ -536,9 +566,10 @@ mark:hover, mark.hover {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  min-width: 0;
+  flex: 1;
 }
 
-/* Reason / status */
 .reason {
   font-size: 11.5px;
   color: var(--text-tertiary);
@@ -555,7 +586,6 @@ mark:hover, mark.hover {
   font-family: var(--font-mono);
 }
 
-/* Row actions */
 .row-actions { display: flex; gap: 4px; justify-content: flex-end; }
 .row-actions .btn {
   padding: 4px 8px;
@@ -582,52 +612,61 @@ mark:hover, mark.hover {
   font-size: 12px;
   line-height: 1.7;
   color: var(--text-secondary);
-  padding: var(--space-4) var(--space-4) var(--space-4) 0;
+  padding: var(--space-4) var(--space-4) var(--space-4) var(--space-4);
   max-height: 380px;
   overflow-y: auto;
 }
 .trace-line {
   display: grid;
-  grid-template-columns: 28px 1fr;
-  gap: var(--space-3);
-  padding: 3px var(--space-4) 3px 0;
-  position: relative;
+  grid-template-columns: 30px 20px 1fr;
+  gap: var(--space-2);
+  padding: 4px 0;
+  align-items: start;
 }
 .trace-line .idx {
   text-align: right;
   color: var(--text-tertiary);
   font-size: 11px;
-  padding-top: 2px;
+  padding-top: 3px;
   user-select: none;
 }
-.trace-line .msg { color: var(--text-secondary); }
-.trace-line::before {
+.trace-line .dot-cell {
+  position: relative;
+  align-self: stretch;
+  min-height: 20px;
+}
+.trace-line .dot-cell::before {
   content: "";
   position: absolute;
-  left: 34px;
+  left: 50%;
   top: 0;
   bottom: 0;
   width: 1px;
   background: var(--border-subtle);
+  transform: translateX(-50%);
 }
-.trace-line:first-child::before { top: 50%; }
-.trace-line:last-child::before  { bottom: 50%; }
-.trace-line .idx::before {
+.trace-line:first-child .dot-cell::before { top: 12px; }
+.trace-line:last-child  .dot-cell::before { bottom: calc(100% - 14px); }
+.trace-line .dot-cell::after {
   content: "";
   position: absolute;
-  left: 30px;
-  top: 8px;
+  left: 50%;
+  top: 6px;
   width: 9px; height: 9px;
   border-radius: 50%;
   background: var(--bg-surface);
   border: 2px solid var(--border-default);
+  transform: translateX(-50%);
+  z-index: 1;
 }
-.trace-line.emphasis .idx::before {
-  border-color: var(--accent);
-  background: var(--accent);
+.trace-line.emphasis .dot-cell::after { border-color: var(--accent); background: var(--accent); }
+.trace-line.warn     .dot-cell::after { border-color: var(--warning); background: var(--warning); }
+.trace-line.error    .dot-cell::after { border-color: var(--danger); background: var(--danger); }
+.trace-line .msg {
+  color: var(--text-secondary);
+  padding-top: 1px;
+  overflow-wrap: anywhere;
 }
-.trace-line.warn .idx::before { border-color: var(--warning); background: var(--warning); }
-.trace-line.error .idx::before { border-color: var(--danger); background: var(--danger); }
 
 /* ============================================================
    Escalation banner
@@ -645,9 +684,7 @@ mark:hover, mark.hover {
   grid-column: 1 / -1;
 }
 .escalated-banner.show { display: flex; }
-.escalated-banner .icon {
-  width: 18px; height: 18px; flex-shrink: 0;
-}
+.escalated-banner .icon { width: 18px; height: 18px; flex-shrink: 0; }
 
 /* ============================================================
    Spinner
@@ -725,7 +762,6 @@ mark:hover, mark.hover {
   </aside>
 
   <main class="main" id="main">
-    <!-- LEFT: note -->
     <section class="pane" id="pane-left">
       <div class="empty-state" id="note-empty">
         <div class="icon-lg">
@@ -746,10 +782,8 @@ mark:hover, mark.hover {
       </div>
     </section>
 
-    <!-- Drag handle -->
     <div class="divider" id="divider"></div>
 
-    <!-- RIGHT: results -->
     <section class="pane" id="pane-right">
       <div class="empty-state" id="results-empty">
         <div class="icon-lg">
@@ -769,14 +803,21 @@ mark:hover, mark.hover {
             <div id="accepted-summary" style="font-size:11.5px;color:var(--text-tertiary);"></div>
           </div>
           <div class="card-body flush">
-            <table class="item-table" id="accepted-table">
+            <table class="item-table accepted-table" id="accepted-table">
+              <colgroup>
+                <col class="col-id">
+                <col class="col-type">
+                <col class="col-item">
+                <col class="col-reason">
+                <col class="col-actions">
+              </colgroup>
               <thead>
                 <tr>
-                  <th style="width:50px;">ID</th>
-                  <th style="width:100px;">Type</th>
+                  <th>ID</th>
+                  <th>Type</th>
                   <th>Item</th>
-                  <th style="width:180px;">Reason</th>
-                  <th style="width:80px;"></th>
+                  <th>Reason</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody id="accepted-tbody"></tbody>
@@ -792,11 +833,17 @@ mark:hover, mark.hover {
             </div>
           </div>
           <div class="card-body flush">
-            <table class="item-table" id="flagged-table">
+            <table class="item-table flagged-table" id="flagged-table">
+              <colgroup>
+                <col class="col-id">
+                <col class="col-type">
+                <col class="col-item">
+                <col class="col-reason">
+              </colgroup>
               <thead>
                 <tr>
-                  <th style="width:50px;">ID</th>
-                  <th style="width:100px;">Type</th>
+                  <th>ID</th>
+                  <th>Type</th>
                   <th>Item</th>
                   <th>Reason</th>
                 </tr>
@@ -837,6 +884,12 @@ const state = {
 };
 
 const $ = (id) => document.getElementById(id);
+
+/* Maximum rendered length of a highlighted span in the note view.
+   Longer spans are trimmed to the last word boundary before this
+   limit and the remainder is annotated with a "…" marker. The
+   underlying data still carries the full span. */
+const MAX_MARK_DISPLAY_LEN = 70;
 
 function escapeHtml(s) {
   return (s ?? "").replace(/[&<>"']/g, (c) => ({
@@ -940,7 +993,6 @@ function renderNote() {
   $("note-view").style.display = "block";
   $("note-id-label").textContent = state.noteId || "—";
 
-  // Build a flat list of spans from accepted + flagged
   const items = [
     ...state.accepted.map(it => ({
       id: it.id,
@@ -963,7 +1015,6 @@ function renderNote() {
     }),
   ].filter(it => Array.isArray(it.span) && it.span.length === 2 && it.span[0] < it.span[1]);
 
-  // Meta pills
   const esc = state.escalated;
   const pillsHtml = `
     <span class="pill ${esc ? 'danger' : 'success'}">${esc ? 'Escalated' : 'Ready'}</span>
@@ -971,10 +1022,6 @@ function renderNote() {
   `;
   $("note-meta").innerHTML = pillsHtml;
 
-  // Escape the raw text ONCE and compute the offset-mapping.
-  // Note: escapeHtml expands &<>"' to entities, so raw offsets shift.
-  // We compute per-character positions on the escaped string by walking
-  // the raw text and accumulating the length of each escaped char.
   const raw = state.noteText;
   let escaped = "";
   const offsetMap = new Array(raw.length + 1);
@@ -984,22 +1031,42 @@ function renderNote() {
   }
   offsetMap[raw.length] = escaped.length;
 
-  // Insert marks in reverse order (from last to first) so earlier offsets remain valid
+  // Sort longest first so a shorter span nested inside a longer one wins
+  // the layout; then insert from the END of the string backwards so earlier
+  // offsets remain valid after each splice.
   items.sort((a, b) => b.span[0] - a.span[0]);
   let html = escaped;
   const seen = new Set();
   for (const it of items) {
     const key = `${it.span[0]}-${it.span[1]}`;
-    if (seen.has(key)) continue;   // skip duplicate spans
+    if (seen.has(key)) continue;
     seen.add(key);
     const s = offsetMap[it.span[0]];
     const e = offsetMap[it.span[1]];
     if (s == null || e == null || s >= e) continue;
+
+    // Trim display length for very long spans (e.g. a 130-char procedure
+    // name). The item still carries the full span; this is display-only.
+    let eDisplay = e;
+    let truncated = false;
+    if (e - s > MAX_MARK_DISPLAY_LEN) {
+      const slice = escaped.slice(s, s + MAX_MARK_DISPLAY_LEN);
+      const lastBreak = Math.max(
+        slice.lastIndexOf(" "),
+        slice.lastIndexOf("\n"),
+        slice.lastIndexOf(",")
+      );
+      const cut = lastBreak > 30 ? s + lastBreak : s + MAX_MARK_DISPLAY_LEN;
+      eDisplay = cut;
+      truncated = true;
+    }
+
     const before = html.slice(0, s);
-    const mid = html.slice(s, e);
-    const after = html.slice(e);
+    const mid = html.slice(s, eDisplay);
+    const after = html.slice(eDisplay);
     const tooltip = `${it.type || "item"}: ${it.text}` + (it.reason ? ` — ${it.reason}` : "");
-    html = `${before}<mark class="${it.kind}" data-id="${escapeHtml(it.id)}" title="${escapeHtml(tooltip)}">${mid}</mark>${after}`;
+    const cls = `mark ${it.kind}${truncated ? " truncated" : ""}`;
+    html = `${before}<mark class="${cls}" data-id="${escapeHtml(it.id)}" title="${escapeHtml(tooltip)}">${mid}</mark>${after}`;
   }
   $("note-text").innerHTML = html;
 
@@ -1050,7 +1117,7 @@ function renderAccepted() {
 
     const icdHtml = (it.icd_candidates && Array.isArray(it.icd_candidates) && it.icd_candidates.length)
       ? `<div class="icd-list">${it.icd_candidates.slice(0, 3).map(c =>
-          `<div class="icd-item"><span class="code">${escapeHtml(c.code || "")}</span><span class="desc">${escapeHtml((c.description || "").slice(0, 70))}</span></div>`
+          `<div class="icd-item"><span class="code">${escapeHtml(c.code || "")}</span><span class="desc">${escapeHtml((c.description || "").slice(0, 90))}</span></div>`
         ).join("")}</div>`
       : "";
 
@@ -1066,7 +1133,7 @@ function renderAccepted() {
         ${statusHtml ? `<div class="cell-sub">${statusHtml}</div>` : ""}
         ${icdHtml}
       </td>
-      <td class="reason">${escapeHtml(it.reason || "")}</td>
+      <td class="reason cell-reason">${escapeHtml(it.reason || "")}</td>
       <td>
         <div class="row-actions">
           <button class="btn ${decision === "accepted" ? "accept-on" : ""}" data-decide="accepted" data-id="${escapeHtml(id)}" title="Accept">✓</button>
@@ -1099,7 +1166,7 @@ function renderFlagged() {
       <td class="cell-id">${escapeHtml(f.id)}</td>
       <td><span class="badge ${escapeHtml(it.type || "")}">${escapeHtml(it.type || "")}</span></td>
       <td><div class="cell-name">${escapeHtml(it.text || "")}</div></td>
-      <td class="reason">${escapeHtml(f.reason || "")}</td>
+      <td class="reason cell-reason">${escapeHtml(f.reason || "")}</td>
     </tr>`;
   }).join("");
   attachRowHover();
@@ -1134,6 +1201,7 @@ function renderTrace() {
     else if (l.includes("accept") || l.includes("extracted") || l.includes("sectioned")) cls = "emphasis";
     return `<div class="trace-line ${cls}">
       <span class="idx">${String(i).padStart(2, "0")}</span>
+      <span class="dot-cell"></span>
       <span class="msg">${escapeHtml(line)}</span>
     </div>`;
   }).join("");

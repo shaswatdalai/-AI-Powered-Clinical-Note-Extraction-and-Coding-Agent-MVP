@@ -4,7 +4,7 @@ Agent orchestrator: section -> mask -> extract -> ICD lookup -> verify -> reconc
 For each note, produces:
 - ACCEPTED items (both extractor and verifier agree)
 - FLAGGED items (disagreement, low confidence, or unverifiable)
-- A trace of every decision
+- A trace of every decision, including wall-clock timing per stage
 
 Bounded retries: rejected items get up to 1 re-extraction attempt (deferred).
 Escalation: if flagged fraction > 0.4, the whole note is flagged.
@@ -12,8 +12,14 @@ Escalation: if flagged fraction > 0.4, the whole note is flagged.
 The ICD index is loaded lazily on the first run() call so that callers
 (the eval harness, the reviewer UI, a REPL) do not need to remember to
 call load_index() themselves.
+
+Timing is written into the trace as "extract took X.XXs" and
+"verify took X.XXs". src/eval/cost_eval.py parses these lines to produce
+the SOW 8.8 latency report.
 """
+
 import time
+
 from src.masker import mask_pii
 from src.extractor import extract
 from src.icd_index import icd_lookup, load_index
@@ -119,7 +125,7 @@ def run(note_text: str) -> dict:
         {
             "accepted": [items...],       # verifier said SUPPORTED
             "flagged": [items with reason...],  # rejected or unverifiable
-            "trace": [strings...],        # decision log
+            "trace": [strings...],        # decision log incl. per-stage timing
             "escalated": bool,            # True if flagged fraction > 0.4
             "error": str | None,          # set when the pipeline itself failed
         }
@@ -176,6 +182,8 @@ def run(note_text: str) -> dict:
             "escalated": False,
             "error": err,
         }
+    extract_seconds = time.perf_counter() - t_extract_start
+    trace.append(f"extract took {extract_seconds:.2f}s")
 
     n_items = (
         len(extraction.diagnoses)
@@ -225,6 +233,7 @@ def run(note_text: str) -> dict:
     # ------------------------------------------------------------------
     # 5. Verify
     # ------------------------------------------------------------------
+    t_verify_start = time.perf_counter()
     try:
         verifier_resp = verify(masked, items)
     except Exception as e:
@@ -240,6 +249,8 @@ def run(note_text: str) -> dict:
             "escalated": False,
             "error": err,
         }
+    verify_seconds = time.perf_counter() - t_verify_start
+    trace.append(f"verify took {verify_seconds:.2f}s")
 
     verdicts_by_id = {v.id: v for v in verifier_resp.verdicts}
 

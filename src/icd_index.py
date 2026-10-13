@@ -9,8 +9,20 @@ Design rules:
   for one diagnosis.
 - BM25 catches exact terms. Vector search catches paraphrases. RRF
   fuses the two ranked lists.
-- Confidence is measured on the top candidate's cosine similarity, not
-  on the raw RRF score (RRF scores are rank-based and tiny).
+- Confidence is measured primarily by TOKEN OVERLAP between the query
+  and the top candidate's description. Cosine similarity is kept as a
+  secondary check with a permissive threshold.
+
+Why token overlap and not cosine:
+    Diagnostic on 2026-10-13 showed that bge-small-en produces embeddings
+    in a narrow angular cone for short clinical phrases. Every query —
+    common or rare — returns top_cosine between 0.85 and 0.89. Examples:
+        "ligature mark"       -> Y652 (misadventures)      top_cos 0.861
+        "hyoid bone fracture" -> S92211K (cuboid fracture) top_cos 0.878
+        "hypertension"        -> I152 (secondary HTN)      top_cos 0.883
+    A cosine gate at 0.55 never fires. The gate must use a signal that
+    actually discriminates: whether the query's meaningful tokens appear
+    in the candidate's description.
 
 Run:
     python -m src.icd_index --build     # build the indexes once
@@ -18,6 +30,7 @@ Run:
 
 import json
 import pickle
+import re
 import sys
 from pathlib import Path
 
@@ -35,7 +48,27 @@ EMBED_MODEL = "BAAI/bge-small-en"
 
 RRF_K = 60
 TOP_N = 3
-MIN_COSINE_CONFIDENCE = 0.55   # tune on dev set
+
+# Primary gate: fraction of meaningful query tokens that must appear in
+# the top candidate's cleaned description. 0.50 means at least half of
+# the query's non-stopword tokens must match. Tune on dev set.
+MIN_TOKEN_OVERLAP = 0.50
+
+# Secondary gate: cosine similarity floor. Set low because bge-small-en
+# cosines are uniformly high for clinical phrases. This only rejects
+# truly unrelated queries, not semantically-narrow misses.
+MIN_COSINE_FLOOR = 0.50
+
+# Common English stopwords. Very short list — clinical text has few of
+# these, and we want to keep "no", "not", "left", "right" etc. since
+# they matter in ICD descriptions.
+STOPWORDS = {
+    "a", "an", "and", "are", "as", "at", "be", "by", "for", "from",
+    "has", "have", "in", "into", "is", "it", "its", "of", "on", "or",
+    "that", "the", "their", "this", "to", "was", "were", "will",
+    "with", "about", "other", "specific", "long", "description",
+    "header", "code", "unspecified",
+}
 
 
 _bm25: BM25Okapi | None = None
@@ -43,6 +76,36 @@ _bm25_codes: list[str] = []
 _bm25_descs: list[str] = []
 _embedder: SentenceTransformer | None = None
 _chroma_collection = None
+
+
+def _clean_description(raw: str) -> str:
+    """Strip the CSV's wrapper text from a description.
+
+    Raw form:
+        "Header: J308 - Other allergic rhinitis | Specific long
+         description about this code: Allergic rhinitis, unspecified"
+    Cleaned form:
+        "Allergic rhinitis, unspecified"
+
+    If the wrapper pattern is not found, the original string is
+    returned stripped. This makes the function safe for description
+    formats that change upstream.
+    """
+    if not isinstance(raw, str):
+        return ""
+    marker = "Specific long description about this code:"
+    if marker in raw:
+        return raw.split(marker, 1)[1].strip()
+    # Some rows use a slightly different marker; try a generic split.
+    if "description about this code:" in raw:
+        return raw.split("description about this code:", 1)[1].strip()
+    return raw.strip()
+
+
+def _meaningful_tokens(text: str) -> set[str]:
+    """Lowercase, split on non-alphanumeric, drop stopwords and 1-char tokens."""
+    tokens = re.findall(r"[a-z0-9]+", text.lower())
+    return {t for t in tokens if len(t) > 1 and t not in STOPWORDS}
 
 
 def _tokenize(text: str) -> list[str]:
@@ -55,8 +118,9 @@ def build_index():
     print(f"Reading {ICD_CSV}...")
     df = pd.read_csv(ICD_CSV)
     codes = df["code"].astype(str).tolist()
-    descs = df["description"].astype(str).tolist()
-    print(f"Loaded {len(codes)} ICD codes")
+    raw_descs = df["description"].astype(str).tolist()
+    descs = [_clean_description(d) for d in raw_descs]
+    print(f"Loaded {len(codes)} ICD codes (descriptions cleaned)")
 
     # --- BM25 ---
     print("Tokenizing for BM25...")
@@ -114,7 +178,14 @@ def build_index():
 
 
 def load_index():
-    """Load the BM25 and ChromaDB indexes into memory. Called once per process."""
+    """Load the BM25 and ChromaDB indexes into memory. Called once per process.
+
+    If the on-disk BM25 index was built with the old (wrapper-included)
+    descriptions, this function re-cleans the descriptions at load time
+    so the token-overlap gate works. To take full advantage of the
+    cleaned descriptions, rebuild with:
+        python -m src.icd_index --build
+    """
     global _bm25, _bm25_codes, _bm25_descs, _embedder, _chroma_collection
 
     if not BM25_PATH.exists():
@@ -126,7 +197,10 @@ def load_index():
     data = pickle.loads(BM25_PATH.read_bytes())
     _bm25 = data["bm25"]
     _bm25_codes = data["codes"]
-    _bm25_descs = data["descs"]
+    raw_descs = data["descs"]
+    # Re-clean in case the pickle was built before the wrapper strip.
+    _bm25_descs = [_clean_description(d) if "description about this code:" in d
+                   else d for d in raw_descs]
 
     print("Loading ChromaDB...")
     client = chromadb.PersistentClient(path=str(CHROMA_DIR))
@@ -190,13 +264,48 @@ def _rrf_fuse(
     return sorted(scores.items(), key=lambda x: x[1], reverse=True)
 
 
+def _confidence_check(query: str, top_idx: int, top_cosine: float) -> tuple[bool, str]:
+    """Decide whether the top candidate is a confident match.
+
+    Returns (is_confident, reason_if_not).
+
+    Two gates, both must pass:
+      - Cosine floor: top_cosine >= MIN_COSINE_FLOOR (permissive; rejects
+        only truly unrelated queries)
+      - Token overlap: >= MIN_TOKEN_OVERLAP fraction of the query's
+        meaningful tokens appear in the top candidate's cleaned
+        description. This is the discriminating gate.
+    """
+    if top_cosine < MIN_COSINE_FLOOR:
+        return False, f"cosine {top_cosine:.3f} < floor {MIN_COSINE_FLOOR}"
+
+    q_tokens = _meaningful_tokens(query)
+    if not q_tokens:
+        return False, "query had no meaningful tokens"
+
+    cand_desc = _bm25_descs[top_idx]
+    c_tokens = _meaningful_tokens(cand_desc)
+    if not c_tokens:
+        return False, "top candidate had no meaningful tokens"
+
+    overlap = len(q_tokens & c_tokens) / len(q_tokens)
+    if overlap < MIN_TOKEN_OVERLAP:
+        return False, (f"token overlap {overlap:.2f} < {MIN_TOKEN_OVERLAP} "
+                       f"(query tokens {sorted(q_tokens)}; "
+                       f"candidate tokens {sorted(c_tokens)[:8]}...)")
+    return True, ""
+
+
 def icd_lookup(diagnosis_name: str) -> list[dict] | str:
     """
     Look up ICD-10 candidates for a diagnosis name.
 
-    Returns a list of up to 3 {code, description, score} dicts, or the
-    string "NO_CONFIDENT_MATCH" when the top candidate's cosine similarity
-    falls below the threshold.
+    Returns a list of up to 3 {code, description, score, top_cosine}
+    dicts, or the string "NO_CONFIDENT_MATCH" when the top candidate
+    is not a confident match. Confidence is determined by:
+      - the top vector-search cosine must clear MIN_COSINE_FLOOR, and
+      - at least MIN_TOKEN_OVERLAP of the query's meaningful tokens
+        must appear in the top candidate's cleaned description.
     """
     if not diagnosis_name or not diagnosis_name.strip():
         return "NO_CONFIDENT_MATCH"
@@ -207,9 +316,9 @@ def icd_lookup(diagnosis_name: str) -> list[dict] | str:
     if not vector_results:
         return "NO_CONFIDENT_MATCH"
 
-    # Confidence gate: top vector result's cosine similarity must clear threshold
-    top_cosine = vector_results[0][1]
-    if top_cosine < MIN_COSINE_CONFIDENCE:
+    top_idx, top_cosine = vector_results[0]
+    confident, reason = _confidence_check(diagnosis_name, top_idx, top_cosine)
+    if not confident:
         return "NO_CONFIDENT_MATCH"
 
     fused = _rrf_fuse(bm25_results, vector_results)

@@ -1,0 +1,24 @@
+Conditions diagnosed in this note:
+
+{conditions}
+
+For each condition above, provide 2-3 short tips for lifestyle,
+monitoring, and prevention. Follow these rules strictly:
+
+- Tips must be general advice a clinician might share with a patient.
+  Examples: "avoid known triggers", "keep a symptom diary", "stay up to
+  date on vaccinations", "schedule regular check-ups", "maintain a
+  balanced diet", "aim for regular moderate exercise".
+- Do NOT name drugs, dosages, or treatments.
+- Do NOT restate or reinterpret the diagnosis.
+- If a condition is unfamiliar, non-actionable, or not a real diagnosis
+  (e.g. "contusion", "ligature mark", "symptom"), return an empty tips
+  list for it.
+- Each tip must be under 20 words.
+
+Return JSON only. Schema:
+{{
+  "advice": [
+    {{"condition": "<verbatim from input>", "tips": ["...", "..."]}}
+  ]
+}}

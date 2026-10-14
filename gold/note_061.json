@@ -1,0 +1,126 @@
+{
+  "note_id": "note_061",
+  "specialty": "Cardiovascular / Pulmonary",
+  "source_row_index": 4878,
+  "diagnoses": [
+    {
+      "name_as_written": "syncopal spells",
+      "normalised_name": "syncope",
+      "status": "suspected",
+      "span": [
+        44,
+        59
+      ],
+      "icd_code": "R55"
+    },
+    {
+      "name_as_written": "orthostatic changes",
+      "normalised_name": "orthostatic hypotension",
+      "status": "ruled_out",
+      "span": [
+        1483,
+        1502
+      ],
+      "icd_code": "I95.1"
+    },
+    {
+      "name_as_written": "overweight",
+      "normalised_name": "overweight",
+      "status": "active",
+      "span": [
+        1834,
+        1844
+      ],
+      "icd_code": "E66.3"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Naprosyn",
+      "dose": null,
+      "route": null,
+      "frequency": "up to six a day",
+      "status": "current",
+      "span": [
+        1266,
+        1274
+      ]
+    },
+    {
+      "name": "Flexeril",
+      "dose": "10 mg",
+      "route": null,
+      "frequency": "q 6 p.r.n.",
+      "status": "newly_prescribed",
+      "span": [
+        2599,
+        2607
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "partial hysterectomy",
+      "date": "January of 2009",
+      "span": [
+        185,
+        205
+      ]
+    },
+    {
+      "name": "EKG",
+      "date": null,
+      "span": [
+        1894,
+        1897
+      ]
+    },
+    {
+      "name": "ECHOCARDIOGRAM",
+      "date": null,
+      "span": [
+        1934,
+        1948
+      ]
+    }
+  ],
+  "allergies": [
+    {
+      "substance": "Sulfa",
+      "reaction": null,
+      "span": [
+        1322,
+        1327
+      ]
+    }
+  ],
+  "vitals": [
+    {
+      "name": "BP",
+      "value": "130/70",
+      "unit": "mmHg",
+      "span": [
+        1468,
+        1474
+      ]
+    },
+    {
+      "name": "PR",
+      "value": "72",
+      "unit": "bpm",
+      "span": [
+        1505,
+        1512
+      ]
+    },
+    {
+      "name": "WT",
+      "value": "206",
+      "unit": "pounds",
+      "span": [
+        1520,
+        1530
+      ]
+    }
+  ]
+}

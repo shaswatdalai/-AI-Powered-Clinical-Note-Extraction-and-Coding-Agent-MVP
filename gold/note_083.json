@@ -1,0 +1,61 @@
+{
+  "note_id": "note_083",
+  "specialty": "Office Notes",
+  "source_row_index": 2483,
+  "diagnoses": [
+    {
+      "name_as_written": "chronic kidney disease",
+      "normalised_name": "chronic kidney disease",
+      "status": "active",
+      "span": [
+        110,
+        132
+      ],
+      "icd_code": "N18.9"
+    },
+    {
+      "name_as_written": "nephrosclerosis",
+      "normalised_name": "nephrosclerosis",
+      "status": "active",
+      "span": [
+        146,
+        161
+      ],
+      "icd_code": "I12.9"
+    },
+    {
+      "name_as_written": "nonfunctioning right kidney",
+      "normalised_name": "nonfunctioning kidney",
+      "status": "active",
+      "span": [
+        166,
+        193
+      ],
+      "icd_code": "N28.89"
+    },
+    {
+      "name_as_written": "hematuria",
+      "normalised_name": "hematuria",
+      "status": "ruled_out",
+      "span": [
+        464,
+        473
+      ],
+      "icd_code": "R31.9"
+    },
+    {
+      "name_as_written": "stage III chronic kidney disease",
+      "normalised_name": "chronic kidney disease, stage 3",
+      "status": "active",
+      "span": [
+        597,
+        629
+      ],
+      "icd_code": "N18.30"
+    }
+  ],
+  "medications": [],
+  "procedures": [],
+  "allergies": [],
+  "vitals": []
+}

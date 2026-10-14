@@ -1,0 +1,58 @@
+{
+  "note_id": "note_084",
+  "specialty": "Ophthalmology",
+  "source_row_index": 2408,
+  "diagnoses": [
+    {
+      "name_as_written": "Cataract",
+      "normalised_name": "cataract",
+      "status": "active",
+      "span": [
+        26,
+        34
+      ],
+      "icd_code": "H26.9"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Maxitrol",
+      "dose": null,
+      "route": "ophthalmic",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        2178,
+        2186
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Cataract extraction via phacoemulsification with posterior chamber intraocular lens implantation",
+      "date": null,
+      "span": [
+        118,
+        214
+      ]
+    },
+    {
+      "name": "Paracentesis",
+      "date": null,
+      "span": [
+        948,
+        960
+      ]
+    },
+    {
+      "name": "capsulorrhexis",
+      "date": null,
+      "span": [
+        1344,
+        1358
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

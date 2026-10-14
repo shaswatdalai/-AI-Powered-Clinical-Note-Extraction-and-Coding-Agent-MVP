@@ -1,0 +1,208 @@
+{
+  "note_id": "note_074",
+  "specialty": "Hematology - Oncology",
+  "source_row_index": 3120,
+  "diagnoses": [
+    {
+      "name_as_written": "Posttransplant lymphoproliferative disorder",
+      "normalised_name": "posttransplant lymphoproliferative disorder",
+      "status": "active",
+      "span": [
+        91,
+        134
+      ],
+      "icd_code": "D47.Z1"
+    },
+    {
+      "name_as_written": "Chronic renal insufficiency",
+      "normalised_name": "chronic renal insufficiency",
+      "status": "active",
+      "span": [
+        140,
+        167
+      ],
+      "icd_code": "N18.9"
+    },
+    {
+      "name_as_written": "Squamous cell carcinoma of the skin",
+      "normalised_name": "squamous cell carcinoma of the skin",
+      "status": "active",
+      "span": [
+        173,
+        208
+      ],
+      "icd_code": "C44.92"
+    },
+    {
+      "name_as_written": "Anemia",
+      "normalised_name": "anemia",
+      "status": "active",
+      "span": [
+        214,
+        220
+      ],
+      "icd_code": "D63.1"
+    },
+    {
+      "name_as_written": "Hypertension",
+      "normalised_name": "hypertension",
+      "status": "active",
+      "span": [
+        284,
+        296
+      ],
+      "icd_code": "I10"
+    },
+    {
+      "name_as_written": "large cell lymphoma",
+      "normalised_name": "diffuse large b-cell lymphoma",
+      "status": "active",
+      "span": [
+        677,
+        696
+      ],
+      "icd_code": "C83.30"
+    },
+    {
+      "name_as_written": "sepsis",
+      "normalised_name": "sepsis",
+      "status": "historical",
+      "span": [
+        906,
+        912
+      ],
+      "icd_code": "A41.9"
+    },
+    {
+      "name_as_written": "Systolic flow murmur",
+      "normalised_name": "flow murmur",
+      "status": "active",
+      "span": [
+        1985,
+        2005
+      ],
+      "icd_code": "R01.0"
+    }
+  ],
+  "medications": [
+    {
+      "name": "rituximab",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        770,
+        779
+      ]
+    },
+    {
+      "name": "cyclophosphamide",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        785,
+        801
+      ]
+    },
+    {
+      "name": "daunorubicin",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        803,
+        815
+      ]
+    },
+    {
+      "name": "vincristine",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        817,
+        828
+      ]
+    },
+    {
+      "name": "prednisone",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        834,
+        844
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "lymph node biopsy",
+      "date": null,
+      "span": [
+        619,
+        636
+      ]
+    },
+    {
+      "name": "Chemotherapy",
+      "date": null,
+      "span": [
+        752,
+        764
+      ]
+    },
+    {
+      "name": "PET scan",
+      "date": null,
+      "span": [
+        1134,
+        1142
+      ]
+    },
+    {
+      "name": "Renal transplant",
+      "date": null,
+      "span": [
+        2096,
+        2112
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "Blood pressure",
+      "value": "161/80",
+      "unit": "mmHg",
+      "span": [
+        1718,
+        1724
+      ]
+    },
+    {
+      "name": "pulse",
+      "value": "65",
+      "unit": "bpm",
+      "span": [
+        1726,
+        1734
+      ]
+    },
+    {
+      "name": "weight",
+      "value": "71.5",
+      "unit": "kg",
+      "span": [
+        1743,
+        1750
+      ]
+    }
+  ]
+}

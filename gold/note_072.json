@@ -1,0 +1,30 @@
+{
+  "note_id": "note_072",
+  "specialty": "Gastroenterology",
+  "source_row_index": 3644,
+  "diagnoses": [
+    {
+      "name_as_written": "Iron deficiency anemia",
+      "normalised_name": "iron deficiency anemia",
+      "status": "active",
+      "span": [
+        14,
+        36
+      ],
+      "icd_code": "D50.9"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "Colonoscopy with terminal ileum examination",
+      "date": null,
+      "span": [
+        51,
+        94
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

@@ -1,0 +1,30 @@
+{
+  "note_id": "note_094",
+  "specialty": "Sleep Medicine",
+  "source_row_index": 1458,
+  "diagnoses": [
+    {
+      "name_as_written": "epilepsy",
+      "normalised_name": "epilepsy",
+      "status": "active",
+      "span": [
+        264,
+        272
+      ],
+      "icd_code": "G40.909"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "Video EEG monitoring",
+      "date": null,
+      "span": [
+        325,
+        345
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

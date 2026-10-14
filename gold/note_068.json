@@ -1,0 +1,104 @@
+{
+  "note_id": "note_068",
+  "specialty": "Discharge Summary",
+  "source_row_index": 3909,
+  "diagnoses": [
+    {
+      "name_as_written": "Kawasaki disease",
+      "normalised_name": "kawasaki disease",
+      "status": "active",
+      "span": [
+        23,
+        39
+      ],
+      "icd_code": "M30.3"
+    },
+    {
+      "name_as_written": "conjunctivitis",
+      "normalised_name": "conjunctivitis",
+      "status": "historical",
+      "span": [
+        241,
+        255
+      ],
+      "icd_code": "H10.9"
+    },
+    {
+      "name_as_written": "arthritis",
+      "normalised_name": "arthritis",
+      "status": "active",
+      "span": [
+        262,
+        271
+      ],
+      "icd_code": "M13.9"
+    },
+    {
+      "name_as_written": "thrombocytosis",
+      "normalised_name": "thrombocytosis",
+      "status": "active",
+      "span": [
+        334,
+        348
+      ],
+      "icd_code": "D75.839"
+    }
+  ],
+  "medications": [
+    {
+      "name": "aspirin",
+      "dose": "340 mg",
+      "route": null,
+      "frequency": "q.6h. for 1 day",
+      "status": "newly_prescribed",
+      "span": [
+        529,
+        536
+      ]
+    },
+    {
+      "name": "Prevacid",
+      "dose": "15 mg",
+      "route": "p.o.",
+      "frequency": "once a day",
+      "status": "newly_prescribed",
+      "span": [
+        1194,
+        1202
+      ]
+    },
+    {
+      "name": "IVIG",
+      "dose": null,
+      "route": "IV",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        541,
+        545
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Echocardiogram",
+      "date": null,
+      "span": [
+        548,
+        562
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "fever",
+      "value": "102",
+      "unit": "\u00b0F",
+      "span": [
+        416,
+        428
+      ]
+    }
+  ]
+}

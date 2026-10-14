@@ -1,0 +1,60 @@
+{
+  "note_id": "note_071",
+  "specialty": "Endocrinology",
+  "source_row_index": 3791,
+  "diagnoses": [
+    {
+      "name_as_written": "Thyroid goiter",
+      "normalised_name": "thyroid goiter",
+      "status": "active",
+      "span": [
+        26,
+        40
+      ],
+      "icd_code": "E04.9"
+    },
+    {
+      "name_as_written": "Graves disease",
+      "normalised_name": "graves disease",
+      "status": "historical",
+      "span": [
+        333,
+        347
+      ],
+      "icd_code": "E05.00"
+    }
+  ],
+  "medications": [
+    {
+      "name": "bacitracin",
+      "dose": null,
+      "route": "topical",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        5900,
+        5910
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Total thyroidectomy",
+      "date": "09/04/2003",
+      "span": [
+        108,
+        127
+      ]
+    },
+    {
+      "name": "General endotracheal anesthesia",
+      "date": null,
+      "span": [
+        145,
+        176
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

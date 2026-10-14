@@ -1,0 +1,70 @@
+{
+  "note_id": "note_091",
+  "specialty": "Radiology",
+  "source_row_index": 1611,
+  "diagnoses": [
+    {
+      "name_as_written": "split tear of the peroneus brevis tendon",
+      "normalised_name": "peroneus brevis tendon tear",
+      "status": "active",
+      "span": [
+        1291,
+        1331
+      ],
+      "icd_code": "S86.312A"
+    },
+    {
+      "name_as_written": "synovitis of the peroneus longus tendon sheath",
+      "normalised_name": "peroneal tendon sheath synovitis",
+      "status": "active",
+      "span": [
+        1548,
+        1594
+      ],
+      "icd_code": "M65.879"
+    },
+    {
+      "name_as_written": "tenosynovitis of the posterior tibialis tendon sheath",
+      "normalised_name": "posterior tibialis tenosynovitis",
+      "status": "active",
+      "span": [
+        2271,
+        2324
+      ],
+      "icd_code": "M65.879"
+    },
+    {
+      "name_as_written": "tenosynovitis of the Achilles tendon",
+      "normalised_name": "achilles tendinosis",
+      "status": "active",
+      "span": [
+        3016,
+        3052
+      ],
+      "icd_code": "M76.60"
+    },
+    {
+      "name_as_written": "plantar calcaneal spur",
+      "normalised_name": "plantar calcaneal spur",
+      "status": "active",
+      "span": [
+        3364,
+        3386
+      ],
+      "icd_code": "M77.30"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "MRI RIGHT ANKLE",
+      "date": null,
+      "span": [
+        6,
+        21
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

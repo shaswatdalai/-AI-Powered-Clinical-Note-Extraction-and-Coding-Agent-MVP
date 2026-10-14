@@ -1,0 +1,283 @@
+{
+  "note_id": "note_058",
+  "specialty": "Allergy / Immunology",
+  "source_row_index": 4994,
+  "diagnoses": [
+    {
+      "name_as_written": "chronic sinusitis",
+      "normalised_name": "chronic sinusitis",
+      "status": "active",
+      "span": [
+        115,
+        132
+      ],
+      "icd_code": "J32.9"
+    },
+    {
+      "name_as_written": "sensorineural hearing loss",
+      "normalised_name": "sensorineural hearing loss",
+      "status": "active",
+      "span": [
+        1038,
+        1064
+      ],
+      "icd_code": "H90.5"
+    },
+    {
+      "name_as_written": "Seasonal allergies",
+      "normalised_name": "seasonal allergies",
+      "status": "active",
+      "span": [
+        1662,
+        1680
+      ],
+      "icd_code": "J30.2"
+    },
+    {
+      "name_as_written": "food allergies",
+      "normalised_name": "food allergy",
+      "status": "suspected",
+      "span": [
+        1691,
+        1705
+      ],
+      "icd_code": "Z91.018"
+    },
+    {
+      "name_as_written": "hypertension",
+      "normalised_name": "hypertension",
+      "status": "active",
+      "span": [
+        1726,
+        1738
+      ],
+      "icd_code": "I10"
+    },
+    {
+      "name_as_written": "orthostatic hypotension",
+      "normalised_name": "orthostatic hypotension",
+      "status": "ruled_out",
+      "span": [
+        3041,
+        3064
+      ],
+      "icd_code": "I95.1"
+    },
+    {
+      "name_as_written": "acute sinusitis",
+      "normalised_name": "acute sinusitis",
+      "status": "ruled_out",
+      "span": [
+        3295,
+        3310
+      ],
+      "icd_code": "J01.90"
+    },
+    {
+      "name_as_written": "allergic rhinitis",
+      "normalised_name": "allergic rhinitis",
+      "status": "active",
+      "span": [
+        4062,
+        4079
+      ],
+      "icd_code": "J30.9"
+    },
+    {
+      "name_as_written": "positional vertigo",
+      "normalised_name": "benign paroxysmal positional vertigo",
+      "status": "suspected",
+      "span": [
+        4212,
+        4230
+      ],
+      "icd_code": "H81.10"
+    },
+    {
+      "name_as_written": "vestibular neuronitis",
+      "normalised_name": "vestibular neuronitis",
+      "status": "suspected",
+      "span": [
+        4238,
+        4259
+      ],
+      "icd_code": "H81.20"
+    },
+    {
+      "name_as_written": "Inferior turbinate hypertrophy",
+      "normalised_name": "inferior turbinate hypertrophy",
+      "status": "active",
+      "span": [
+        4373,
+        4403
+      ],
+      "icd_code": "J34.3"
+    },
+    {
+      "name_as_written": "Nasal septum deformity",
+      "normalised_name": "nasal septum deformity",
+      "status": "active",
+      "span": [
+        4409,
+        4431
+      ],
+      "icd_code": "J34.2"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Allegra",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "discontinued",
+      "span": [
+        1210,
+        1217
+      ]
+    },
+    {
+      "name": "DynaCirc",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1971,
+        1979
+      ]
+    },
+    {
+      "name": "Veramyst",
+      "dose": "two sprays each nostril",
+      "route": "nasal",
+      "frequency": "daily and even twice daily if symptoms are worsening",
+      "status": "newly_prescribed",
+      "span": [
+        4523,
+        4543
+      ]
+    },
+    {
+      "name": "Medrol",
+      "dose": null,
+      "route": null,
+      "frequency": "as directed",
+      "status": "newly_prescribed",
+      "span": [
+        4625,
+        4639
+      ]
+    },
+    {
+      "name": "Clarinex",
+      "dose": "5 mg",
+      "route": null,
+      "frequency": "daily",
+      "status": "newly_prescribed",
+      "span": [
+        4764,
+        4772
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "CT of her paranasal sinuses",
+      "date": null,
+      "span": [
+        514,
+        541
+      ]
+    },
+    {
+      "name": "audiogram",
+      "date": null,
+      "span": [
+        989,
+        998
+      ]
+    },
+    {
+      "name": "Lower extremity vein stripping",
+      "date": null,
+      "span": [
+        1824,
+        1854
+      ]
+    },
+    {
+      "name": "tonsillectomy and adenoidectomy",
+      "date": null,
+      "span": [
+        1856,
+        1887
+      ]
+    },
+    {
+      "name": "Fiberoptic nasopharyngoscopy",
+      "date": null,
+      "span": [
+        3877,
+        3905
+      ]
+    }
+  ],
+  "allergies": [
+    {
+      "substance": "Egg-based products",
+      "reaction": "hives",
+      "span": [
+        1994,
+        2024
+      ]
+    }
+  ],
+  "vitals": [
+    {
+      "name": "Blood pressure",
+      "value": "136/74",
+      "unit": "mmHg",
+      "span": [
+        2297,
+        2303
+      ]
+    },
+    {
+      "name": "pulse",
+      "value": "84",
+      "unit": "bpm",
+      "span": [
+        2305,
+        2313
+      ]
+    },
+    {
+      "name": "temperature",
+      "value": "98.4",
+      "unit": "\u00b0F",
+      "span": [
+        2315,
+        2334
+      ]
+    },
+    {
+      "name": "weight",
+      "value": "180",
+      "unit": "pounds",
+      "span": [
+        2336,
+        2356
+      ]
+    },
+    {
+      "name": "height",
+      "value": "5 feet 3 inches",
+      "unit": null,
+      "span": [
+        2372,
+        2387
+      ]
+    }
+  ]
+}

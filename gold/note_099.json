@@ -1,0 +1,100 @@
+{
+  "note_id": "note_099",
+  "specialty": "Nephrology",
+  "source_row_index": 3019,
+  "diagnoses": [
+    {
+      "name_as_written": "Right renal mass",
+      "normalised_name": "renal mass",
+      "status": "active",
+      "span": [
+        28,
+        44
+      ],
+      "icd_code": "N28.89"
+    },
+    {
+      "name_as_written": "Hematuria",
+      "normalised_name": "hematuria",
+      "status": "active",
+      "span": [
+        50,
+        59
+      ],
+      "icd_code": "R31.9"
+    },
+    {
+      "name_as_written": "Right ureteropelvic junction obstruction",
+      "normalised_name": "ureteropelvic junction obstruction",
+      "status": "active",
+      "span": [
+        112,
+        152
+      ],
+      "icd_code": "N13.1"
+    },
+    {
+      "name_as_written": "hypospadias",
+      "normalised_name": "hypospadias",
+      "status": "active",
+      "span": [
+        1156,
+        1167
+      ],
+      "icd_code": "Q54.9"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "Cystourethroscopy",
+      "date": null,
+      "span": [
+        180,
+        197
+      ]
+    },
+    {
+      "name": "Right retrograde pyelogram",
+      "date": null,
+      "span": [
+        203,
+        229
+      ]
+    },
+    {
+      "name": "Right ureteral pyeloscopy",
+      "date": null,
+      "span": [
+        235,
+        260
+      ]
+    },
+    {
+      "name": "Right renal biopsy",
+      "date": null,
+      "span": [
+        266,
+        284
+      ]
+    },
+    {
+      "name": "Right double-J 4.5 x 26 mm ureteral stent placement",
+      "date": null,
+      "span": [
+        290,
+        341
+      ]
+    },
+    {
+      "name": "echocardiogram",
+      "date": null,
+      "span": [
+        3992,
+        4006
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

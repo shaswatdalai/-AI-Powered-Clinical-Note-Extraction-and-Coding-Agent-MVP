@@ -1,0 +1,195 @@
+{
+  "note_id": "note_070",
+  "specialty": "Emergency Room Reports",
+  "source_row_index": 3837,
+  "diagnoses": [
+    {
+      "name_as_written": "hyperbilirubinemia",
+      "normalised_name": "neonatal hyperbilirubinemia",
+      "status": "active",
+      "span": [
+        72,
+        90
+      ],
+      "icd_code": "P59.9"
+    },
+    {
+      "name_as_written": "hypoxia",
+      "normalised_name": "hypoxia",
+      "status": "active",
+      "span": [
+        100,
+        107
+      ],
+      "icd_code": "R09.02"
+    },
+    {
+      "name_as_written": "septic",
+      "normalised_name": "neonatal sepsis",
+      "status": "suspected",
+      "span": [
+        741,
+        747
+      ],
+      "icd_code": "P36.9"
+    },
+    {
+      "name_as_written": "murmur",
+      "normalised_name": "heart murmur",
+      "status": "active",
+      "span": [
+        1652,
+        1658
+      ],
+      "icd_code": "R01.1"
+    },
+    {
+      "name_as_written": "umbilical hernia",
+      "normalised_name": "umbilical hernia",
+      "status": "active",
+      "span": [
+        1737,
+        1753
+      ],
+      "icd_code": "K42.9"
+    },
+    {
+      "name_as_written": "cephalhematoma",
+      "normalised_name": "cephalhematoma",
+      "status": "active",
+      "span": [
+        1925,
+        1939
+      ],
+      "icd_code": "P12.0"
+    },
+    {
+      "name_as_written": "ABO incompatibility",
+      "normalised_name": "ABO incompatibility",
+      "status": "suspected",
+      "span": [
+        3289,
+        3308
+      ],
+      "icd_code": "P55.1"
+    },
+    {
+      "name_as_written": "galactosemia",
+      "normalised_name": "galactosemia",
+      "status": "suspected",
+      "span": [
+        3310,
+        3322
+      ],
+      "icd_code": "E74.21"
+    },
+    {
+      "name_as_written": "ventricular septal defect",
+      "normalised_name": "ventricular septal defect",
+      "status": "suspected",
+      "span": [
+        3328,
+        3353
+      ],
+      "icd_code": "Q21.0"
+    }
+  ],
+  "medications": [
+    {
+      "name": "ampicillin",
+      "dose": null,
+      "route": "IM",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        779,
+        789
+      ]
+    },
+    {
+      "name": "oxygen",
+      "dose": "1 liter",
+      "route": "nasal cannula",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        356,
+        362
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "C-section",
+      "date": null,
+      "span": [
+        873,
+        882
+      ]
+    },
+    {
+      "name": "EKG",
+      "date": null,
+      "span": [
+        2327,
+        2330
+      ]
+    },
+    {
+      "name": "Phototherapy",
+      "date": null,
+      "span": [
+        3091,
+        3103
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "temperature",
+      "value": "36.8",
+      "unit": "\u00b0C",
+      "span": [
+        1240,
+        1259
+      ]
+    },
+    {
+      "name": "pulse",
+      "value": "148",
+      "unit": "bpm",
+      "span": [
+        1270,
+        1282
+      ]
+    },
+    {
+      "name": "respirations",
+      "value": "50",
+      "unit": "breaths/min",
+      "span": [
+        1295,
+        1310
+      ]
+    },
+    {
+      "name": "oxygen saturation",
+      "value": "96",
+      "unit": "%",
+      "span": [
+        1323,
+        1346
+      ]
+    },
+    {
+      "name": "Birth weight",
+      "value": "8 pounds 6 ounces",
+      "unit": null,
+      "span": [
+        902,
+        919
+      ]
+    }
+  ]
+}

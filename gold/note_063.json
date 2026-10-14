@@ -1,0 +1,380 @@
+{
+  "note_id": "note_063",
+  "specialty": "Consult - History and Phy.",
+  "source_row_index": 4128,
+  "diagnoses": [
+    {
+      "name_as_written": "Sepsis",
+      "normalised_name": "sepsis",
+      "status": "active",
+      "span": [
+        24,
+        30
+      ],
+      "icd_code": "A41.9"
+    },
+    {
+      "name_as_written": "outlet obstruction",
+      "normalised_name": "bladder outlet obstruction",
+      "status": "suspected",
+      "span": [
+        313,
+        331
+      ],
+      "icd_code": "N32.0"
+    },
+    {
+      "name_as_written": "hydronephrosis",
+      "normalised_name": "hydronephrosis",
+      "status": "active",
+      "span": [
+        353,
+        367
+      ],
+      "icd_code": "N13.30"
+    },
+    {
+      "name_as_written": "hydroureter",
+      "normalised_name": "hydroureter",
+      "status": "active",
+      "span": [
+        372,
+        383
+      ],
+      "icd_code": "N13.4"
+    },
+    {
+      "name_as_written": "CAD",
+      "normalised_name": "coronary artery disease",
+      "status": "historical",
+      "span": [
+        633,
+        636
+      ],
+      "icd_code": "I25.10"
+    },
+    {
+      "name_as_written": "dementia",
+      "normalised_name": "dementia",
+      "status": "historical",
+      "span": [
+        653,
+        661
+      ],
+      "icd_code": "F03.90"
+    },
+    {
+      "name_as_written": "CVA",
+      "normalised_name": "cerebrovascular accident",
+      "status": "historical",
+      "span": [
+        678,
+        681
+      ],
+      "icd_code": "I63.9"
+    },
+    {
+      "name_as_written": "nephrolithiasis",
+      "normalised_name": "nephrolithiasis",
+      "status": "historical",
+      "span": [
+        698,
+        713
+      ],
+      "icd_code": "N20.0"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Ambien",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        751,
+        757
+      ]
+    },
+    {
+      "name": "Milk of magnesia",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        763,
+        779
+      ]
+    },
+    {
+      "name": "Tylenol",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        785,
+        792
+      ]
+    },
+    {
+      "name": "Tramadol",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        798,
+        806
+      ]
+    },
+    {
+      "name": "Soma",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        812,
+        816
+      ]
+    },
+    {
+      "name": "Coumadin",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        822,
+        830
+      ]
+    },
+    {
+      "name": "Zoloft",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        836,
+        842
+      ]
+    },
+    {
+      "name": "Allopurinol",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        848,
+        859
+      ]
+    },
+    {
+      "name": "Digoxin",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        865,
+        872
+      ]
+    },
+    {
+      "name": "Namenda",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        879,
+        886
+      ]
+    },
+    {
+      "name": "Zocor",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        893,
+        898
+      ]
+    },
+    {
+      "name": "BuSpar",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        905,
+        911
+      ]
+    },
+    {
+      "name": "Detrol",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        918,
+        924
+      ]
+    },
+    {
+      "name": "Coreg",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        931,
+        936
+      ]
+    },
+    {
+      "name": "Colace",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        943,
+        949
+      ]
+    },
+    {
+      "name": "Calcium",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        956,
+        963
+      ]
+    },
+    {
+      "name": "Zantac",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        970,
+        976
+      ]
+    },
+    {
+      "name": "Lasix",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        983,
+        988
+      ]
+    },
+    {
+      "name": "Seroquel",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        995,
+        1003
+      ]
+    },
+    {
+      "name": "Aldactone",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1010,
+        1019
+      ]
+    },
+    {
+      "name": "Amoxicillin",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1026,
+        1037
+      ]
+    },
+    {
+      "name": "antibiotics",
+      "dose": null,
+      "route": "IV",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        523,
+        537
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "CT scan",
+      "date": null,
+      "span": [
+        254,
+        261
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "Pulse",
+      "value": "52",
+      "unit": "bpm",
+      "span": [
+        1324,
+        1332
+      ]
+    },
+    {
+      "name": "respirations",
+      "value": "20",
+      "unit": "breaths/min",
+      "span": [
+        1334,
+        1349
+      ]
+    },
+    {
+      "name": "blood pressure",
+      "value": "104/41",
+      "unit": "mmHg",
+      "span": [
+        1366,
+        1372
+      ]
+    },
+    {
+      "name": "O2 sat",
+      "value": "98%",
+      "unit": "%",
+      "span": [
+        1378,
+        1392
+      ]
+    }
+  ]
+}

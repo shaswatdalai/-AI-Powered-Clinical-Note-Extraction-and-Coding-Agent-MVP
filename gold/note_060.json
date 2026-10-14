@@ -1,0 +1,64 @@
+{
+  "note_id": "note_060",
+  "specialty": "Bariatrics",
+  "source_row_index": 5,
+  "diagnoses": [
+    {
+      "name_as_written": "Morbid obesity",
+      "normalised_name": "morbid obesity",
+      "status": "active",
+      "span": [
+        26,
+        40
+      ],
+      "icd_code": "E66.01"
+    },
+    {
+      "name_as_written": "overweight",
+      "normalised_name": "overweight",
+      "status": "active",
+      "span": [
+        303,
+        313
+      ],
+      "icd_code": "E66.3"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "Laparoscopic antecolic antegastric Roux-en-Y gastric bypass with EEA anastomosis",
+      "date": null,
+      "span": [
+        98,
+        178
+      ]
+    },
+    {
+      "name": "endotracheal intubation",
+      "date": null,
+      "span": [
+        207,
+        230
+      ]
+    },
+    {
+      "name": "Foley catheter",
+      "date": null,
+      "span": [
+        825,
+        839
+      ]
+    },
+    {
+      "name": "EGD scope",
+      "date": null,
+      "span": [
+        3724,
+        3733
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

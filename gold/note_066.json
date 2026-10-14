@@ -1,0 +1,80 @@
+{
+  "note_id": "note_066",
+  "specialty": "Dermatology",
+  "source_row_index": 3998,
+  "diagnoses": [
+    {
+      "name_as_written": "scalp mole",
+      "normalised_name": "melanocytic nevus of scalp",
+      "status": "active",
+      "span": [
+        26,
+        36
+      ],
+      "icd_code": "D22.4"
+    },
+    {
+      "name_as_written": "pneumonia",
+      "normalised_name": "pneumonia",
+      "status": "active",
+      "span": [
+        88,
+        97
+      ],
+      "icd_code": "J18.9"
+    },
+    {
+      "name_as_written": "effusion",
+      "normalised_name": "pleural effusion",
+      "status": "active",
+      "span": [
+        99,
+        107
+      ],
+      "icd_code": "J90"
+    },
+    {
+      "name_as_written": "metastatic melanoma",
+      "normalised_name": "metastatic malignant melanoma",
+      "status": "suspected",
+      "span": [
+        118,
+        137
+      ],
+      "icd_code": "C79.89"
+    }
+  ],
+  "medications": [
+    {
+      "name": "antibiotic ointment",
+      "dose": null,
+      "route": "topical",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        447,
+        466
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Skin biopsy",
+      "date": null,
+      "span": [
+        13,
+        24
+      ]
+    },
+    {
+      "name": "punch biopsy",
+      "date": null,
+      "span": [
+        314,
+        326
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

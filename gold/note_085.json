@@ -1,0 +1,74 @@
+{
+  "note_id": "note_085",
+  "specialty": "Orthopedic",
+  "source_row_index": 2277,
+  "diagnoses": [
+    {
+      "name_as_written": "osteochondritis dissecans",
+      "normalised_name": "osteochondritis dissecans of knee",
+      "status": "active",
+      "span": [
+        59,
+        84
+      ],
+      "icd_code": "M93.262"
+    },
+    {
+      "name_as_written": "loose body",
+      "normalised_name": "loose body in knee joint",
+      "status": "active",
+      "span": [
+        239,
+        249
+      ],
+      "icd_code": "M23.42"
+    },
+    {
+      "name_as_written": "synovitis",
+      "normalised_name": "synovitis of knee",
+      "status": "active",
+      "span": [
+        2425,
+        2434
+      ],
+      "icd_code": "M65.9"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "Left knee arthroscopy",
+      "date": null,
+      "span": [
+        187,
+        208
+      ]
+    },
+    {
+      "name": "microfracture of the medial femoral condyle",
+      "date": null,
+      "span": [
+        254,
+        297
+      ]
+    },
+    {
+      "name": "chondroplasty",
+      "date": null,
+      "span": [
+        303,
+        316
+      ]
+    },
+    {
+      "name": "MRI",
+      "date": null,
+      "span": [
+        810,
+        813
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

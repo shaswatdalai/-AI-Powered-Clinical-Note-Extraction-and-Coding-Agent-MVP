@@ -1,0 +1,96 @@
+{
+  "note_id": "note_065",
+  "specialty": "Dentistry",
+  "source_row_index": 4039,
+  "diagnoses": [
+    {
+      "name_as_written": "Right buccal and canine's base infection",
+      "normalised_name": "facial space infection",
+      "status": "active",
+      "span": [
+        26,
+        66
+      ],
+      "icd_code": "K12.2"
+    },
+    {
+      "name_as_written": "necrotic teeth",
+      "normalised_name": "pulp necrosis",
+      "status": "active",
+      "span": [
+        72,
+        86
+      ],
+      "icd_code": "K04.1"
+    },
+    {
+      "name_as_written": "facial abscess",
+      "normalised_name": "facial abscess",
+      "status": "active",
+      "span": [
+        1635,
+        1649
+      ],
+      "icd_code": "K12.2"
+    },
+    {
+      "name_as_written": "decay",
+      "normalised_name": "dental caries",
+      "status": "active",
+      "span": [
+        3080,
+        3085
+      ],
+      "icd_code": "K02.9"
+    }
+  ],
+  "medications": [
+    {
+      "name": "antibiotics",
+      "dose": null,
+      "route": "IV",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1115,
+        1129
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Incision and drainage of multiple facial spaces",
+      "date": null,
+      "span": [
+        230,
+        277
+      ]
+    },
+    {
+      "name": "Surgical removal of the following teeth",
+      "date": null,
+      "span": [
+        298,
+        337
+      ]
+    },
+    {
+      "name": "Penrose drain",
+      "date": null,
+      "span": [
+        542,
+        555
+      ]
+    },
+    {
+      "name": "nasal endotracheal intubation",
+      "date": null,
+      "span": [
+        2033,
+        2062
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

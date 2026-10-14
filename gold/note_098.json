@@ -1,0 +1,31 @@
+{
+  "note_id": "note_098",
+  "specialty": "Radiology",
+  "source_row_index": 1491,
+  "diagnoses": [
+    {
+      "name_as_written": "intrauterine pregnancy",
+      "normalised_name": "intrauterine pregnancy",
+      "status": "active",
+      "span": [
+        624,
+        646
+      ],
+      "icd_code": "Z33.1"
+    },
+    {
+      "name_as_written": "inevitable abortion",
+      "normalised_name": "threatened abortion",
+      "status": "suspected",
+      "span": [
+        942,
+        961
+      ],
+      "icd_code": "O03.9"
+    }
+  ],
+  "medications": [],
+  "procedures": [],
+  "allergies": [],
+  "vitals": []
+}

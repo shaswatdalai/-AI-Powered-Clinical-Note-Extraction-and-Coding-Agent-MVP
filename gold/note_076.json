@@ -1,0 +1,64 @@
+{
+  "note_id": "note_076",
+  "specialty": "IME-QME-Work Comp etc.",
+  "source_row_index": 3107,
+  "diagnoses": [
+    {
+      "name_as_written": "First-degree and second-degree burns",
+      "normalised_name": "burn of right forearm",
+      "status": "active",
+      "span": [
+        998,
+        1034
+      ],
+      "icd_code": "T22.211A"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Demerol",
+      "dose": "50 mg",
+      "route": "IM",
+      "frequency": null,
+      "status": "discontinued",
+      "span": [
+        1227,
+        1234
+      ]
+    },
+    {
+      "name": "Neosporin",
+      "dose": null,
+      "route": "topical",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        1336,
+        1345
+      ]
+    },
+    {
+      "name": "Tylenol No. 3",
+      "dose": "tabs #4",
+      "route": null,
+      "frequency": "one or two every four hours p.r.n.",
+      "status": "newly_prescribed",
+      "span": [
+        1378,
+        1391
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "burn dressing",
+      "date": null,
+      "span": [
+        1306,
+        1319
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

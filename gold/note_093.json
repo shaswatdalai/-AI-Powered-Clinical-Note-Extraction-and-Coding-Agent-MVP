@@ -1,0 +1,20 @@
+{
+  "note_id": "note_093",
+  "specialty": "SOAP / Chart / Progress Notes",
+  "source_row_index": 1409,
+  "diagnoses": [],
+  "medications": [],
+  "procedures": [],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "weight",
+      "value": "186-1/2",
+      "unit": "pounds",
+      "span": [
+        193,
+        207
+      ]
+    }
+  ]
+}

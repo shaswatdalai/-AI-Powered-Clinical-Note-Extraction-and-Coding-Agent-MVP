@@ -1,0 +1,40 @@
+{
+  "note_id": "note_077",
+  "specialty": "Lab Medicine - Pathology",
+  "source_row_index": 3083,
+  "diagnoses": [
+    {
+      "name_as_written": "right ovarian cyst",
+      "normalised_name": "ovarian cyst",
+      "status": "active",
+      "span": [
+        40,
+        58
+      ],
+      "icd_code": "N83.201"
+    },
+    {
+      "name_as_written": "Benign cystic ovary",
+      "normalised_name": "benign ovarian cyst",
+      "status": "active",
+      "span": [
+        531,
+        550
+      ],
+      "icd_code": "N83.20"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "frozen section",
+      "date": null,
+      "span": [
+        82,
+        96
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

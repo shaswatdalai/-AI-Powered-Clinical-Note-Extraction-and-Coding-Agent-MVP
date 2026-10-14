@@ -1,0 +1,30 @@
+{
+  "note_id": "note_100",
+  "specialty": "Surgery",
+  "source_row_index": 819,
+  "diagnoses": [
+    {
+      "name_as_written": "Right flank subcutaneous mass",
+      "normalised_name": "subcutaneous mass of right flank",
+      "status": "active",
+      "span": [
+        26,
+        55
+      ],
+      "icd_code": "R22.2"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "Excision of soft tissue mass on the right flank",
+      "date": null,
+      "span": [
+        138,
+        185
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

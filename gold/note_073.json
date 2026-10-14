@@ -1,0 +1,298 @@
+{
+  "note_id": "note_073",
+  "specialty": "General Medicine",
+  "source_row_index": 3328,
+  "diagnoses": [
+    {
+      "name_as_written": "acute pancreatitis",
+      "normalised_name": "acute pancreatitis",
+      "status": "active",
+      "span": [
+        410,
+        428
+      ],
+      "icd_code": "K85.90"
+    },
+    {
+      "name_as_written": "dementia of Alzheimer type",
+      "normalised_name": "alzheimer dementia",
+      "status": "active",
+      "span": [
+        470,
+        496
+      ],
+      "icd_code": "G30.9"
+    },
+    {
+      "name_as_written": "anxiety",
+      "normalised_name": "anxiety",
+      "status": "active",
+      "span": [
+        498,
+        505
+      ],
+      "icd_code": "F41.9"
+    },
+    {
+      "name_as_written": "osteoarthritis",
+      "normalised_name": "osteoarthritis",
+      "status": "active",
+      "span": [
+        507,
+        521
+      ],
+      "icd_code": "M19.90"
+    },
+    {
+      "name_as_written": "hypertension",
+      "normalised_name": "hypertension",
+      "status": "active",
+      "span": [
+        527,
+        539
+      ],
+      "icd_code": "I10"
+    },
+    {
+      "name_as_written": "Leukocytosis",
+      "normalised_name": "leukocytosis",
+      "status": "active",
+      "span": [
+        3341,
+        3353
+      ],
+      "icd_code": "D72.829"
+    },
+    {
+      "name_as_written": "Urinary tract infection",
+      "normalised_name": "urinary tract infection",
+      "status": "active",
+      "span": [
+        3359,
+        3382
+      ],
+      "icd_code": "N39.0"
+    },
+    {
+      "name_as_written": "Hyponatremia",
+      "normalised_name": "hyponatremia",
+      "status": "active",
+      "span": [
+        3388,
+        3400
+      ],
+      "icd_code": "E87.1"
+    },
+    {
+      "name_as_written": "cardiomegaly",
+      "normalised_name": "cardiomegaly",
+      "status": "active",
+      "span": [
+        2729,
+        2741
+      ],
+      "icd_code": "I51.7"
+    },
+    {
+      "name_as_written": "atelectasis",
+      "normalised_name": "atelectasis",
+      "status": "active",
+      "span": [
+        2763,
+        2774
+      ],
+      "icd_code": "J98.11"
+    },
+    {
+      "name_as_written": "fatty infiltration",
+      "normalised_name": "fatty liver",
+      "status": "active",
+      "span": [
+        2833,
+        2851
+      ],
+      "icd_code": "K76.0"
+    }
+  ],
+  "medications": [
+    {
+      "name": "alprazolam",
+      "dose": "0.5 mg",
+      "route": null,
+      "frequency": "b.i.d. p.r.n.",
+      "status": "current",
+      "span": [
+        613,
+        623
+      ]
+    },
+    {
+      "name": "mirtazapine",
+      "dose": "30 mg",
+      "route": "p.o.",
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        646,
+        657
+      ]
+    },
+    {
+      "name": "Aricept",
+      "dose": "10 mg",
+      "route": "p.o.",
+      "frequency": "nightly",
+      "status": "current",
+      "span": [
+        676,
+        683
+      ]
+    },
+    {
+      "name": "Namenda",
+      "dose": "10 mg",
+      "route": "p.o.",
+      "frequency": "b.i.d.",
+      "status": "current",
+      "span": [
+        704,
+        711
+      ]
+    },
+    {
+      "name": "Benicar",
+      "dose": "40 mg",
+      "route": "p.o.",
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        731,
+        738
+      ]
+    },
+    {
+      "name": "Claritin",
+      "dose": "10 mg",
+      "route": null,
+      "frequency": "daily p.r.n.",
+      "status": "current",
+      "span": [
+        761,
+        769
+      ]
+    },
+    {
+      "name": "antibiotics",
+      "dose": null,
+      "route": "IV",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        3559,
+        3573
+      ]
+    },
+    {
+      "name": "Zofran",
+      "dose": null,
+      "route": "IV",
+      "frequency": "p.r.n.",
+      "status": "newly_prescribed",
+      "span": [
+        3635,
+        3641
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "X-ray of abdomen",
+      "date": null,
+      "span": [
+        2566,
+        2582
+      ]
+    },
+    {
+      "name": "CT of the abdomen",
+      "date": null,
+      "span": [
+        2682,
+        2699
+      ]
+    },
+    {
+      "name": "Ultrasound of the abdomen",
+      "date": null,
+      "span": [
+        2777,
+        2802
+      ]
+    },
+    {
+      "name": "EKG",
+      "date": null,
+      "span": [
+        3160,
+        3163
+      ]
+    }
+  ],
+  "allergies": [
+    {
+      "substance": "POLLENS",
+      "reaction": null,
+      "span": [
+        581,
+        588
+      ]
+    }
+  ],
+  "vitals": [
+    {
+      "name": "Temperature",
+      "value": "99.5",
+      "unit": "\u00b0F",
+      "span": [
+        1243,
+        1262
+      ]
+    },
+    {
+      "name": "pulse",
+      "value": "82",
+      "unit": "bpm",
+      "span": [
+        1264,
+        1272
+      ]
+    },
+    {
+      "name": "respirations",
+      "value": "18",
+      "unit": "breaths/min",
+      "span": [
+        1274,
+        1289
+      ]
+    },
+    {
+      "name": "blood pressure",
+      "value": "150/68",
+      "unit": "mmHg",
+      "span": [
+        1309,
+        1315
+      ]
+    },
+    {
+      "name": "pulse ox",
+      "value": "90%",
+      "unit": "%",
+      "span": [
+        1321,
+        1336
+      ]
+    }
+  ]
+}

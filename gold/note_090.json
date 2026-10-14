@@ -1,0 +1,322 @@
+{
+  "note_id": "note_090",
+  "specialty": "Psychiatry / Psychology",
+  "source_row_index": 1804,
+  "diagnoses": [
+    {
+      "name_as_written": "depression",
+      "normalised_name": "major depressive disorder",
+      "status": "active",
+      "span": [
+        1003,
+        1013
+      ],
+      "icd_code": "F32.9"
+    },
+    {
+      "name_as_written": "Hypertension",
+      "normalised_name": "hypertension",
+      "status": "active",
+      "span": [
+        1895,
+        1907
+      ],
+      "icd_code": "I10"
+    },
+    {
+      "name_as_written": "Hypercholesterolemia",
+      "normalised_name": "hypercholesterolemia",
+      "status": "active",
+      "span": [
+        1913,
+        1933
+      ],
+      "icd_code": "E78.00"
+    },
+    {
+      "name_as_written": "Coronary artery disease",
+      "normalised_name": "coronary artery disease",
+      "status": "active",
+      "span": [
+        1939,
+        1962
+      ],
+      "icd_code": "I25.10"
+    },
+    {
+      "name_as_written": "Osteoarthritis",
+      "normalised_name": "osteoarthritis",
+      "status": "active",
+      "span": [
+        1968,
+        1982
+      ],
+      "icd_code": "M19.90"
+    },
+    {
+      "name_as_written": "Chronic obstructive pulmonary disease",
+      "normalised_name": "chronic obstructive pulmonary disease",
+      "status": "active",
+      "span": [
+        1988,
+        2025
+      ],
+      "icd_code": "J44.1"
+    },
+    {
+      "name_as_written": "Hypothyroidism",
+      "normalised_name": "hypothyroidism",
+      "status": "active",
+      "span": [
+        2031,
+        2045
+      ],
+      "icd_code": "E03.9"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Tylenol",
+      "dose": "650 mg",
+      "route": null,
+      "frequency": "q.6h. p.r.n.",
+      "status": "current",
+      "span": [
+        2108,
+        2115
+      ]
+    },
+    {
+      "name": "Xanax",
+      "dose": "0.5",
+      "route": null,
+      "frequency": "q.4h. p.r.n.",
+      "status": "current",
+      "span": [
+        1647,
+        1652
+      ]
+    },
+    {
+      "name": "Lasix",
+      "dose": "80 mg",
+      "route": null,
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        2161,
+        2166
+      ]
+    },
+    {
+      "name": "Isordil",
+      "dose": "10 mg",
+      "route": null,
+      "frequency": "t.i.d.",
+      "status": "current",
+      "span": [
+        2180,
+        2187
+      ]
+    },
+    {
+      "name": "KCl",
+      "dose": "20 mEq",
+      "route": null,
+      "frequency": "b.i.d.",
+      "status": "current",
+      "span": [
+        2202,
+        2205
+      ]
+    },
+    {
+      "name": "lactulose",
+      "dose": "10 g",
+      "route": null,
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        2221,
+        2230
+      ]
+    },
+    {
+      "name": "Cozaar",
+      "dose": "50 mg",
+      "route": null,
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        2243,
+        2249
+      ]
+    },
+    {
+      "name": "Synthroid",
+      "dose": "75 mcg",
+      "route": null,
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        2263,
+        2272
+      ]
+    },
+    {
+      "name": "Singulair",
+      "dose": "10 mg",
+      "route": null,
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        2287,
+        2296
+      ]
+    },
+    {
+      "name": "Lumigan",
+      "dose": "one drop both eyes",
+      "route": "ophthalmic",
+      "frequency": "at bed time",
+      "status": "current",
+      "span": [
+        2310,
+        2317
+      ]
+    },
+    {
+      "name": "NitroQuick",
+      "dose": null,
+      "route": null,
+      "frequency": "p.r.n.",
+      "status": "current",
+      "span": [
+        2350,
+        2360
+      ]
+    },
+    {
+      "name": "Pravachol",
+      "dose": "20 mg",
+      "route": null,
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        2369,
+        2378
+      ]
+    },
+    {
+      "name": "Feldene",
+      "dose": "20 mg",
+      "route": null,
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        2392,
+        2399
+      ]
+    },
+    {
+      "name": "Paxil",
+      "dose": "20 mg",
+      "route": null,
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        1637,
+        1642
+      ]
+    },
+    {
+      "name": "Minipress",
+      "dose": "2 mg",
+      "route": null,
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        2432,
+        2441
+      ]
+    },
+    {
+      "name": "Provera",
+      "dose": null,
+      "route": null,
+      "frequency": "p.r.n.",
+      "status": "current",
+      "span": [
+        2454,
+        2461
+      ]
+    },
+    {
+      "name": "Advair",
+      "dose": "250/50",
+      "route": "inhalation",
+      "frequency": "one puff b.i.d.",
+      "status": "current",
+      "span": [
+        2470,
+        2476
+      ]
+    },
+    {
+      "name": "Senokot",
+      "dose": "one tablet",
+      "route": null,
+      "frequency": "b.i.d.",
+      "status": "current",
+      "span": [
+        2501,
+        2508
+      ]
+    },
+    {
+      "name": "Timoptic",
+      "dose": "one drop OU",
+      "route": "ophthalmic",
+      "frequency": "daily",
+      "status": "current",
+      "span": [
+        2528,
+        2536
+      ]
+    },
+    {
+      "name": "verapamil",
+      "dose": "80 mg",
+      "route": null,
+      "frequency": "b.i.d.",
+      "status": "current",
+      "span": [
+        2560,
+        2569
+      ]
+    },
+    {
+      "name": "Darvocet",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "current",
+      "span": [
+        648,
+        656
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "psychiatric evaluation",
+      "date": null,
+      "span": [
+        1536,
+        1558
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

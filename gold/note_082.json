@@ -1,0 +1,115 @@
+{
+  "note_id": "note_082",
+  "specialty": "Obstetrics / Gynecology",
+  "source_row_index": 2642,
+  "diagnoses": [
+    {
+      "name_as_written": "Abnormal uterine bleeding",
+      "normalised_name": "abnormal uterine bleeding",
+      "status": "active",
+      "span": [
+        28,
+        53
+      ],
+      "icd_code": "N93.9"
+    },
+    {
+      "name_as_written": "retained products",
+      "normalised_name": "retained products of conception",
+      "status": "ruled_out",
+      "span": [
+        670,
+        687
+      ],
+      "icd_code": "O03.4"
+    },
+    {
+      "name_as_written": "endometrial polyps",
+      "normalised_name": "endometrial polyp",
+      "status": "ruled_out",
+      "span": [
+        1960,
+        1978
+      ],
+      "icd_code": "N84.0"
+    },
+    {
+      "name_as_written": "hyperplastic",
+      "normalised_name": "endometrial hyperplasia",
+      "status": "active",
+      "span": [
+        1891,
+        1903
+      ],
+      "icd_code": "N85.00"
+    },
+    {
+      "name_as_written": "endometrial perforation",
+      "normalised_name": "uterine perforation",
+      "status": "suspected",
+      "span": [
+        2155,
+        2178
+      ],
+      "icd_code": "N99.820"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Tylenol #3",
+      "dose": null,
+      "route": null,
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        3339,
+        3349
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Dilation and curettage",
+      "date": null,
+      "span": [
+        228,
+        250
+      ]
+    },
+    {
+      "name": "Hysteroscopy",
+      "date": null,
+      "span": [
+        262,
+        274
+      ]
+    },
+    {
+      "name": "spontaneous vaginal delivery",
+      "date": "7 months",
+      "span": [
+        71,
+        99
+      ]
+    },
+    {
+      "name": "ultrasound",
+      "date": null,
+      "span": [
+        603,
+        613
+      ]
+    }
+  ],
+  "allergies": [
+    {
+      "substance": "Motrin",
+      "reaction": null,
+      "span": [
+        3385,
+        3391
+      ]
+    }
+  ],
+  "vitals": []
+}

@@ -1,0 +1,100 @@
+{
+  "note_id": "note_069",
+  "specialty": "ENT - Otolaryngology",
+  "source_row_index": 3737,
+  "diagnoses": [
+    {
+      "name_as_written": "Chronic eustachian tube dysfunction",
+      "normalised_name": "chronic eustachian tube dysfunction",
+      "status": "active",
+      "span": [
+        29,
+        64
+      ],
+      "icd_code": "H69.80"
+    },
+    {
+      "name_as_written": "Retained right pressure equalization tube",
+      "normalised_name": "retained tympanostomy tube",
+      "status": "active",
+      "span": [
+        70,
+        111
+      ],
+      "icd_code": "H74.8X1"
+    },
+    {
+      "name_as_written": "Retracted left tympanic membrane",
+      "normalised_name": "retraction of tympanic membrane",
+      "status": "active",
+      "span": [
+        117,
+        149
+      ],
+      "icd_code": "H73.812"
+    },
+    {
+      "name_as_written": "conductive loss",
+      "normalised_name": "conductive hearing loss",
+      "status": "active",
+      "span": [
+        707,
+        722
+      ],
+      "icd_code": "H90.2"
+    },
+    {
+      "name_as_written": "myringosclerosis",
+      "normalised_name": "myringosclerosis",
+      "status": "active",
+      "span": [
+        1895,
+        1911
+      ],
+      "icd_code": "H74.01"
+    },
+    {
+      "name_as_written": "perforation in tympanic membrane",
+      "normalised_name": "tympanic membrane perforation",
+      "status": "active",
+      "span": [
+        1501,
+        1533
+      ],
+      "icd_code": "H72.90"
+    }
+  ],
+  "medications": [
+    {
+      "name": "ciprofloxacin",
+      "dose": "Three drops",
+      "route": "otic",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        1761,
+        1774
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Removal of the old right pressure equalizing tube",
+      "date": null,
+      "span": [
+        347,
+        396
+      ]
+    },
+    {
+      "name": "Myringotomy with placement of a left pressure equalizing tube",
+      "date": null,
+      "span": [
+        457,
+        518
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

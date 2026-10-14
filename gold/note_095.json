@@ -1,0 +1,76 @@
+{
+  "note_id": "note_095",
+  "specialty": "Speech - Language",
+  "source_row_index": 1285,
+  "diagnoses": [
+    {
+      "name_as_written": "brain tumor",
+      "normalised_name": "brain neoplasm",
+      "status": "active",
+      "span": [
+        25,
+        36
+      ],
+      "icd_code": "D49.6"
+    },
+    {
+      "name_as_written": "breast cancer",
+      "normalised_name": "breast cancer",
+      "status": "active",
+      "span": [
+        134,
+        147
+      ],
+      "icd_code": "C50.919"
+    },
+    {
+      "name_as_written": "left-sided weakness",
+      "normalised_name": "left hemiparesis",
+      "status": "active",
+      "span": [
+        323,
+        342
+      ],
+      "icd_code": "G81.90"
+    },
+    {
+      "name_as_written": "cognitive linguistic deficits",
+      "normalised_name": "cognitive communication deficit",
+      "status": "active",
+      "span": [
+        2683,
+        2712
+      ],
+      "icd_code": "R41.840"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "brain tumor removed",
+      "date": "10/24/08",
+      "span": [
+        287,
+        306
+      ]
+    },
+    {
+      "name": "second surgery was performed to reduce the swelling",
+      "date": null,
+      "span": [
+        458,
+        509
+      ]
+    },
+    {
+      "name": "radiation therapy",
+      "date": null,
+      "span": [
+        221,
+        238
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

@@ -1,0 +1,81 @@
+{
+  "note_id": "note_097",
+  "specialty": "Urology",
+  "source_row_index": 158,
+  "diagnoses": [
+    {
+      "name_as_written": "Phimosis",
+      "normalised_name": "phimosis",
+      "status": "active",
+      "span": [
+        26,
+        34
+      ],
+      "icd_code": "N47.1"
+    },
+    {
+      "name_as_written": "adhesions",
+      "normalised_name": "penile adhesions",
+      "status": "active",
+      "span": [
+        39,
+        48
+      ],
+      "icd_code": "N47.5"
+    },
+    {
+      "name_as_written": "ventral chordee",
+      "normalised_name": "chordee",
+      "status": "active",
+      "span": [
+        153,
+        168
+      ],
+      "icd_code": "N48.89"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Marcaine",
+      "dose": null,
+      "route": "injection",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        1358,
+        1366
+      ]
+    },
+    {
+      "name": "lidocaine",
+      "dose": null,
+      "route": "injection",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        1374,
+        1383
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Circumcision",
+      "date": null,
+      "span": [
+        125,
+        137
+      ]
+    },
+    {
+      "name": "release of ventral chordee",
+      "date": null,
+      "span": [
+        142,
+        168
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

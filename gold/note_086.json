@@ -1,0 +1,27 @@
+{
+  "note_id": "note_086",
+  "specialty": "Pain Management",
+  "source_row_index": 2006,
+  "diagnoses": [],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "Cervical epidural steroid injection C7-T1",
+      "date": null,
+      "span": [
+        23,
+        64
+      ]
+    },
+    {
+      "name": "EKG",
+      "date": null,
+      "span": [
+        369,
+        372
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

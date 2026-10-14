@@ -1,0 +1,54 @@
+{
+  "note_id": "note_089",
+  "specialty": "Podiatry",
+  "source_row_index": 1817,
+  "diagnoses": [
+    {
+      "name_as_written": "Plantar fascitis",
+      "normalised_name": "plantar fasciitis",
+      "status": "active",
+      "span": [
+        952,
+        968
+      ],
+      "icd_code": "M72.2"
+    },
+    {
+      "name_as_written": "heel spur syndrome",
+      "normalised_name": "heel spur",
+      "status": "active",
+      "span": [
+        969,
+        987
+      ],
+      "icd_code": "M77.30"
+    }
+  ],
+  "medications": [
+    {
+      "name": "lidocaine",
+      "dose": "3 cc 2:1 mixture of 1% lidocaine plain with dexamethasone phospate",
+      "route": "injection",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        1068,
+        1111
+      ]
+    },
+    {
+      "name": "dexamethasone",
+      "dose": null,
+      "route": "injection",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        1089,
+        1111
+      ]
+    }
+  ],
+  "procedures": [],
+  "allergies": [],
+  "vitals": []
+}

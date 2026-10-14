@@ -1,0 +1,46 @@
+{
+  "note_id": "note_064",
+  "specialty": "Cosmetic / Plastic Surgery",
+  "source_row_index": 4065,
+  "diagnoses": [
+    {
+      "name_as_written": "Hemangioma, nasal tip",
+      "normalised_name": "hemangioma of nasal tip",
+      "status": "active",
+      "span": [
+        26,
+        47
+      ],
+      "icd_code": "D18.00"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "Debulking of hemangioma of the nasal tip through an open rhinoplasty approach",
+      "date": null,
+      "span": [
+        126,
+        203
+      ]
+    },
+    {
+      "name": "Rhinoplasty",
+      "date": null,
+      "span": [
+        209,
+        220
+      ]
+    },
+    {
+      "name": "oroendotracheal tube",
+      "date": null,
+      "span": [
+        1306,
+        1326
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

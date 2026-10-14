@@ -1,0 +1,72 @@
+{
+  "note_id": "note_081",
+  "specialty": "Neurosurgery",
+  "source_row_index": 2701,
+  "diagnoses": [
+    {
+      "name_as_written": "Severe lumbar spondylosis",
+      "normalised_name": "lumbar spondylosis",
+      "status": "active",
+      "span": [
+        768,
+        793
+      ],
+      "icd_code": "M47.816"
+    },
+    {
+      "name_as_written": "herniated disk",
+      "normalised_name": "lumbar disc herniation",
+      "status": "active",
+      "span": [
+        327,
+        341
+      ],
+      "icd_code": "M51.26"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "Revision laminectomy L5-S1",
+      "date": null,
+      "span": [
+        22,
+        48
+      ]
+    },
+    {
+      "name": "discectomy L5-S1",
+      "date": null,
+      "span": [
+        50,
+        66
+      ]
+    },
+    {
+      "name": "right medial facetectomy",
+      "date": null,
+      "span": [
+        68,
+        92
+      ]
+    },
+    {
+      "name": "arthrodesis",
+      "date": null,
+      "span": [
+        124,
+        135
+      ]
+    },
+    {
+      "name": "endotracheal tube intubation",
+      "date": null,
+      "span": [
+        1036,
+        1064
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

@@ -1,0 +1,41 @@
+{
+  "note_id": "note_067",
+  "specialty": "Diets and Nutritions",
+  "source_row_index": 3989,
+  "diagnoses": [
+    {
+      "name_as_written": "gestational diabetes",
+      "normalised_name": "gestational diabetes mellitus",
+      "status": "active",
+      "span": [
+        82,
+        102
+      ],
+      "icd_code": "O24.419"
+    },
+    {
+      "name_as_written": "obesity",
+      "normalised_name": "obesity",
+      "status": "active",
+      "span": [
+        1449,
+        1456
+      ],
+      "icd_code": "E66.9"
+    }
+  ],
+  "medications": [],
+  "procedures": [],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "weight",
+      "value": "155.5",
+      "unit": "pounds",
+      "span": [
+        713,
+        725
+      ]
+    }
+  ]
+}

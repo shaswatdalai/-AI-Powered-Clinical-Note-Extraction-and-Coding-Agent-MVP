@@ -1,0 +1,50 @@
+{
+  "note_id": "note_096",
+  "specialty": "Surgery",
+  "source_row_index": 229,
+  "diagnoses": [
+    {
+      "name_as_written": "upper abdominal wall skin mass",
+      "normalised_name": "skin mass of upper abdominal wall",
+      "status": "active",
+      "span": [
+        66,
+        96
+      ],
+      "icd_code": "R22.2"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Marcaine",
+      "dose": "10 mL",
+      "route": "injection",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        2331,
+        2339
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Postpartum tubal ligation",
+      "date": null,
+      "span": [
+        222,
+        247
+      ]
+    },
+    {
+      "name": "removal of upper abdominal skin wall mass",
+      "date": null,
+      "span": [
+        252,
+        293
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

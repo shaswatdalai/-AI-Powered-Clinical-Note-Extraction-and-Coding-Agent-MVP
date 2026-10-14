@@ -1,0 +1,71 @@
+{
+  "note_id": "note_080",
+  "specialty": "Neurology",
+  "source_row_index": 2972,
+  "diagnoses": [
+    {
+      "name_as_written": "anaplastic astrocytoma",
+      "normalised_name": "anaplastic astrocytoma",
+      "status": "active",
+      "span": [
+        191,
+        213
+      ],
+      "icd_code": "C71.2"
+    },
+    {
+      "name_as_written": "right facial droop",
+      "normalised_name": "facial droop",
+      "status": "active",
+      "span": [
+        1437,
+        1455
+      ],
+      "icd_code": "R29.810"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Temodar",
+      "dose": "75 mg/sq m",
+      "route": null,
+      "frequency": "everyday for 21 days out of 28 days",
+      "status": "newly_prescribed",
+      "span": [
+        2085,
+        2092
+      ]
+    },
+    {
+      "name": "thalidomide",
+      "dose": "100 mg/day",
+      "route": null,
+      "frequency": null,
+      "status": "discontinued",
+      "span": [
+        2227,
+        2238
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "MRI",
+      "date": null,
+      "span": [
+        501,
+        504
+      ]
+    },
+    {
+      "name": "radiation",
+      "date": null,
+      "span": [
+        322,
+        331
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

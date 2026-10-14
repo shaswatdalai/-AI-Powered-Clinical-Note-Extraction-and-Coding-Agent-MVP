@@ -1,0 +1,87 @@
+{
+  "note_id": "note_087",
+  "specialty": "Pediatrics - Neonatal",
+  "source_row_index": 1896,
+  "diagnoses": [
+    {
+      "name_as_written": "rectal bleeding",
+      "normalised_name": "rectal bleeding",
+      "status": "active",
+      "span": [
+        113,
+        128
+      ],
+      "icd_code": "K62.5"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Zantac",
+      "dose": null,
+      "route": "IV",
+      "frequency": null,
+      "status": "current",
+      "span": [
+        1107,
+        1116
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "CT scan of the abdomen",
+      "date": null,
+      "span": [
+        1499,
+        1521
+      ]
+    },
+    {
+      "name": "Meckel scan",
+      "date": null,
+      "span": [
+        2491,
+        2502
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "Temperature",
+      "value": "99.5",
+      "unit": "\u00b0F",
+      "span": [
+        1580,
+        1615
+      ]
+    },
+    {
+      "name": "pulse",
+      "value": "142",
+      "unit": "per minute",
+      "span": [
+        1617,
+        1637
+      ]
+    },
+    {
+      "name": "respirations",
+      "value": "28",
+      "unit": "per minute",
+      "span": [
+        1642,
+        1668
+      ]
+    },
+    {
+      "name": "Weight",
+      "value": "9.6",
+      "unit": "kilogram",
+      "span": [
+        1671,
+        1690
+      ]
+    }
+  ]
+}

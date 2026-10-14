@@ -1,0 +1,136 @@
+{
+  "note_id": "note_088",
+  "specialty": "Physical Medicine - Rehab",
+  "source_row_index": 1875,
+  "diagnoses": [
+    {
+      "name_as_written": "rheumatoid arthritis",
+      "normalised_name": "rheumatoid arthritis",
+      "status": "active",
+      "span": [
+        45,
+        65
+      ],
+      "icd_code": "M06.9"
+    },
+    {
+      "name_as_written": "fibromyalgia",
+      "normalised_name": "fibromyalgia",
+      "status": "active",
+      "span": [
+        67,
+        79
+      ],
+      "icd_code": "M79.7"
+    },
+    {
+      "name_as_written": "hypertension",
+      "normalised_name": "hypertension",
+      "status": "active",
+      "span": [
+        81,
+        93
+      ],
+      "icd_code": "I10"
+    },
+    {
+      "name_as_written": "hypercholesterolemia",
+      "normalised_name": "hypercholesterolemia",
+      "status": "active",
+      "span": [
+        95,
+        115
+      ],
+      "icd_code": "E78.00"
+    },
+    {
+      "name_as_written": "irritable bowel syndrome",
+      "normalised_name": "irritable bowel syndrome",
+      "status": "active",
+      "span": [
+        121,
+        145
+      ],
+      "icd_code": "K58.9"
+    },
+    {
+      "name_as_written": "right C8/T1 radiculopathy",
+      "normalised_name": "cervical radiculopathy C8-T1",
+      "status": "active",
+      "span": [
+        1416,
+        1441
+      ],
+      "icd_code": "M54.12"
+    },
+    {
+      "name_as_written": "right C6/C7 radiculopathy",
+      "normalised_name": "cervical radiculopathy C6-C7",
+      "status": "active",
+      "span": [
+        1497,
+        1522
+      ],
+      "icd_code": "M54.12"
+    },
+    {
+      "name_as_written": "chronic left C8/T1 denervation",
+      "normalised_name": "chronic cervical denervation C8-T1, left",
+      "status": "active",
+      "span": [
+        1576,
+        1606
+      ],
+      "icd_code": "G54.2"
+    },
+    {
+      "name_as_written": "lumbosacral radiculopathies",
+      "normalised_name": "lumbosacral radiculopathy",
+      "status": "active",
+      "span": [
+        1647,
+        1674
+      ],
+      "icd_code": "M54.17"
+    },
+    {
+      "name_as_written": "sensory carpal tunnel",
+      "normalised_name": "carpal tunnel syndrome",
+      "status": "active",
+      "span": [
+        1805,
+        1826
+      ],
+      "icd_code": "G56.00"
+    }
+  ],
+  "medications": [],
+  "procedures": [
+    {
+      "name": "bilateral carpal tunnel release",
+      "date": null,
+      "span": [
+        165,
+        196
+      ]
+    },
+    {
+      "name": "Nerve conduction studies",
+      "date": null,
+      "span": [
+        447,
+        471
+      ]
+    },
+    {
+      "name": "Needle EMG",
+      "date": null,
+      "span": [
+        819,
+        829
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

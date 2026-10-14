@@ -1,0 +1,81 @@
+{
+  "note_id": "note_062",
+  "specialty": "Chiropractic",
+  "source_row_index": 4604,
+  "diagnoses": [
+    {
+      "name_as_written": "disc desiccation",
+      "normalised_name": "intervertebral disc degeneration",
+      "status": "active",
+      "span": [
+        207,
+        223
+      ],
+      "icd_code": "M50.30"
+    },
+    {
+      "name_as_written": "disc herniation",
+      "normalised_name": "cervical disc herniation",
+      "status": "active",
+      "span": [
+        446,
+        461
+      ],
+      "icd_code": "M50.20"
+    },
+    {
+      "name_as_written": "uncovertebral joint arthrosis",
+      "normalised_name": "uncovertebral arthrosis",
+      "status": "active",
+      "span": [
+        301,
+        330
+      ],
+      "icd_code": "M47.812"
+    },
+    {
+      "name_as_written": "disc osteophyte complex",
+      "normalised_name": "cervical disc osteophyte complex",
+      "status": "active",
+      "span": [
+        934,
+        957
+      ],
+      "icd_code": "M47.812"
+    },
+    {
+      "name_as_written": "apophyseal joint arthrosis",
+      "normalised_name": "facet joint arthrosis",
+      "status": "active",
+      "span": [
+        993,
+        1019
+      ],
+      "icd_code": "M47.812"
+    },
+    {
+      "name_as_written": "central canal stenosis",
+      "normalised_name": "cervical spinal stenosis",
+      "status": "active",
+      "span": [
+        2963,
+        2985
+      ],
+      "icd_code": "M48.02"
+    },
+    {
+      "name_as_written": "Multilevel degenerative disc disease",
+      "normalised_name": "multilevel degenerative disc disease",
+      "status": "active",
+      "span": [
+        2461,
+        2497
+      ],
+      "icd_code": "M50.30"
+    }
+  ],
+  "medications": [],
+  "procedures": [],
+  "allergies": [],
+  "vitals": []
+}

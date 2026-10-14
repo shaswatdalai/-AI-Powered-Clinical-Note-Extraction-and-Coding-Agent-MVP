@@ -1,0 +1,70 @@
+{
+  "note_id": "note_059",
+  "specialty": "Autopsy",
+  "source_row_index": 4987,
+  "diagnoses": [
+    {
+      "name_as_written": "Sharp force wound of neck",
+      "normalised_name": "sharp force injury of neck",
+      "status": "active",
+      "span": [
+        22,
+        47
+      ],
+      "icd_code": "S11.90XA"
+    },
+    {
+      "name_as_written": "transection of left internal jugular vein",
+      "normalised_name": "laceration of internal jugular vein",
+      "status": "active",
+      "span": [
+        65,
+        106
+      ],
+      "icd_code": "S15.112A"
+    },
+    {
+      "name_as_written": "hemothorax",
+      "normalised_name": "traumatic hemothorax",
+      "status": "active",
+      "span": [
+        223,
+        233
+      ],
+      "icd_code": "S27.1XXA"
+    },
+    {
+      "name_as_written": "hemoperitoneum",
+      "normalised_name": "traumatic hemoperitoneum",
+      "status": "active",
+      "span": [
+        238,
+        252
+      ],
+      "icd_code": "S36.899A"
+    }
+  ],
+  "medications": [],
+  "procedures": [],
+  "allergies": [],
+  "vitals": [
+    {
+      "name": "Weight",
+      "value": "171",
+      "unit": "pounds",
+      "span": [
+        1085,
+        1095
+      ]
+    },
+    {
+      "name": "Length",
+      "value": "69",
+      "unit": "inches",
+      "span": [
+        1107,
+        1116
+      ]
+    }
+  ]
+}

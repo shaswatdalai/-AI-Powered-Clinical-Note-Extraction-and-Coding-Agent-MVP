@@ -1,0 +1,100 @@
+{
+  "note_id": "note_075",
+  "specialty": "Hospice - Palliative Care",
+  "source_row_index": 3111,
+  "diagnoses": [
+    {
+      "name_as_written": "hyponatremia",
+      "normalised_name": "hyponatremia",
+      "status": "active",
+      "span": [
+        378,
+        390
+      ],
+      "icd_code": "E87.1"
+    },
+    {
+      "name_as_written": "aspiration pneumonia",
+      "normalised_name": "aspiration pneumonia",
+      "status": "active",
+      "span": [
+        472,
+        492
+      ],
+      "icd_code": "J69.0"
+    },
+    {
+      "name_as_written": "ovarian malignancy",
+      "normalised_name": "malignant neoplasm of ovary",
+      "status": "suspected",
+      "span": [
+        727,
+        745
+      ],
+      "icd_code": "C56.9"
+    },
+    {
+      "name_as_written": "dysphagia",
+      "normalised_name": "dysphagia",
+      "status": "active",
+      "span": [
+        985,
+        994
+      ],
+      "icd_code": "R13.10"
+    },
+    {
+      "name_as_written": "hypertension",
+      "normalised_name": "hypertension",
+      "status": "active",
+      "span": [
+        996,
+        1008
+      ],
+      "icd_code": "I10"
+    },
+    {
+      "name_as_written": "tachycardia",
+      "normalised_name": "tachycardia",
+      "status": "active",
+      "span": [
+        1504,
+        1515
+      ],
+      "icd_code": "R00.0"
+    }
+  ],
+  "medications": [
+    {
+      "name": "morphine",
+      "dose": null,
+      "route": "intravenous",
+      "frequency": null,
+      "status": "newly_prescribed",
+      "span": [
+        1957,
+        1965
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "name": "CPR",
+      "date": null,
+      "span": [
+        221,
+        224
+      ]
+    },
+    {
+      "name": "intubated",
+      "date": null,
+      "span": [
+        1190,
+        1199
+      ]
+    }
+  ],
+  "allergies": [],
+  "vitals": []
+}

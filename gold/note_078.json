@@ -1,0 +1,83 @@
+{
+  "note_id": "note_078",
+  "specialty": "Letters",
+  "source_row_index": 3073,
+  "diagnoses": [
+    {
+      "name_as_written": "bulbar cerebral palsy",
+      "normalised_name": "cerebral palsy",
+      "status": "active",
+      "span": [
+        180,
+        201
+      ],
+      "icd_code": "G80.9"
+    },
+    {
+      "name_as_written": "hypotonia",
+      "normalised_name": "hypotonia",
+      "status": "active",
+      "span": [
+        206,
+        215
+      ],
+      "icd_code": "P94.2"
+    },
+    {
+      "name_as_written": "tonsillar hypertrophy",
+      "normalised_name": "tonsillar hypertrophy",
+      "status": "active",
+      "span": [
+        485,
+        506
+      ],
+      "icd_code": "J35.1"
+    },
+    {
+      "name_as_written": "chronic allergic rhinitis",
+      "normalised_name": "chronic allergic rhinitis",
+      "status": "active",
+      "span": [
+        712,
+        737
+      ],
+      "icd_code": "J30.9"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Flonase",
+      "dose": "two sprays to each nostril",
+      "route": "nasal",
+      "frequency": "once a day",
+      "status": "current",
+      "span": [
+        767,
+        774
+      ]
+    },
+    {
+      "name": "Zyrtec",
+      "dose": "10 mg",
+      "route": null,
+      "frequency": "a day",
+      "status": "current",
+      "span": [
+        839,
+        845
+      ]
+    }
+  ],
+  "procedures": [],
+  "allergies": [
+    {
+      "substance": "penicillin",
+      "reaction": null,
+      "span": [
+        928,
+        938
+      ]
+    }
+  ],
+  "vitals": []
+}

@@ -170,3 +170,53 @@ restart.
 - It does not support multiple concurrent reviewers. One server, one
   reviewer session at a time (per SOW Section 7.2).
 - It does not apply ICD coding to procedures (out of scope for the MVP).
+
+
+## Colour coding — what each colour means
+
+### Note highlighting
+
+- **Green background and underline** — accepted item. The extractor and
+  verifier agree that the span supports the item.
+- **Amber background and underline** — flagged item. The verifier rejected
+  it, the status was wrong, or the extractor-verifier pair disagreed.
+- **Hover** any highlighted span to highlight the matching row in the
+  results pane. Click a span to scroll the row into view.
+
+### Flagged-item reason chips
+
+Each flagged item carries a colour-coded chip above the reason text:
+
+- **Contradiction (red)** — the note contradicts itself. The verifier
+  found two statements that cannot both be true.
+- **Status mismatch (amber)** — the note contradicts the status the
+  extractor assigned to the item (e.g. it labelled a medication
+  "current" when the note says it was discontinued).
+- **Verifier rejected (amber)** — the verifier found no support for the
+  item in the note, or the item is the wrong category.
+- **No verdict (grey)** — the verifier did not return a verdict for this
+  item. Typically a parsing failure on the verifier response.
+- **Verifier unavailable (red)** — the verifier API failed. All items in
+  that run are marked "unavailable" and the note is escalated.
+
+Each flagged item also shows a suggested action below the reason
+(e.g. "Review the status. The note contradicts the extractor's label.").
+
+### Diagnosis status chips
+
+- **active (blue)** — the condition is currently present or being treated.
+- **historical (grey)** — the condition is in the past, resolved, or not
+  current.
+- **ruled_out (red)** — the note explicitly says the patient does NOT have
+  it.
+- **suspected (amber)** — the note says maybe/possibly ("rule out X",
+  "concern for X").
+
+### Escalation banner
+
+If the flagged fraction for a note exceeds 40%, a red banner appears at
+the top of the screen and the note is marked escalated. This means the
+system found a lot of disagreement and the whole note should be reviewed
+manually rather than trusting the accepted items.
+
+---

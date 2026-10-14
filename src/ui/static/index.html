@@ -373,8 +373,6 @@ button, input, select { font: inherit; color: inherit; }
   box-shadow: var(--shadow-sm);
 }
 
-/* Mark styles: soft background, thin underline via box-shadow so adjacent
-   marks don't visually merge. Truncated spans get a subtle "…" marker. */
 mark {
   background: transparent;
   color: inherit;
@@ -446,8 +444,6 @@ mark.truncated::after {
   font-variant-numeric: tabular-nums;
 }
 .card-body { padding: var(--space-4); }
-/* Scrollable table containers: horizontal scroll so all columns are
-   reachable when the pane is narrow. */
 .card-body.flush {
   padding: 0;
   overflow-x: auto;
@@ -509,14 +505,12 @@ mark.truncated::after {
   overflow-wrap: anywhere;
 }
 
-/* Column widths for the accepted table */
 .accepted-table col.col-id     { width: 48px; }
 .accepted-table col.col-type   { width: 100px; }
 .accepted-table col.col-item   { width: auto; }
 .accepted-table col.col-reason { width: 200px; }
 .accepted-table col.col-actions{ width: 84px; }
 
-/* Column widths for the flagged table */
 .flagged-table col.col-id     { width: 48px; }
 .flagged-table col.col-type   { width: 100px; }
 .flagged-table col.col-item   { width: auto; }
@@ -538,6 +532,40 @@ mark.truncated::after {
 .badge.procedure  { background: var(--warning-soft); color: var(--warning); }
 .badge.allergy    { background: var(--info-soft);    color: var(--info); }
 .badge.vital      { background: var(--danger-soft);  color: var(--danger); }
+
+/* Status chips — colour-coded by diagnosis status */
+.status-chip {
+  display: inline-block;
+  font-size: 11px;
+  padding: 1px 7px;
+  border-radius: 4px;
+  background: var(--bg-inset);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+.status-chip.active      { background: var(--accent-soft);   color: var(--accent); }
+.status-chip.historical  { background: var(--bg-inset);      color: var(--text-tertiary); }
+.status-chip.ruled_out   { background: var(--danger-soft);   color: var(--danger); }
+.status-chip.suspected   { background: var(--warning-soft);  color: var(--warning); }
+
+/* Flag reason chips — colour-coded by flag category */
+.flag-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  text-transform: none;
+}
+.flag-chip.contradiction { background: var(--danger-soft);  color: var(--danger); }
+.flag-chip.status        { background: var(--warning-soft); color: var(--warning); }
+.flag-chip.rejected      { background: var(--warning-soft); color: var(--warning); }
+.flag-chip.missing       { background: var(--bg-inset);     color: var(--text-tertiary); }
+.flag-chip.unavailable   { background: var(--danger-soft);  color: var(--danger); }
+.flag-chip.other         { background: var(--bg-inset);     color: var(--text-secondary); }
 
 .icd-list {
   margin-top: var(--space-2);
@@ -575,15 +603,6 @@ mark.truncated::after {
   color: var(--text-tertiary);
   font-style: italic;
   line-height: 1.5;
-}
-.status-chip {
-  display: inline-block;
-  font-size: 11px;
-  padding: 1px 6px;
-  border-radius: 4px;
-  background: var(--bg-inset);
-  color: var(--text-secondary);
-  font-family: var(--font-mono);
 }
 
 .row-actions { display: flex; gap: 4px; justify-content: flex-end; }
@@ -748,14 +767,34 @@ mark.truncated::after {
     </div>
     <div class="sidebar-section">
       <h3>Legend</h3>
-      <div style="display:flex;flex-direction:column;gap:6px;font-size:11.5px;color:var(--text-tertiary);padding:0 var(--space-2);">
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:11.5px;color:var(--text-tertiary);padding:0 var(--space-2);">
         <div style="display:flex;align-items:center;gap:8px;">
-          <span style="width:12px;height:12px;background:var(--highlight-accepted);border-bottom:2px solid var(--highlight-accepted-border);border-radius:3px;"></span>
-          Accepted
+          <span style="width:14px;height:14px;background:var(--highlight-accepted);border-bottom:2px solid var(--highlight-accepted-border);border-radius:3px;flex-shrink:0;"></span>
+          Accepted span
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
-          <span style="width:12px;height:12px;background:var(--highlight-flagged);border-bottom:2px solid var(--highlight-flagged-border);border-radius:3px;"></span>
-          Flagged
+          <span style="width:14px;height:14px;background:var(--highlight-flagged);border-bottom:2px solid var(--highlight-flagged-border);border-radius:3px;flex-shrink:0;"></span>
+          Flagged span
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+          <span class="flag-chip contradiction" style="font-size:10px;padding:1px 6px;">contradiction</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="flag-chip status" style="font-size:10px;padding:1px 6px;">status mismatch</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="flag-chip rejected" style="font-size:10px;padding:1px 6px;">verifier rejected</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="flag-chip missing" style="font-size:10px;padding:1px 6px;">no verdict</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+          <span class="status-chip active" style="font-size:10px;padding:1px 6px;">active</span>
+          <span class="status-chip historical" style="font-size:10px;padding:1px 6px;">historical</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="status-chip ruled_out" style="font-size:10px;padding:1px 6px;">ruled_out</span>
+          <span class="status-chip suspected" style="font-size:10px;padding:1px 6px;">suspected</span>
         </div>
       </div>
     </div>
@@ -868,9 +907,6 @@ mark.truncated::after {
 </div>
 
 <script>
-/* ============================================================
-   State
-   ============================================================ */
 const state = {
   notes: [],
   noteId: null,
@@ -885,10 +921,6 @@ const state = {
 
 const $ = (id) => document.getElementById(id);
 
-/* Maximum rendered length of a highlighted span in the note view.
-   Longer spans are trimmed to the last word boundary before this
-   limit and the remainder is annotated with a "…" marker. The
-   underlying data still carries the full span. */
 const MAX_MARK_DISPLAY_LEN = 70;
 
 function escapeHtml(s) {
@@ -903,9 +935,17 @@ function setStatus(text, spin = false) {
     : escapeHtml(text);
 }
 
-/* ============================================================
-   Notes sidebar
-   ============================================================ */
+/* Classify a flagged item's reason into a colour-coded chip category. */
+function classifyFlagReason(reason) {
+  const r = (reason || "").toLowerCase();
+  if (r.includes("contradict"))  return { key: "contradiction", label: "contradiction" };
+  if (r.includes("status"))      return { key: "status",        label: "status mismatch" };
+  if (r.includes("no verdict"))  return { key: "missing",       label: "no verdict" };
+  if (r.includes("unavailable")) return { key: "unavailable",   label: "verifier unavailable" };
+  if (r.includes("reject"))      return { key: "rejected",      label: "verifier rejected" };
+  return { key: "other", label: "flagged" };
+}
+
 async function loadNotes() {
   try {
     const res = await fetch("/api/notes");
@@ -946,9 +986,6 @@ function markActiveNote() {
   });
 }
 
-/* ============================================================
-   Run pipeline
-   ============================================================ */
 async function runPipeline() {
   if (!state.noteId) { setStatus("No note selected"); return; }
   const noteId = state.noteId;
@@ -985,9 +1022,6 @@ async function runPipeline() {
   }
 }
 
-/* ============================================================
-   Render note with spans
-   ============================================================ */
 function renderNote() {
   $("note-empty").style.display = "none";
   $("note-view").style.display = "block";
@@ -995,22 +1029,14 @@ function renderNote() {
 
   const items = [
     ...state.accepted.map(it => ({
-      id: it.id,
-      kind: "accepted",
-      type: it.type,
-      text: it.text || "",
-      span: it.span,
-      reason: it.reason || "",
+      id: it.id, kind: "accepted", type: it.type,
+      text: it.text || "", span: it.span, reason: it.reason || "",
     })),
     ...state.flagged.map(f => {
       const it = f.item || {};
       return {
-        id: f.id,
-        kind: "flagged",
-        type: it.type,
-        text: it.text || "",
-        span: it.span,
-        reason: f.reason || "",
+        id: f.id, kind: "flagged", type: it.type,
+        text: it.text || "", span: it.span, reason: f.reason || "",
       };
     }),
   ].filter(it => Array.isArray(it.span) && it.span.length === 2 && it.span[0] < it.span[1]);
@@ -1031,9 +1057,6 @@ function renderNote() {
   }
   offsetMap[raw.length] = escaped.length;
 
-  // Sort longest first so a shorter span nested inside a longer one wins
-  // the layout; then insert from the END of the string backwards so earlier
-  // offsets remain valid after each splice.
   items.sort((a, b) => b.span[0] - a.span[0]);
   let html = escaped;
   const seen = new Set();
@@ -1045,8 +1068,6 @@ function renderNote() {
     const e = offsetMap[it.span[1]];
     if (s == null || e == null || s >= e) continue;
 
-    // Trim display length for very long spans (e.g. a 130-char procedure
-    // name). The item still carries the full span; this is display-only.
     let eDisplay = e;
     let truncated = false;
     if (e - s > MAX_MARK_DISPLAY_LEN) {
@@ -1092,9 +1113,6 @@ function cssEscape(s) {
   return String(s).replace(/["\\]/g, "\\$&");
 }
 
-/* ============================================================
-   Accepted table
-   ============================================================ */
 function renderAccepted() {
   $("accepted-count").textContent = state.accepted.length;
 
@@ -1121,8 +1139,10 @@ function renderAccepted() {
         ).join("")}</div>`
       : "";
 
+    // Colour-code the status chip by status value.
+    const statusClass = it.status ? String(it.status).replace(/[^a-z_]/gi, "") : "";
     const statusHtml = it.status
-      ? `<span class="status-chip">${escapeHtml(it.status)}</span>`
+      ? `<span class="status-chip ${statusClass}">${escapeHtml(it.status)}</span>`
       : "";
 
     return `<tr data-id="${escapeHtml(id)}">
@@ -1150,9 +1170,6 @@ function renderAccepted() {
   attachRowHover();
 }
 
-/* ============================================================
-   Flagged table
-   ============================================================ */
 function renderFlagged() {
   $("flagged-count").textContent = state.flagged.length;
   const tbody = $("flagged-tbody");
@@ -1162,11 +1179,15 @@ function renderFlagged() {
   }
   tbody.innerHTML = state.flagged.map(f => {
     const it = f.item || {};
+    const flag = classifyFlagReason(f.reason);
     return `<tr data-id="${escapeHtml(f.id)}">
       <td class="cell-id">${escapeHtml(f.id)}</td>
       <td><span class="badge ${escapeHtml(it.type || "")}">${escapeHtml(it.type || "")}</span></td>
       <td><div class="cell-name">${escapeHtml(it.text || "")}</div></td>
-      <td class="reason cell-reason">${escapeHtml(f.reason || "")}</td>
+      <td class="cell-reason">
+        <span class="flag-chip ${flag.key}">${flag.label}</span>
+        <div class="reason" style="margin-top:4px;">${escapeHtml(f.reason || "")}</div>
+      </td>
     </tr>`;
   }).join("");
   attachRowHover();
@@ -1183,9 +1204,6 @@ function attachRowHover() {
   });
 }
 
-/* ============================================================
-   Trace timeline
-   ============================================================ */
 function renderTrace() {
   $("trace-count").textContent = `${state.trace.length} step${state.trace.length === 1 ? "" : "s"}`;
   const body = $("trace-body");
@@ -1207,9 +1225,6 @@ function renderTrace() {
   }).join("");
 }
 
-/* ============================================================
-   Escalation banner
-   ============================================================ */
 function renderEscalation() {
   const banner = $("escalated-banner");
   if (state.escalated) {
@@ -1231,9 +1246,6 @@ function renderAll() {
   renderEscalation();
 }
 
-/* ============================================================
-   Reviewer decisions
-   ============================================================ */
 async function decide(itemId, decision) {
   try {
     await fetch(`/api/decide/${encodeURIComponent(itemId)}?decision=${decision}`, { method: "POST" });
@@ -1245,9 +1257,6 @@ async function decide(itemId, decision) {
   }
 }
 
-/* ============================================================
-   Export
-   ============================================================ */
 async function exportJson() {
   if (!state.noteId) return;
   try {
@@ -1268,9 +1277,6 @@ async function exportJson() {
   }
 }
 
-/* ============================================================
-   Theme toggle
-   ============================================================ */
 function initTheme() {
   const saved = localStorage.getItem("theme");
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -1283,9 +1289,6 @@ function initTheme() {
   });
 }
 
-/* ============================================================
-   Divider drag
-   ============================================================ */
 function initDivider() {
   const main = $("main");
   const divider = $("divider");
@@ -1315,9 +1318,6 @@ function initDivider() {
   });
 }
 
-/* ============================================================
-   Init
-   ============================================================ */
 $("run-btn").addEventListener("click", runPipeline);
 $("export-btn").addEventListener("click", exportJson);
 initTheme();

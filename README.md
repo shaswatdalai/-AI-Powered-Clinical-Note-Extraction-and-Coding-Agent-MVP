@@ -252,4 +252,91 @@ Detailed per-item analysis in [`docs/FINDINGS.md`](./docs/FINDINGS.md).
 The repository is private and shared only with the Mirai Labs reviewers. Model choices and configurations respect the SOW's constraint of free-tier APIs only. See `.env.example` for the required keys (no keys are committed).
 
 
+
+## Running with multiple workers
+
+The interface runs single-worker by default because the SOW assumes a
+single reviewer session at a time (Section 7.2).
+
+To run with multiple workers (e.g. for multiple concurrent reviewers):
+
+    uvicorn src.ui.app:app --workers 2 --port 8000
+
+Caveat: each worker process loads its own copy of the ICD index
+(BM25 + ChromaDB + embeddings, roughly 250 MB resident). On a laptop,
+2 workers is the practical ceiling before you start swapping.
+
+## Caching
+
+Two layers of caching keep repeated runs fast:
+
+1. **On-disk LLM cache** in `cache/extractor/` and `cache/verifier/`.
+   Every LLM response is keyed by
+   `hash(model + system prompt + user prompt template + guardrails/schema
+   fingerprint + input)`. Re-running the same note with the same code is
+   a disk read, not an API call. Editing a prompt invalidates the cache
+   for every note the prompt touches.
+
+2. **Provider-side prefix caching.** The extractor and verifier system
+   prompts are constant across notes. Groq and Google both cache the
+   prompt prefix server-side, so only the note text is transmitted per
+   call after the first. This is enabled implicitly by the provider when
+   the prefix is long enough.
+
+To force a clean slate:
+
+    Remove-Item -Recurse -Force cache/extractor, cache/verifier
+
+
+
+## Redis result cache
+
+The reviewer interface uses Redis as a whole-note result cache:
+
+- Redis server on `localhost:6379` (Memurai on Windows, or the standard
+  Redis package on Linux/macOS).
+- Every pipeline result is stored under
+  `pipeline:<sha256(note_id | prompt_hash | note_text)>` with a 24-hour TTL.
+- Running the same note again is instant — it hits Redis instead of
+  re-invoking the LLM.
+- Editing any prompt invalidates every cached result automatically (the
+  prompt hash is part of the key).
+- If Redis is unreachable, the interface falls back to running the
+  pipeline normally with no error.
+
+Inspect the cache from the UI: the hit-rate indicator in the top bar
+updates every 3 seconds. Or query it directly:
+
+    curl http://localhost:8000/api/cache/stats
+
+Clear the cache (does not touch reviewer decisions):
+
+    curl -X POST http://localhost:8000/api/cache/reset
+
+### Install on Windows
+
+Download and install Memurai Developer Edition from
+`https://www.memurai.com/get-memurai`. It installs as a Windows service
+and starts on port 6379 automatically. Verify with:
+
+    python -c "import redis; print(redis.Redis().ping())"
+
+## Running with multiple workers
+
+The interface runs single-worker by default because SOW 7.2 assumes a
+single reviewer session at a time.
+
+For multiple concurrent reviewers:
+
+    uvicorn src.ui.app:app --workers 2 --port 8000
+
+Each worker loads its own copy of the ICD index (~250 MB resident), so
+2 workers is the practical ceiling on a laptop. The Redis result cache
+is shared across workers, so cross-worker cache hits work as expected.
+
+The reviewer accept/reject decisions are stored per-worker in memory
+and are NOT shared. If you need shared decisions, move
+`_reviewer_decisions` into Redis (a small follow-up).
+
+
 ---

@@ -18,13 +18,15 @@ Design and reviewer feedback integration:
   own copy of the ICD index (~250 MB), so N=2 is the practical ceiling
   on a laptop.
 
-- Prompt caching, two layers: (a) the extractor and verifier cache
-  every LLM response on disk keyed by hash(model + system prompt +
-  user prompt template + guardrails/schema fingerprint + input). This
-  is what makes repeated runs of the same note instant. (b) Provider-
-  side prefix caching: the extractor system prompt is constant, so
-  Groq/Gemini can cache the prefix on their side. Enabled by default
-  on both providers when the prefix is long enough.
+- Prompt caching, two layers:
+  (a) Redis cache for whole-note results, keyed by
+      sha256(note_id | prompt_hash | note_text). Re-running the same
+      note is instant. Editing any prompt invalidates the cache
+      automatically. Falls back cleanly if Redis is down.
+  (b) On-disk LLM-response cache in cache/extractor and cache/verifier,
+      keyed by model + both prompts + guardrails/schema fingerprint +
+      input. This is what makes fresh extractions cheap after the first
+      run of each note.
 
 - Reads notes from data/note_*.txt.
 - Calls src.orchestrator.run(note_text) per note.
@@ -40,6 +42,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+from src.cache import redis_cache
 from src.icd_index import load_index
 from src.orchestrator import run
 
@@ -52,28 +55,16 @@ app = FastAPI(title="Clinical Extraction Reviewer")
 
 @app.on_event("startup")
 def _startup():
-    """Load the ICD index once when the server starts.
-
-    The orchestrator calls icd_lookup for each diagnosis. icd_lookup
-    asserts that the BM25 and ChromaDB indexes are loaded; without this
-    the pipeline crashes with an AssertionError.
-    """
+    """Load the ICD index once at startup. Redis is optional."""
     load_index()
 
 
-# ---------------------------------------------------------------------------
-# In-memory reviewer decisions. Keyed by item id. Value: "accepted" | "rejected".
-# Reset when the server restarts.
-# ---------------------------------------------------------------------------
 _reviewer_decisions: dict[str, str] = {}
 
 
 # ---------------------------------------------------------------------------
-# Summary and suggested-action helpers (reviewer feedback: item 4)
+# Summary and suggested-action helpers
 # ---------------------------------------------------------------------------
-
-# Human-readable summary and per-flagged-item action suggestion.
-# No LLM call: both are derived from the pipeline result structure.
 
 _SUGGESTIONS: dict[str, str] = {
     "status mismatch": "Review the status. The note contradicts the extractor's label.",
@@ -86,7 +77,6 @@ _SUGGESTIONS: dict[str, str] = {
 
 
 def _suggest_action(reason: str) -> str:
-    """Return a short suggested action for a flagged item, based on its reason."""
     if not reason:
         return "Review manually."
     r = reason.lower()
@@ -97,26 +87,16 @@ def _suggest_action(reason: str) -> str:
 
 
 def _summarize_pipeline_result(result: dict, note_id: str) -> str:
-    """Produce a short template-based summary of a pipeline result.
-
-    No LLM call. Uses accepted item counts and the flagged count.
-
-    Example outputs:
-      "note_001: 3 diagnoses, 4 medications, 2 vitals."
-      "note_003: 2 procedures, 4 vitals · 2 flagged · ESCALATED."
-    """
     accepted = result.get("accepted", [])
     flagged = result.get("flagged", [])
     escalated = result.get("escalated", False)
     error = result.get("error")
-
     counts: dict[str, int] = {}
     for item in accepted:
         t = item.get("type") or "item"
         counts[t] = counts.get(t, 0) + 1
-
     order = ["diagnosis", "medication", "procedure", "allergy", "vital"]
-    parts: list[str] = []
+    parts = []
     for t in order:
         n = counts.get(t, 0)
         if n:
@@ -124,7 +104,6 @@ def _summarize_pipeline_result(result: dict, note_id: str) -> str:
     for t, n in counts.items():
         if t not in order:
             parts.append(f"{n} {t}{'' if n == 1 else 's'}")
-
     body = ", ".join(parts) if parts else "no items"
     tail = f" · {len(flagged)} flagged" if flagged else ""
     esc = " · ESCALATED" if escalated else ""
@@ -133,7 +112,6 @@ def _summarize_pipeline_result(result: dict, note_id: str) -> str:
 
 
 def _annotate_flagged(flagged: list[dict]) -> list[dict]:
-    """Attach a suggested_action string to each flagged item."""
     out = []
     for f in flagged:
         item = dict(f)
@@ -143,7 +121,7 @@ def _annotate_flagged(flagged: list[dict]) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
-# Note listing and retrieval
+# Notes
 # ---------------------------------------------------------------------------
 
 def _list_note_ids() -> list[str]:
@@ -165,7 +143,7 @@ def get_note(note_id: str):
 
 
 # ---------------------------------------------------------------------------
-# Run the pipeline on one note.
+# Run pipeline with Redis result cache
 # ---------------------------------------------------------------------------
 
 @app.post("/api/notes/{note_id}/run")
@@ -175,6 +153,15 @@ def run_note(note_id: str):
         raise HTTPException(404, f"note {note_id!r} not found")
 
     note_text = path.read_text(encoding="utf-8")
+
+    # Redis cache check
+    cached = redis_cache.get_result(note_id, note_text)
+    if cached is not None:
+        cached["cache_source"] = "redis"
+        cached["summary"] = _summarize_pipeline_result(cached, note_id)
+        cached["flagged"] = _annotate_flagged(cached.get("flagged", []))
+        return cached
+
     try:
         result = run(note_text)
     except Exception as e:
@@ -182,7 +169,7 @@ def run_note(note_id: str):
 
     flagged = _annotate_flagged(result["flagged"])
 
-    return {
+    response = {
         "note_id": note_id,
         "note_text": note_text,
         "summary": _summarize_pipeline_result(result, note_id),
@@ -191,7 +178,31 @@ def run_note(note_id: str):
         "trace": result["trace"],
         "escalated": result["escalated"],
         "error": result.get("error"),
+        "cache_source": "fresh",
     }
+
+    # Store in Redis (no-op if Redis is down)
+    to_store = dict(response)
+    to_store.pop("cache_source", None)
+    redis_cache.set_result(note_id, note_text, to_store)
+
+    return response
+
+
+# ---------------------------------------------------------------------------
+# Cache stats (for the UI banner)
+# ---------------------------------------------------------------------------
+
+@app.get("/api/cache/stats")
+def cache_stats():
+    return redis_cache.stats()
+
+
+@app.post("/api/cache/reset")
+def cache_reset():
+    redis_cache.flush()
+    redis_cache.reset_stats()
+    return {"ok": True}
 
 
 # ---------------------------------------------------------------------------
@@ -215,7 +226,7 @@ def list_decisions():
 
 
 # ---------------------------------------------------------------------------
-# JSON export
+# Export
 # ---------------------------------------------------------------------------
 
 @app.post("/api/notes/{note_id}/export")
@@ -225,12 +236,12 @@ def export_note(note_id: str):
         raise HTTPException(404, f"note {note_id!r} not found")
 
     note_text = path.read_text(encoding="utf-8")
-    result = run(note_text)
+    cached = redis_cache.get_result(note_id, note_text)
+    result = cached if cached is not None else run(note_text)
 
     def _annotate(item: dict) -> dict:
-        item_id = item.get("id")
         d = dict(item)
-        d["reviewer_decision"] = _reviewer_decisions.get(item_id)
+        d["reviewer_decision"] = _reviewer_decisions.get(d.get("id"))
         return d
 
     accepted = [_annotate(it) for it in result["accepted"]]
@@ -256,9 +267,7 @@ def export_note(note_id: str):
     }
     return JSONResponse(
         content=payload,
-        headers={
-            "Content-Disposition": f'attachment; filename="{note_id}_accepted.json"'
-        },
+        headers={"Content-Disposition": f'attachment; filename="{note_id}_accepted.json"'},
     )
 
 

@@ -8,139 +8,173 @@
 :root {
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Consolas, monospace;
-  --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px;
+  --radius-xs: 4px; --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px; --radius-xl: 20px;
   --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px;
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
-  --transition-fast: 120ms ease;
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.10), 0 4px 8px rgba(15, 23, 42, 0.04);
+  --transition-fast: 120ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 html[data-theme="light"] {
-  --bg-app: #f5f7fa; --bg-surface: #ffffff; --bg-surface-2: #fafbfc;
-  --bg-hover: #eef2f7; --bg-inset: #f0f3f7;
-  --border-subtle: #e5e9ef; --border-default: #d5dbe3; --border-strong: #b8c0cc;
-  --text-primary: #0f1720; --text-secondary: #4a5461; --text-tertiary: #7a8593; --text-inverse: #ffffff;
-  --accent: #3b6fe0; --accent-hover: #2f5cc4; --accent-soft: #e8efff;
-  --success: #16803c; --success-soft: #dcf5e5;
-  --warning: #b26300; --warning-soft: #fff2da;
-  --danger: #c92a2a; --danger-soft: #ffe3e3;
-  --info: #5b21b6; --info-soft: #ede9fe;
-  --highlight-accepted: rgba(22, 128, 60, 0.14); --highlight-accepted-border: #16803c;
-  --highlight-flagged: rgba(178, 99, 0, 0.16); --highlight-flagged-border: #b26300;
-  --highlight-hover: rgba(59, 111, 224, 0.14);
+  --bg-app: #fafaf9; --bg-surface: #ffffff; --bg-surface-2: #f7f7f6;
+  --bg-hover: #f2f2f0; --bg-inset: #f5f5f3; --bg-sidebar: #fafaf9;
+  --border-subtle: #ececea; --border-default: #e0dfdc; --border-strong: #c8c6c1;
+  --text-primary: #0f1216; --text-secondary: #494e57; --text-tertiary: #7b8189; --text-quaternary: #a4a9b0; --text-inverse: #ffffff;
+  --accent: #0d9488; --accent-hover: #0f766e; --accent-soft: #ccfbf1; --accent-faint: #f0fdfa; --accent-ring: rgba(13, 148, 136, 0.18);
+  --success: #059669; --success-soft: #d1fae5; --success-faint: #f0fdf4;
+  --warning: #b45309; --warning-soft: #fef3c7; --warning-faint: #fffbeb;
+  --danger: #dc2626; --danger-soft: #fee2e2; --danger-faint: #fef2f2;
+  --info: #6d28d9; --info-soft: #ede9fe;
+  --highlight-accepted: rgba(5, 150, 105, 0.14); --highlight-accepted-border: #059669;
+  --highlight-flagged: rgba(180, 83, 9, 0.16); --highlight-flagged-border: #b45309;
+  --highlight-hover: rgba(13, 148, 136, 0.12);
 }
 html[data-theme="dark"] {
-  --bg-app: #0e1116; --bg-surface: #161a22; --bg-surface-2: #1c212a;
-  --bg-hover: #232936; --bg-inset: #12161d;
-  --border-subtle: #262c38; --border-default: #333a48; --border-strong: #4a5466;
-  --text-primary: #eef2f8; --text-secondary: #b3bccb; --text-tertiary: #7b8595; --text-inverse: #0e1116;
-  --accent: #6b92ff; --accent-hover: #8aa8ff; --accent-soft: #1e2942;
-  --success: #4ade80; --success-soft: #14361f;
-  --warning: #fbbf24; --warning-soft: #3d2c0a;
-  --danger: #f87171; --danger-soft: #3a1414;
+  --bg-app: #0a0d11; --bg-surface: #12161b; --bg-surface-2: #171c22;
+  --bg-hover: #1d232a; --bg-inset: #0f1318; --bg-sidebar: #0d1116;
+  --border-subtle: #232a33; --border-default: #2e3640; --border-strong: #455060;
+  --text-primary: #f1f5f9; --text-secondary: #aab4c0; --text-tertiary: #78828f; --text-quaternary: #515a66; --text-inverse: #0a0d11;
+  --accent: #2dd4bf; --accent-hover: #5eead4; --accent-soft: #143d3a; --accent-faint: #0d2622; --accent-ring: rgba(45, 212, 191, 0.22);
+  --success: #4ade80; --success-soft: #14361f; --success-faint: #0f2817;
+  --warning: #fbbf24; --warning-soft: #3d2c0a; --warning-faint: #2b1f07;
+  --danger: #f87171; --danger-soft: #3a1414; --danger-faint: #281010;
   --info: #a78bfa; --info-soft: #2a1f4d;
-  --highlight-accepted: rgba(74, 222, 128, 0.18); --highlight-accepted-border: #4ade80;
-  --highlight-flagged: rgba(251, 191, 36, 0.20); --highlight-flagged-border: #fbbf24;
-  --highlight-hover: rgba(107, 146, 255, 0.22);
+  --highlight-accepted: rgba(74, 222, 128, 0.16); --highlight-accepted-border: #4ade80;
+  --highlight-flagged: rgba(251, 191, 36, 0.18); --highlight-flagged-border: #fbbf24;
+  --highlight-hover: rgba(45, 212, 191, 0.18);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; overflow: hidden; }
 body {
-  font-family: var(--font-sans); font-size: 13.5px; line-height: 1.55;
+  font-family: var(--font-sans); font-size: 13px; line-height: 1.5;
   color: var(--text-primary); background: var(--bg-app);
   -webkit-font-smoothing: antialiased;
 }
 button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: 5px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
 
-.app { display: grid; grid-template-columns: 260px 1fr; grid-template-rows: 56px 1fr; height: 100vh; }
+.app { display: grid; grid-template-columns: 300px 1fr; grid-template-rows: 60px 1fr; height: 100vh; }
 .topbar {
   grid-column: 1 / -1; display: flex; align-items: center; gap: var(--space-4);
   padding: 0 var(--space-5); background: var(--bg-surface);
-  border-bottom: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); z-index: 10;
+  border-bottom: 1px solid var(--border-subtle); z-index: 20;
 }
-.brand { display: flex; align-items: center; gap: var(--space-3); font-weight: 600; font-size: 14px; letter-spacing: -0.01em; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 14px; letter-spacing: -0.015em; color: var(--text-primary); flex-shrink: 0; }
 .brand-logo {
-  width: 26px; height: 26px; background: linear-gradient(135deg, var(--accent), var(--info));
-  border-radius: 8px; display: grid; place-items: center; color: white; font-weight: 700; font-size: 13px;
-  box-shadow: 0 2px 6px rgba(59, 111, 224, 0.35);
+  width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent) 0%, #0f766e 60%, var(--info) 100%);
+  border-radius: 9px; display: grid; place-items: center; color: white; font-weight: 700; font-size: 13px;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.28), inset 0 1px 0 rgba(255,255,255,0.25); letter-spacing: -0.02em;
 }
 .brand-sub {
-  color: var(--text-tertiary); font-size: 11.5px; font-weight: 400;
-  padding-left: var(--space-3); border-left: 1px solid var(--border-subtle); margin-left: var(--space-2);
+  color: var(--text-tertiary); font-size: 11px; font-weight: 500;
+  padding-left: 10px; border-left: 1px solid var(--border-subtle); margin-left: 4px;
+  letter-spacing: 0.01em; text-transform: uppercase;
 }
-.topbar-actions { margin-left: auto; display: flex; align-items: center; gap: var(--space-2); }
-.status-text { font-size: 12px; color: var(--text-tertiary); font-variant-numeric: tabular-nums; margin-right: var(--space-3); }
-
+.search-wrap { flex: 1; max-width: 520px; margin: 0 auto; position: relative; }
+.search-input {
+  width: 100%; padding: 8px 12px 8px 36px; border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md); background: var(--bg-inset); color: var(--text-primary);
+  font-size: 13px; outline: none;
+  transition: border-color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+}
+.search-input::placeholder { color: var(--text-tertiary); }
+.search-input:focus { border-color: var(--accent); background: var(--bg-surface); box-shadow: 0 0 0 3px var(--accent-ring); }
+.search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text-tertiary); pointer-events: none; }
+.search-kbd {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  font-family: var(--font-mono); font-size: 10.5px; color: var(--text-tertiary);
+  background: var(--bg-surface); border: 1px solid var(--border-subtle);
+  padding: 2px 6px; border-radius: 4px; pointer-events: none;
+}
+.topbar-actions { margin-left: auto; display: flex; align-items: center; gap: var(--space-2); flex-shrink: 0; }
 .cache-indicator {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 4px 10px; font-size: 11.5px; font-family: var(--font-mono);
-  color: var(--text-tertiary); background: var(--bg-inset);
-  border-radius: 999px; margin-right: var(--space-3);
-  transition: background var(--transition-fast);
-  cursor: default;
+  padding: 5px 11px; font-size: 11px; font-family: var(--font-mono);
+  color: var(--text-secondary); background: var(--bg-inset);
+  border: 1px solid var(--border-subtle); border-radius: 999px;
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
 }
-.cache-dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--border-strong); flex-shrink: 0;
-}
-.cache-indicator.active .cache-dot { background: var(--success); box-shadow: 0 0 0 3px var(--success-soft); }
+.cache-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border-strong); flex-shrink: 0; }
+.cache-indicator.active { color: var(--success); background: var(--success-soft); border-color: transparent; }
+.cache-indicator.active .cache-dot { background: var(--success); box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.18); }
+.cache-indicator.inactive { color: var(--danger); background: var(--danger-soft); border-color: transparent; }
 .cache-indicator.inactive .cache-dot { background: var(--danger); }
 
 .sidebar {
-  background: var(--bg-surface); border-right: 1px solid var(--border-subtle);
+  background: var(--bg-sidebar); border-right: 1px solid var(--border-subtle);
   padding: var(--space-4) var(--space-3); overflow-y: auto;
-  display: flex; flex-direction: column; gap: var(--space-5);
+  display: flex; flex-direction: column; gap: var(--space-4);
 }
 .sidebar-section h3 {
-  font-size: 10.5px; font-weight: 600; text-transform: uppercase;
-  letter-spacing: 0.08em; color: var(--text-tertiary); padding: 0 var(--space-2); margin-bottom: var(--space-2);
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--text-tertiary);
+  padding: 0 var(--space-2); margin-bottom: var(--space-2);
 }
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 0 var(--space-1); }
+.stat-tile {
+  background: var(--bg-surface); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md); padding: 10px 12px;
+  display: flex; flex-direction: column; gap: 2px;
+  transition: border-color var(--transition-fast), transform var(--transition-fast);
+}
+.stat-tile:hover { border-color: var(--border-default); transform: translateY(-1px); }
+.stat-label { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); }
+.stat-value { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary); font-variant-numeric: tabular-nums; line-height: 1.1; }
+.stat-tile.accent .stat-value { color: var(--accent); }
+.stat-tile.success .stat-value { color: var(--success); }
+.stat-tile.warning .stat-value { color: var(--warning); }
+.stat-tile.danger .stat-value { color: var(--danger); }
+
 .note-list { list-style: none; display: flex; flex-direction: column; gap: 1px; }
 .note-list button {
-  width: 100%; text-align: left; padding: 7px 10px; background: transparent;
-  border: none; border-radius: var(--radius-sm); color: var(--text-secondary);
-  cursor: pointer; font-size: 12.5px; font-family: var(--font-mono);
-  transition: background var(--transition-fast), color var(--transition-fast);
+  width: 100%; text-align: left; padding: 7px 10px;
+  background: transparent; border: 1px solid transparent;
+  border-radius: var(--radius-sm); color: var(--text-secondary);
+  cursor: pointer; font-size: 12px; font-family: var(--font-mono);
   display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
 }
 .note-list button:hover { background: var(--bg-hover); color: var(--text-primary); }
-.note-list button.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
-.note-list .dot {
-  width: 6px; height: 6px; border-radius: 50%; background: var(--border-strong);
-  flex-shrink: 0; transition: background var(--transition-base);
-}
-.note-list button.has-run .dot { background: var(--success); box-shadow: 0 0 0 3px var(--success-soft); }
+.note-list button.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; border-color: var(--accent); }
+.note-list .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border-strong); flex-shrink: 0; transition: background var(--transition-base), box-shadow var(--transition-base); }
+.note-list button.has-run .dot { background: var(--success); box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.16); }
+.note-list button.active .dot { background: var(--accent); box-shadow: 0 0 0 3px var(--accent-ring); }
+
+.legend-list { display: flex; flex-direction: column; gap: 6px; font-size: 11px; color: var(--text-tertiary); padding: 0 var(--space-2); }
+.legend-row { display: flex; align-items: center; gap: 8px; }
+.legend-swatch { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
 
 .btn {
   display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px;
   border-radius: var(--radius-md); border: 1px solid var(--border-default);
-  background: var(--bg-surface); color: var(--text-primary); cursor: pointer;
+  background: var(--bg-surface); color: var(--text-primary);
   font-size: 12.5px; font-weight: 500; white-space: nowrap;
-  transition: background var(--transition-fast), border-color var(--transition-fast),
-              box-shadow var(--transition-fast), transform var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
 }
-.btn:hover:not(:disabled) { background: var(--bg-hover); border-color: var(--border-strong); }
-.btn:active:not(:disabled) { transform: translateY(1px); }
-.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn:hover:not(:disabled) { background: var(--bg-hover); border-color: var(--border-strong); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.btn:active:not(:disabled) { transform: translateY(0); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .btn.primary {
-  background: var(--accent); color: var(--text-inverse);
-  border-color: var(--accent); box-shadow: 0 1px 3px rgba(59, 111, 224, 0.3);
+  background: var(--accent); color: var(--text-inverse); border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
-.btn.primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); }
+.btn.primary:hover:not(:disabled) {
+  background: var(--accent-hover); border-color: var(--accent-hover);
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
 .btn.ghost { background: transparent; border-color: transparent; }
-.btn.ghost:hover:not(:disabled) { background: var(--bg-hover); }
-.btn.icon { padding: 7px; width: 32px; height: 32px; justify-content: center; }
+.btn.ghost:hover:not(:disabled) { background: var(--bg-hover); box-shadow: none; transform: none; }
+.btn.icon { padding: 7px; width: 34px; height: 34px; justify-content: center; }
 
 .main { display: grid; grid-template-columns: 1fr 1px 1fr; overflow: hidden; background: var(--bg-app); }
-.pane { overflow-y: auto; padding: var(--space-5); min-width: 0; }
-.divider {
-  background: var(--border-subtle); cursor: col-resize; position: relative;
-  transition: background var(--transition-fast);
-}
+.pane { overflow-y: auto; padding: var(--space-4) var(--space-5); min-width: 0; }
+.divider { background: var(--border-subtle); cursor: col-resize; transition: background var(--transition-fast); }
 .divider:hover, .divider.dragging { background: var(--accent); }
 
 .empty-state {
@@ -149,25 +183,20 @@ button, input, select { font: inherit; color: inherit; }
   gap: var(--space-3); text-align: center; padding: var(--space-6);
 }
 .empty-state .icon-lg {
-  width: 56px; height: 56px; border-radius: var(--radius-lg);
-  background: var(--bg-inset); display: grid; place-items: center; color: var(--text-tertiary);
+  width: 64px; height: 64px; border-radius: var(--radius-xl);
+  background: var(--bg-inset); display: grid; place-items: center;
+  color: var(--text-tertiary); border: 1px solid var(--border-subtle);
 }
-.empty-state h2 { font-size: 15px; font-weight: 600; color: var(--text-secondary); }
-.empty-state p { font-size: 13px; max-width: 340px; }
+.empty-state h2 { font-size: 15px; font-weight: 600; color: var(--text-secondary); letter-spacing: -0.01em; }
+.empty-state p { font-size: 12.5px; max-width: 320px; line-height: 1.55; }
 
-.note-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: var(--space-4); gap: var(--space-3);
-}
-.note-title { font-size: 15px; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: var(--space-3); }
-.note-id {
-  font-family: var(--font-mono); font-size: 12px; color: var(--text-tertiary);
-  background: var(--bg-inset); padding: 3px 8px; border-radius: var(--radius-sm);
-}
-.note-meta { display: flex; gap: var(--space-2); align-items: center; font-size: 12px; color: var(--text-tertiary); }
+.note-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-3); gap: var(--space-3); }
+.note-title { font-size: 15px; font-weight: 600; letter-spacing: -0.015em; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
+.note-id { font-family: var(--font-mono); font-size: 11.5px; color: var(--accent); background: var(--accent-soft); padding: 3px 9px; border-radius: var(--radius-sm); font-weight: 600; letter-spacing: -0.02em; }
+.note-meta { display: flex; gap: var(--space-2); align-items: center; font-size: 11.5px; color: var(--text-tertiary); }
 .pill {
-  display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px;
-  border-radius: 999px; font-size: 11.5px; font-weight: 600; letter-spacing: -0.005em;
+  display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px;
+  border-radius: 999px; font-size: 11px; font-weight: 600; letter-spacing: -0.005em; border: 1px solid transparent;
 }
 .pill.success { background: var(--success-soft); color: var(--success); }
 .pill.warning { background: var(--warning-soft); color: var(--warning); }
@@ -176,17 +205,18 @@ button, input, select { font: inherit; color: inherit; }
 .pill.neutral { background: var(--bg-inset);     color: var(--text-tertiary); }
 
 .note-text {
-  font-family: var(--font-mono); font-size: 12.5px; line-height: 1.85;
+  font-family: var(--font-mono); font-size: 12.5px; line-height: 1.8;
   white-space: pre-wrap; word-break: break-word;
   padding: var(--space-5); background: var(--bg-surface);
-  border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-subtle); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm); letter-spacing: -0.005em;
 }
 
 mark {
-  background: transparent; color: inherit; padding: 1px 3px; margin: 0 1px;
-  border-radius: 4px; cursor: pointer; position: relative;
+  background: transparent; color: inherit; padding: 1px 3px; margin: 0 1px; border-radius: 4px;
+  cursor: pointer; position: relative;
   transition: background var(--transition-fast), box-shadow var(--transition-fast);
-  box-shadow: inset 0 -1px 0 0 transparent;
+  box-shadow: inset 0 -2px 0 0 transparent;
 }
 mark.accepted { background: var(--highlight-accepted); box-shadow: inset 0 -2px 0 0 var(--highlight-accepted-border); }
 mark.flagged  { background: var(--highlight-flagged);  box-shadow: inset 0 -2px 0 0 var(--highlight-flagged-border); }
@@ -196,58 +226,59 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
 .card {
   background: var(--bg-surface); border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
-  overflow: hidden; margin-bottom: var(--space-4); transition: box-shadow var(--transition-base);
+  overflow: hidden; margin-bottom: var(--space-3);
+  transition: box-shadow var(--transition-base);
 }
 .card:hover { box-shadow: var(--shadow-md); }
 .card-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--border-subtle); background: var(--bg-surface-2);
+  padding: 10px var(--space-4);
+  border-bottom: 1px solid var(--border-subtle); background: var(--bg-surface);
 }
 .card-title {
-  font-size: 12.5px; font-weight: 600; letter-spacing: -0.005em;
-  color: var(--text-primary); display: flex; align-items: center; gap: var(--space-2);
+  font-size: 11.5px; font-weight: 700; letter-spacing: 0.02em;
+  text-transform: uppercase; color: var(--text-secondary);
+  display: flex; align-items: center; gap: var(--space-2);
 }
 .card-title .count {
-  font-size: 11px; font-weight: 600; color: var(--text-tertiary);
-  background: var(--bg-inset); padding: 1px 7px; border-radius: 999px;
-  font-variant-numeric: tabular-nums;
+  font-size: 10.5px; font-weight: 700; color: var(--text-tertiary);
+  background: var(--bg-inset); padding: 1px 8px; border-radius: 999px;
+  font-variant-numeric: tabular-nums; letter-spacing: 0;
 }
 .card-body { padding: var(--space-4); }
 .card-body.flush { padding: 0; overflow-x: auto; overflow-y: visible; }
 
 .item-table { width: 100%; border-collapse: collapse; font-size: 12.5px; table-layout: fixed; }
 .item-table thead th {
-  text-align: left; font-size: 10.5px; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.06em;
-  color: var(--text-tertiary); padding: var(--space-2) var(--space-4);
+  text-align: left; font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text-tertiary); padding: 8px var(--space-4);
   background: var(--bg-surface-2); border-bottom: 1px solid var(--border-subtle);
   position: sticky; top: 0;
 }
-.item-table tbody tr { border-bottom: 1px solid var(--border-subtle); transition: background var(--transition-fast); cursor: default; }
+.item-table tbody tr { border-bottom: 1px solid var(--border-subtle); transition: background var(--transition-fast); }
 .item-table tbody tr:last-child { border-bottom: none; }
 .item-table tbody tr:hover, .item-table tbody tr.hover { background: var(--bg-hover); }
-.item-table td { padding: var(--space-3) var(--space-4); vertical-align: top; overflow-wrap: anywhere; }
-.item-table .cell-id { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-tertiary); }
-.item-table .cell-name { font-weight: 500; color: var(--text-primary); margin-bottom: 3px; overflow-wrap: anywhere; }
+.item-table td { padding: 10px var(--space-4); vertical-align: top; overflow-wrap: anywhere; }
+.item-table .cell-id { font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary); font-weight: 500; }
+.item-table .cell-name { font-weight: 500; color: var(--text-primary); margin-bottom: 3px; overflow-wrap: anywhere; letter-spacing: -0.005em; }
 .item-table .cell-sub { font-size: 11.5px; color: var(--text-tertiary); }
 .item-table .cell-reason { overflow-wrap: anywhere; }
 
 .accepted-table col.col-id     { width: 48px; }
-.accepted-table col.col-type   { width: 100px; }
+.accepted-table col.col-type   { width: 96px; }
 .accepted-table col.col-item   { width: auto; }
-.accepted-table col.col-reason { width: 200px; }
-.accepted-table col.col-actions{ width: 84px; }
+.accepted-table col.col-actions{ width: 76px; }
 
 .flagged-table col.col-id     { width: 48px; }
-.flagged-table col.col-type   { width: 100px; }
+.flagged-table col.col-type   { width: 96px; }
 .flagged-table col.col-item   { width: auto; }
 .flagged-table col.col-reason { width: 240px; }
 
 .badge {
   display: inline-flex; align-items: center; padding: 2px 8px;
-  border-radius: 6px; font-size: 10.5px; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap;
+  border-radius: 6px; font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
 }
 .badge.diagnosis { background: var(--accent-soft);   color: var(--accent); }
 .badge.medication { background: var(--success-soft); color: var(--success); }
@@ -256,8 +287,9 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
 .badge.vital      { background: var(--danger-soft);  color: var(--danger); }
 
 .status-chip {
-  display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 4px;
-  background: var(--bg-inset); color: var(--text-secondary); font-family: var(--font-mono);
+  display: inline-block; font-size: 10.5px; padding: 1px 7px;
+  border-radius: 4px; background: var(--bg-inset); color: var(--text-secondary);
+  font-family: var(--font-mono); font-weight: 500;
 }
 .status-chip.active      { background: var(--accent-soft);   color: var(--accent); }
 .status-chip.historical  { background: var(--bg-inset);      color: var(--text-tertiary); }
@@ -266,8 +298,8 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
 
 .flag-chip {
   display: inline-flex; align-items: center; padding: 2px 8px;
-  border-radius: 6px; font-size: 10.5px; font-weight: 600;
-  letter-spacing: 0.01em; white-space: nowrap; text-transform: none;
+  border-radius: 6px; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.03em; text-transform: uppercase; white-space: nowrap;
 }
 .flag-chip.contradiction { background: var(--danger-soft);  color: var(--danger); }
 .flag-chip.status        { background: var(--warning-soft); color: var(--warning); }
@@ -276,13 +308,14 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
 .flag-chip.unavailable   { background: var(--danger-soft);  color: var(--danger); }
 .flag-chip.other         { background: var(--bg-inset);     color: var(--text-secondary); }
 
-.icd-list { margin-top: var(--space-2); display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.icd-list { margin-top: 6px; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .icd-item {
-  display: flex; align-items: center; gap: var(--space-2);
-  font-family: var(--font-mono); font-size: 11.5px; color: var(--text-secondary);
-  padding: 3px 7px; background: var(--bg-inset); border-radius: var(--radius-sm); min-width: 0;
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);
+  padding: 3px 8px; background: var(--bg-inset);
+  border-radius: var(--radius-sm); min-width: 0;
 }
-.icd-item .code { font-weight: 600; color: var(--text-primary); flex-shrink: 0; }
+.icd-item .code { font-weight: 700; color: var(--text-primary); flex-shrink: 0; letter-spacing: -0.02em; }
 .icd-item .desc {
   color: var(--text-tertiary); overflow: hidden; text-overflow: ellipsis;
   white-space: nowrap; min-width: 0; flex: 1;
@@ -290,7 +323,8 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
 
 .reason { font-size: 11.5px; color: var(--text-tertiary); font-style: italic; line-height: 1.5; }
 .suggestion {
-  font-size: 11.5px; color: var(--accent); margin-top: 6px; line-height: 1.5;
+  font-size: 11.5px; color: var(--accent); margin-top: 5px;
+  line-height: 1.5; font-weight: 500;
 }
 .suggestion::before { content: "→ "; font-weight: 700; }
 
@@ -299,22 +333,159 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
 .btn.accept-on { background: var(--success-soft); color: var(--success); border-color: transparent; }
 .btn.reject-on { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
 
-.trace {
-  font-family: var(--font-mono); font-size: 12px; line-height: 1.7;
-  color: var(--text-secondary); padding: var(--space-4);
-  max-height: 380px; overflow-y: auto;
+/* ============================================================
+   Advice card
+   ============================================================ */
+.advice-card {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  margin-top: var(--space-3);
+  position: relative;
 }
-.trace-line { display: grid; grid-template-columns: 30px 20px 1fr; gap: var(--space-2); padding: 4px 0; align-items: start; }
-.trace-line .idx { text-align: right; color: var(--text-tertiary); font-size: 11px; padding-top: 3px; user-select: none; }
-.trace-line .dot-cell { position: relative; align-self: stretch; min-height: 20px; }
+.advice-card::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  background: var(--accent);
+}
+.advice-card.state-success::before { background: var(--success); }
+.advice-card.state-warning::before { background: var(--warning); }
+.advice-card.state-danger::before  { background: var(--danger); }
+
+.advice-inner { padding: 16px 20px 16px 24px; display: flex; align-items: flex-start; gap: 14px; }
+.advice-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: grid; place-items: center; flex-shrink: 0;
+  background: var(--accent-soft); color: var(--accent);
+}
+.advice-card.state-success .advice-icon { background: var(--success-soft); color: var(--success); }
+.advice-card.state-warning .advice-icon { background: var(--warning-soft); color: var(--warning); }
+.advice-card.state-danger  .advice-icon { background: var(--danger-soft);  color: var(--danger); }
+
+.advice-body { flex: 1; min-width: 0; }
+.advice-title {
+  font-size: 14px; font-weight: 700; letter-spacing: -0.015em;
+  color: var(--text-primary); margin-bottom: 3px;
+}
+.advice-sub {
+  font-size: 12.5px; color: var(--text-secondary);
+  font-family: var(--font-mono); letter-spacing: -0.005em;
+}
+
+.advice-recs {
+  padding: 0 20px 16px 24px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.advice-item {
+  display: flex; align-items: flex-start; gap: 9px;
+  font-size: 12.5px; line-height: 1.5;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-inset);
+  color: var(--text-secondary);
+  border-left: 2px solid var(--border-strong);
+}
+.advice-item .advice-glyph {
+  flex-shrink: 0; font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.2;
+  color: var(--text-tertiary);
+}
+.advice-item.advice-tip      { border-left-color: var(--accent); background: var(--accent-faint); }
+.advice-item.advice-tip .advice-glyph { color: var(--accent); }
+.advice-item.advice-warning  { border-left-color: var(--warning); background: var(--warning-faint); color: var(--warning); }
+.advice-item.advice-warning .advice-glyph { color: var(--warning); }
+.advice-item.advice-danger   { border-left-color: var(--danger); background: var(--danger-faint); color: var(--danger); }
+.advice-item.advice-danger .advice-glyph { color: var(--danger); }
+.advice-item.advice-success  { border-left-color: var(--success); background: var(--success-faint); color: var(--success); }
+.advice-item.advice-success .advice-glyph { color: var(--success); }
+.advice-item.advice-generic  { border-left-color: var(--border-strong); }
+.advice-item.advice-generic .advice-glyph { color: var(--text-tertiary); }
+
+/* ============================================================
+   Our recommendations (LLM sidecar)
+   ============================================================ */
+.our-recs-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px 8px 24px;
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 4px;
+}
+.our-recs-title {
+  font-size: 11.5px; font-weight: 700; letter-spacing: 0.02em;
+  text-transform: uppercase; color: var(--text-secondary);
+  display: flex; align-items: center; gap: 8px;
+}
+.our-recs-title::before {
+  content: ""; width: 14px; height: 14px; border-radius: 4px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--info) 100%);
+  flex-shrink: 0;
+}
+.our-recs-badge {
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 8px; border-radius: 999px;
+  background: var(--accent-soft); color: var(--accent);
+}
+.our-recs-disclaimer {
+  padding: 0 20px 12px 24px;
+  font-size: 11.5px; font-style: italic;
+  color: var(--text-tertiary); line-height: 1.5;
+}
+.our-recs-list {
+  padding: 0 20px 16px 24px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.our-recs-condition {
+  border-left: 3px solid var(--accent);
+  padding: 10px 14px;
+  background: var(--accent-faint);
+  border-radius: var(--radius-sm);
+}
+.our-recs-condition-name {
+  font-size: 12.5px; font-weight: 700; color: var(--accent);
+  text-transform: capitalize;
+  margin-bottom: 6px;
+  letter-spacing: -0.005em;
+}
+.our-recs-tip {
+  font-size: 12.5px; color: var(--text-secondary);
+  line-height: 1.55;
+  padding-left: 16px;
+  position: relative;
+  margin-top: 3px;
+}
+.our-recs-tip::before {
+  content: "•";
+  position: absolute;
+  left: 4px;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+/* ============================================================
+   Trace timeline
+   ============================================================ */
+.trace {
+  font-family: var(--font-mono); font-size: 11.5px; line-height: 1.65;
+  color: var(--text-secondary); padding: 14px var(--space-4);
+  max-height: 340px; overflow-y: auto;
+}
+.trace-line { display: grid; grid-template-columns: 28px 18px 1fr; gap: 10px; padding: 3px 0; align-items: start; }
+.trace-line .idx { text-align: right; color: var(--text-quaternary); font-size: 10.5px; padding-top: 3px; user-select: none; font-weight: 500; }
+.trace-line .dot-cell { position: relative; align-self: stretch; min-height: 18px; }
 .trace-line .dot-cell::before {
   content: ""; position: absolute; left: 50%; top: 0; bottom: 0;
   width: 1px; background: var(--border-subtle); transform: translateX(-50%);
 }
-.trace-line:first-child .dot-cell::before { top: 12px; }
-.trace-line:last-child  .dot-cell::before { bottom: calc(100% - 14px); }
+.trace-line:first-child .dot-cell::before { top: 11px; }
+.trace-line:last-child  .dot-cell::before { bottom: calc(100% - 13px); }
 .trace-line .dot-cell::after {
-  content: ""; position: absolute; left: 50%; top: 6px;
+  content: ""; position: absolute; left: 50%; top: 5px;
   width: 9px; height: 9px; border-radius: 50%;
   background: var(--bg-surface); border: 2px solid var(--border-default);
   transform: translateX(-50%); z-index: 1;
@@ -326,12 +497,12 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
 
 .escalated-banner {
   display: none; align-items: center; gap: var(--space-3);
-  padding: var(--space-3) var(--space-5);
+  padding: 10px var(--space-5);
   background: var(--danger-soft); border-bottom: 1px solid var(--danger);
-  color: var(--danger); font-weight: 600; font-size: 13px; grid-column: 1 / -1;
+  color: var(--danger); font-weight: 600; font-size: 12.5px; grid-column: 1 / -1;
 }
 .escalated-banner.show { display: flex; }
-.escalated-banner .icon { width: 18px; height: 18px; flex-shrink: 0; }
+.escalated-banner .icon { width: 16px; height: 16px; flex-shrink: 0; }
 
 .spinner {
   width: 14px; height: 14px; border: 2px solid var(--border-default);
@@ -340,10 +511,17 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.card, .advice-card, .note-text { animation: fadeInUp 220ms cubic-bezier(0.4, 0, 0.2, 1) both; }
+
 @media (max-width: 1000px) {
-  .app { grid-template-columns: 200px 1fr; }
+  .app { grid-template-columns: 220px 1fr; }
   .main { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
   .divider { display: none; }
+  .search-wrap { display: none; }
 }
 </style>
 </head>
@@ -353,11 +531,19 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
   <header class="topbar">
     <div class="brand">
       <div class="brand-logo">CX</div>
-      Clinical Extraction Reviewer
-      <span class="brand-sub">Mirai Labs MVP</span>
+      Clinical Extraction
+      <span class="brand-sub">Mirai Labs</span>
     </div>
+
+    <div class="search-wrap">
+      <span class="search-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </span>
+      <input id="search-input" class="search-input" placeholder="Jump to note…" />
+      <span class="search-kbd">⌘K</span>
+    </div>
+
     <div class="topbar-actions">
-      <span class="status-text" id="status-text">Ready</span>
       <span class="cache-indicator" id="cache-indicator" title="Redis result-cache hit rate this session">
         <span class="cache-dot"></span>
         <span id="cache-text">cache: —</span>
@@ -367,7 +553,7 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
       </button>
       <button class="btn" id="export-btn" disabled>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Export JSON
+        Export
       </button>
       <button class="btn primary" id="run-btn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -383,41 +569,64 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
 
   <aside class="sidebar">
     <div class="sidebar-section">
+      <h3>Session</h3>
+      <div class="stats-grid">
+        <div class="stat-tile accent">
+          <div class="stat-label">Notes</div>
+          <div class="stat-value" id="stat-total">—</div>
+        </div>
+        <div class="stat-tile success">
+          <div class="stat-label">Reviewed</div>
+          <div class="stat-value" id="stat-reviewed">0</div>
+        </div>
+        <div class="stat-tile warning">
+          <div class="stat-label">Accepted</div>
+          <div class="stat-value" id="stat-accepted">0</div>
+        </div>
+        <div class="stat-tile danger">
+          <div class="stat-label">Flagged</div>
+          <div class="stat-value" id="stat-flagged">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
       <h3>Notes</h3>
       <ul class="note-list" id="note-list">
         <li><div class="empty-state" style="min-height:auto;padding:var(--space-4);"><span class="spinner"></span></div></li>
       </ul>
     </div>
+
     <div class="sidebar-section">
       <h3>Legend</h3>
-      <div style="display:flex;flex-direction:column;gap:8px;font-size:11.5px;color:var(--text-tertiary);padding:0 var(--space-2);">
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span style="width:14px;height:14px;background:var(--highlight-accepted);border-bottom:2px solid var(--highlight-accepted-border);border-radius:3px;flex-shrink:0;"></span>
+      <div class="legend-list">
+        <div class="legend-row">
+          <span class="legend-swatch" style="background:var(--highlight-accepted);border-bottom:2px solid var(--highlight-accepted-border);"></span>
           Accepted span
         </div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span style="width:14px;height:14px;background:var(--highlight-flagged);border-bottom:2px solid var(--highlight-flagged-border);border-radius:3px;flex-shrink:0;"></span>
+        <div class="legend-row">
+          <span class="legend-swatch" style="background:var(--highlight-flagged);border-bottom:2px solid var(--highlight-flagged-border);"></span>
           Flagged span
         </div>
-        <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
-          <span class="flag-chip contradiction" style="font-size:10px;padding:1px 6px;">contradiction</span>
+        <div class="legend-row" style="margin-top:4px;">
+          <span class="flag-chip contradiction" style="font-size:9.5px;padding:1px 6px;">contradiction</span>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span class="flag-chip status" style="font-size:10px;padding:1px 6px;">status mismatch</span>
+        <div class="legend-row">
+          <span class="flag-chip status" style="font-size:9.5px;padding:1px 6px;">status mismatch</span>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span class="flag-chip rejected" style="font-size:10px;padding:1px 6px;">verifier rejected</span>
+        <div class="legend-row">
+          <span class="flag-chip rejected" style="font-size:9.5px;padding:1px 6px;">verifier rejected</span>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span class="flag-chip missing" style="font-size:10px;padding:1px 6px;">no verdict</span>
+        <div class="legend-row">
+          <span class="flag-chip missing" style="font-size:9.5px;padding:1px 6px;">no verdict</span>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
-          <span class="status-chip active" style="font-size:10px;padding:1px 6px;">active</span>
-          <span class="status-chip historical" style="font-size:10px;padding:1px 6px;">historical</span>
+        <div class="legend-row" style="margin-top:4px;">
+          <span class="status-chip active" style="font-size:9.5px;padding:1px 6px;">active</span>
+          <span class="status-chip historical" style="font-size:9.5px;padding:1px 6px;">historical</span>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span class="status-chip ruled_out" style="font-size:10px;padding:1px 6px;">ruled_out</span>
-          <span class="status-chip suspected" style="font-size:10px;padding:1px 6px;">suspected</span>
+        <div class="legend-row">
+          <span class="status-chip ruled_out" style="font-size:9.5px;padding:1px 6px;">ruled_out</span>
+          <span class="status-chip suspected" style="font-size:9.5px;padding:1px 6px;">suspected</span>
         </div>
       </div>
     </div>
@@ -427,7 +636,7 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
     <section class="pane" id="pane-left">
       <div class="empty-state" id="note-empty">
         <div class="icon-lg">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
         </div>
         <h2>No note loaded</h2>
         <p>Select a note from the sidebar and click "Run pipeline" to extract diagnoses, medications, procedures, allergies, and vitals.</p>
@@ -441,6 +650,28 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
           <div class="note-meta" id="note-meta"></div>
         </div>
         <div class="note-text" id="note-text"></div>
+
+        <div class="advice-card" id="advice-card">
+          <div class="advice-inner">
+            <div class="advice-icon" id="advice-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="advice-body">
+              <div class="advice-title" id="advice-title">Advice</div>
+              <div class="advice-sub" id="advice-sub"></div>
+            </div>
+          </div>
+          <div class="advice-recs" id="advice-recs"></div>
+
+          <div id="our-recs-wrap" style="display:none;">
+            <div class="our-recs-header">
+              <span class="our-recs-title">Our recommendations</span>
+              <span class="our-recs-badge">AI-generated</span>
+            </div>
+            <div class="our-recs-disclaimer" id="our-recs-disclaimer"></div>
+            <div class="our-recs-list" id="our-recs-list"></div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -449,38 +680,28 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
     <section class="pane" id="pane-right">
       <div class="empty-state" id="results-empty">
         <div class="icon-lg">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
         </div>
         <h2>No results yet</h2>
-        <p>Run the pipeline to see the summary, accepted items, flagged items, and the agent trace.</p>
+        <p>Run the pipeline to see the accepted items, flagged items, and the agent trace.</p>
       </div>
 
       <div id="results-view" style="display:none;">
-        <div class="card" id="summary-card">
-          <div class="card-header">
-            <div class="card-title">Summary</div>
-            <div id="summary-meta" style="font-size:11.5px;color:var(--text-tertiary);"></div>
-          </div>
-          <div class="card-body">
-            <div id="summary-text" style="font-size:13px;color:var(--text-secondary);"></div>
-          </div>
-        </div>
-
         <div class="card">
           <div class="card-header">
             <div class="card-title">
-              Accepted items
+              Accepted
               <span class="count" id="accepted-count">0</span>
             </div>
-            <div id="accepted-summary" style="font-size:11.5px;color:var(--text-tertiary);"></div>
+            <div id="accepted-summary" style="font-size:11px;color:var(--text-tertiary);"></div>
           </div>
           <div class="card-body flush">
             <table class="item-table accepted-table" id="accepted-table">
               <colgroup>
-                <col class="col-id"><col class="col-type"><col class="col-item"><col class="col-reason"><col class="col-actions">
+                <col class="col-id"><col class="col-type"><col class="col-item"><col class="col-actions">
               </colgroup>
               <thead>
-                <tr><th>ID</th><th>Type</th><th>Item</th><th>Reason</th><th></th></tr>
+                <tr><th>ID</th><th>Type</th><th>Item</th><th></th></tr>
               </thead>
               <tbody id="accepted-tbody"></tbody>
             </table>
@@ -490,7 +711,7 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
         <div class="card">
           <div class="card-header">
             <div class="card-title">
-              Flagged items
+              Flagged
               <span class="count" id="flagged-count">0</span>
             </div>
           </div>
@@ -500,7 +721,7 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
                 <col class="col-id"><col class="col-type"><col class="col-item"><col class="col-reason">
               </colgroup>
               <thead>
-                <tr><th>ID</th><th>Type</th><th>Item</th><th>Reason &amp; suggested action</th></tr>
+                <tr><th>ID</th><th>Type</th><th>Item</th><th>Reason</th></tr>
               </thead>
               <tbody id="flagged-tbody"></tbody>
             </table>
@@ -510,7 +731,7 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
         <div class="card">
           <div class="card-header">
             <div class="card-title">Agent trace</div>
-            <div style="font-size:11.5px;color:var(--text-tertiary);" id="trace-count"></div>
+            <div style="font-size:11px;color:var(--text-tertiary);" id="trace-count"></div>
           </div>
           <div class="card-body flush">
             <div class="trace" id="trace-body"></div>
@@ -525,7 +746,9 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
 const state = {
   notes: [], noteId: null, noteText: "", summary: "",
   accepted: [], flagged: [], trace: [], escalated: false, error: null,
+  advice: null,
   decisions: {}, runNotes: new Set(),
+  searchQuery: "",
 };
 const $ = (id) => document.getElementById(id);
 const MAX_MARK_DISPLAY_LEN = 70;
@@ -535,11 +758,7 @@ function escapeHtml(s) {
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
   }[c]));
 }
-function setStatus(text, spin = false) {
-  $("status-text").innerHTML = spin
-    ? `<span class="spinner"></span> ${escapeHtml(text)}`
-    : escapeHtml(text);
-}
+function setStatus(text, spin = false) { /* topbar status removed in redesign */ }
 function classifyFlagReason(reason) {
   const r = (reason || "").toLowerCase();
   if (r.includes("contradict"))  return { key: "contradiction", label: "contradiction" };
@@ -567,12 +786,15 @@ async function refreshCacheStats() {
     ind.classList.remove("inactive");
     const pct = Math.round((data.hit_rate || 0) * 100);
     const total = (data.hits || 0) + (data.misses || 0);
-    txt.textContent = total > 0
-      ? `cache: ${pct}% (${data.hits}/${total})`
-      : "cache: ready";
-  } catch (_) {
-    // Silent fail — indicator is optional.
-  }
+    txt.textContent = total > 0 ? `cache ${pct}%` : "cache ready";
+  } catch (_) { /* silent */ }
+}
+
+function updateStats() {
+  $("stat-total").textContent = state.notes.length || "—";
+  $("stat-reviewed").textContent = state.runNotes.size;
+  $("stat-accepted").textContent = state.accepted.length;
+  $("stat-flagged").textContent = state.flagged.length;
 }
 
 async function loadNotes() {
@@ -582,12 +804,15 @@ async function loadNotes() {
     state.notes = data.notes || [];
     renderNoteList();
     if (state.notes.length) { state.noteId = state.notes[0]; markActiveNote(); }
-  } catch (e) { setStatus(`Failed to load notes: ${e.message}`); }
+    updateStats();
+  } catch (e) { /* silent */ }
 }
 function renderNoteList() {
   const list = $("note-list");
   list.innerHTML = "";
+  const q = state.searchQuery.toLowerCase();
   for (const n of state.notes) {
+    if (q && !n.toLowerCase().includes(q)) continue;
     const li = document.createElement("li");
     const btn = document.createElement("button");
     btn.dataset.id = n;
@@ -606,18 +831,13 @@ function markActiveNote() {
 }
 
 async function runPipeline() {
-  if (!state.noteId) { setStatus("No note selected"); return; }
+  if (!state.noteId) return;
   const noteId = state.noteId;
   $("run-btn").disabled = true;
   $("export-btn").disabled = true;
-  setStatus(`Running ${noteId}…`, true);
   try {
     const res = await fetch(`/api/notes/${noteId}/run`, { method: "POST" });
-    if (!res.ok) {
-      const err = await res.text();
-      setStatus(`Error: ${err.slice(0, 120)}`);
-      return;
-    }
+    if (!res.ok) return;
     const data = await res.json();
     state.noteText = data.note_text;
     state.summary = data.summary || "";
@@ -626,32 +846,106 @@ async function runPipeline() {
     state.trace = data.trace;
     state.escalated = data.escalated;
     state.error = data.error;
+    state.advice = data.advice || null;
     state.runNotes.add(noteId);
     renderAll();
-    const srcLabel = data.cache_source === "redis" ? " · cached" : "";
-    setStatus(
-      `${noteId} · ${data.accepted.length} accepted · ${data.flagged.length} flagged` +
-      (data.escalated ? " · escalated" : "") + srcLabel
-    );
     $("export-btn").disabled = false;
     renderNoteList();
+    updateStats();
     refreshCacheStats();
-  } catch (e) { setStatus(`Fetch error: ${e.message}`); }
+  } catch (e) { /* silent */ }
   finally { $("run-btn").disabled = false; }
 }
 
-function renderSummary() {
-  $("summary-text").textContent = state.summary || "(no summary)";
-  const meta = $("summary-meta");
-  if (state.error) {
-    meta.textContent = `error: ${String(state.error).slice(0, 60)}`;
-    meta.style.color = "var(--danger)";
-  } else if (state.escalated) {
-    meta.textContent = "escalated";
-    meta.style.color = "var(--danger)";
-  } else {
-    meta.textContent = "";
+function renderAdvice() {
+  const card = $("advice-card");
+  const title = $("advice-title");
+  const sub = $("advice-sub");
+  const icon = $("advice-icon");
+  const recsEl = $("advice-recs");
+  if (!card || !recsEl) return;
+
+  card.classList.remove("state-success", "state-warning", "state-danger");
+
+  const byReason = { contradiction: 0, status: 0, missing: 0, rejected: 0, unavailable: 0, other: 0 };
+  for (const f of state.flagged) {
+    const cls = classifyFlagReason(f.reason);
+    byReason[cls.key] = (byReason[cls.key] || 0) + 1;
   }
+
+  let stateClass = "state-success";
+  let heading = "Ready to review";
+  let subline = state.summary || "";
+  let iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+
+  if (state.error) {
+    stateClass = "state-danger";
+    heading = "Pipeline error";
+    subline = String(state.error).slice(0, 120);
+    iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+  } else if (state.escalated) {
+    stateClass = "state-danger";
+    heading = "Escalated — manual review required";
+    iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+  } else if (state.flagged.length > 0) {
+    stateClass = "state-warning";
+    heading = `${state.flagged.length} item${state.flagged.length > 1 ? "s" : ""} need your attention`;
+    iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+  } else {
+    heading = "All items accepted";
+  }
+
+  card.classList.add(stateClass);
+  title.textContent = heading;
+  sub.textContent = subline;
+  icon.innerHTML = iconSvg;
+
+  const recs = [];
+
+  if (state.error) recs.push({ kind: "danger", glyph: "!", text: `The pipeline did not complete. Re-run the pipeline for this note before reviewing.` });
+  if (state.escalated) recs.push({ kind: "danger", glyph: "!", text: `More than 40% of extracted items were flagged. Compare every item against the source note before accepting.` });
+  if (byReason.contradiction > 0) recs.push({ kind: "danger", glyph: "!", text: `${byReason.contradiction} contradiction${byReason.contradiction > 1 ? "s" : ""} — the note contradicts itself. Decide which statement is correct before coding.` });
+  if (byReason.status > 0) recs.push({ kind: "warning", glyph: "!", text: `${byReason.status} status mismatch${byReason.status > 1 ? "es" : ""} — check whether the diagnosis or medication is active, historical, or ruled out.` });
+  if (byReason.unavailable > 0) recs.push({ kind: "warning", glyph: "!", text: `The verifier was unavailable for ${byReason.unavailable} item${byReason.unavailable > 1 ? "s" : ""}. Re-run before trusting the extraction.` });
+  if (byReason.missing > 0) recs.push({ kind: "warning", glyph: "!", text: `${byReason.missing} item${byReason.missing > 1 ? "s" : ""} have no verdict. Manually verify against the source note.` });
+  if (byReason.rejected > 0) recs.push({ kind: "warning", glyph: "!", text: `${byReason.rejected} item${byReason.rejected > 1 ? "s" : ""} rejected by the verifier — consider removing them from the record.` });
+  if ((state.trace || []).some(l => l.toLowerCase().includes("missed item"))) recs.push({ kind: "warning", glyph: "!", text: `The verifier reported items the extractor missed. Read the trace to see what was found, and consider a second pass.` });
+
+  recs.push({ kind: "tip", glyph: "→", text: `Walk through each span before accepting. Hover the highlight to see the corresponding row; click to jump to it.` });
+  recs.push({ kind: "tip", glyph: "→", text: `Spot-check the ICD candidates. Top-1 is often correct, but with two or three plausible codes, the coder decides.` });
+  if (state.accepted.length > 0) recs.push({ kind: "tip", glyph: "→", text: `Mark accept/reject per item so the export reflects your decisions — the trace and counts update as you go.` });
+  if (state.accepted.length === 0 && state.flagged.length === 0 && !state.error) recs.push({ kind: "warning", glyph: "!", text: `No items were extracted. Confirm the note contains clinical content, or re-run with a slower pace if the model was rate limited.` });
+  if (state.accepted.length > 0 && state.flagged.length === 0 && !state.escalated && !state.error) recs.push({ kind: "success", glyph: "✓", text: `All ${state.accepted.length} item${state.accepted.length > 1 ? "s" : ""} were accepted by both the extractor and the verifier. Ready to export.` });
+
+  recsEl.innerHTML = recs.map(r =>
+    `<div class="advice-item advice-${r.kind}"><span class="advice-glyph">${escapeHtml(r.glyph)}</span><span>${escapeHtml(r.text)}</span></div>`
+  ).join("");
+}
+
+function renderOurRecommendations() {
+  const wrap = $("our-recs-wrap");
+  const list = $("our-recs-list");
+  const disc = $("our-recs-disclaimer");
+  if (!wrap || !list) return;
+
+  if (!state.advice || !Array.isArray(state.advice.advice) || state.advice.advice.length === 0) {
+    wrap.style.display = "none";
+    return;
+  }
+
+  wrap.style.display = "block";
+  disc.textContent = state.advice.disclaimer || "";
+
+  list.innerHTML = state.advice.advice.map(item => {
+    const cond = escapeHtml(item.condition || "");
+    const tips = (item.tips || []).map(t =>
+      `<div class="our-recs-tip">${escapeHtml(t)}</div>`
+    ).join("");
+    return `<div class="our-recs-condition">
+      <div class="our-recs-condition-name">${cond}</div>
+      ${tips}
+    </div>`;
+  }).join("");
 }
 
 function renderNote() {
@@ -723,7 +1017,7 @@ function renderAccepted() {
 
   const tbody = $("accepted-tbody");
   if (!state.accepted.length) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-tertiary);padding:var(--space-5);">No accepted items.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--text-tertiary);padding:var(--space-5);font-style:italic;font-size:12px;">No accepted items.</td></tr>`;
     return;
   }
   tbody.innerHTML = state.accepted.map(it => {
@@ -744,7 +1038,6 @@ function renderAccepted() {
         ${statusHtml ? `<div class="cell-sub">${statusHtml}</div>` : ""}
         ${icdHtml}
       </td>
-      <td class="reason cell-reason">${escapeHtml(it.reason || "")}</td>
       <td>
         <div class="row-actions">
           <button class="btn ${decision === "accepted" ? "accept-on" : ""}" data-decide="accepted" data-id="${escapeHtml(id)}" title="Accept">✓</button>
@@ -763,7 +1056,7 @@ function renderFlagged() {
   $("flagged-count").textContent = state.flagged.length;
   const tbody = $("flagged-tbody");
   if (!state.flagged.length) {
-    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--text-tertiary);padding:var(--space-5);">No flagged items.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--text-tertiary);padding:var(--space-5);font-style:italic;font-size:12px;">No flagged items.</td></tr>`;
     return;
   }
   tbody.innerHTML = state.flagged.map(f => {
@@ -777,7 +1070,7 @@ function renderFlagged() {
       <td><div class="cell-name">${escapeHtml(it.text || "")}</div></td>
       <td class="cell-reason">
         <span class="flag-chip ${flag.key}">${flag.label}</span>
-        <div class="reason" style="margin-top:4px;">${escapeHtml(f.reason || "")}</div>
+        <div class="reason" style="margin-top:5px;">${escapeHtml(f.reason || "")}</div>
         ${suggestion}
       </td>
     </tr>`;
@@ -830,7 +1123,8 @@ function renderEscalation() {
 function renderAll() {
   $("results-empty").style.display = "none";
   $("results-view").style.display = "block";
-  renderSummary();
+  renderAdvice();
+  renderOurRecommendations();
   renderNote();
   renderAccepted();
   renderFlagged();
@@ -844,22 +1138,21 @@ async function decide(itemId, decision) {
     if (decision === "clear") delete state.decisions[itemId];
     else state.decisions[itemId] = decision;
     renderAccepted();
-  } catch (e) { setStatus(`Decision failed: ${e.message}`); }
+  } catch (e) { /* silent */ }
 }
 
 async function exportJson() {
   if (!state.noteId) return;
   try {
     const res = await fetch(`/api/notes/${state.noteId}/export`, { method: "POST" });
-    if (!res.ok) { setStatus("Export failed"); return; }
+    if (!res.ok) return;
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url; a.download = `${state.noteId}_accepted.json`;
     document.body.appendChild(a); a.click(); a.remove();
     URL.revokeObjectURL(url);
-    setStatus("Exported");
-  } catch (e) { setStatus(`Export error: ${e.message}`); }
+  } catch (e) { /* silent */ }
 }
 
 function initTheme() {
@@ -896,10 +1189,27 @@ function initDivider() {
   });
 }
 
+function initSearch() {
+  const input = $("search-input");
+  if (!input) return;
+  input.addEventListener("input", (e) => {
+    state.searchQuery = e.target.value || "";
+    renderNoteList();
+  });
+  document.addEventListener("keydown", (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      input.focus();
+      input.select();
+    }
+  });
+}
+
 $("run-btn").addEventListener("click", runPipeline);
 $("export-btn").addEventListener("click", exportJson);
 initTheme();
 initDivider();
+initSearch();
 loadNotes();
 refreshCacheStats();
 setInterval(refreshCacheStats, 3000);

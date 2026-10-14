@@ -18,7 +18,7 @@ Design and reviewer feedback integration:
   own copy of the ICD index (~250 MB), so N=2 is the practical ceiling
   on a laptop.
 
-- Prompt caching, two layers:
+- Prompt caching, three layers:
   (a) Redis cache for whole-note results, keyed by
       sha256(note_id | prompt_hash | note_text). Re-running the same
       note is instant. Editing any prompt invalidates the cache
@@ -27,6 +27,8 @@ Design and reviewer feedback integration:
       keyed by model + both prompts + guardrails/schema fingerprint +
       input. This is what makes fresh extractions cheap after the first
       run of each note.
+  (c) Redis cache for the advisor module's per-condition lifestyle tips,
+      keyed by the sorted list of diagnosis names.
 
 - Reads notes from data/note_*.txt.
 - Calls src.orchestrator.run(note_text) per note.
@@ -42,6 +44,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+from src.advice import advisor
 from src.cache import redis_cache
 from src.icd_index import load_index
 from src.orchestrator import run
@@ -120,6 +123,23 @@ def _annotate_flagged(flagged: list[dict]) -> list[dict]:
     return out
 
 
+def _generate_advice(result: dict) -> dict | None:
+    """Sidecar: call the advisor with the note's accepted diagnoses.
+
+    Fails silently if the advisor module or the LLM is unavailable —
+    the review interface still works.
+    """
+    try:
+        diag_names = [
+            (it.get("text") or "")
+            for it in result.get("accepted", [])
+            if it.get("type") == "diagnosis"
+        ]
+        return advisor.generate(diag_names)
+    except Exception:
+        return None
+
+
 # ---------------------------------------------------------------------------
 # Notes
 # ---------------------------------------------------------------------------
@@ -154,12 +174,14 @@ def run_note(note_id: str):
 
     note_text = path.read_text(encoding="utf-8")
 
-    # Redis cache check
+    # Redis cache check for the whole pipeline result
     cached = redis_cache.get_result(note_id, note_text)
     if cached is not None:
         cached["cache_source"] = "redis"
         cached["summary"] = _summarize_pipeline_result(cached, note_id)
         cached["flagged"] = _annotate_flagged(cached.get("flagged", []))
+        # Advice is cheap if it is also cached — just call it.
+        cached["advice"] = _generate_advice(cached)
         return cached
 
     try:
@@ -168,6 +190,7 @@ def run_note(note_id: str):
         raise HTTPException(500, f"pipeline failed: {type(e).__name__}: {e}")
 
     flagged = _annotate_flagged(result["flagged"])
+    advice = _generate_advice(result)
 
     response = {
         "note_id": note_id,
@@ -178,12 +201,15 @@ def run_note(note_id: str):
         "trace": result["trace"],
         "escalated": result["escalated"],
         "error": result.get("error"),
+        "advice": advice,
         "cache_source": "fresh",
     }
 
-    # Store in Redis (no-op if Redis is down)
+    # Store in Redis (no-op if Redis is down). Advice is cached separately
+    # by the advisor module, so we don't persist it here.
     to_store = dict(response)
     to_store.pop("cache_source", None)
+    to_store.pop("advice", None)
     redis_cache.set_result(note_id, note_text, to_store)
 
     return response
@@ -263,6 +289,7 @@ def export_note(note_id: str):
         "error": result.get("error"),
         "accepted": accepted,
         "flagged": flagged,
+        "advice": _generate_advice(result),
         "exported_at": datetime.now(timezone.utc).isoformat(),
     }
     return JSONResponse(

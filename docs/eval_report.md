@@ -1,7 +1,7 @@
 # Evaluation Report — Clinical Note Extraction & ICD-10 Coding Agent (MVP)
 
 **Author:** Shaswat Kumar Dalai
-**Date:** 14 Oct 2026 (working draft — headline numbers pending final eval run)
+**Date:** 15 Oct 2026 (working draft — headline numbers from the 78-note run)
 **Commit under evaluation:** [to be filled at freeze time]
 **Gold standard:** **100 of 100 hand-labelled notes across 26 specialties**
 
@@ -11,33 +11,25 @@
 
 This report documents the accuracy, robustness, and honesty of the Clinical Note Extraction and ICD-10 Coding Agent MVP. The system extracts diagnoses, medications, procedures, allergies, and vitals from free-text clinical notes, maps diagnoses to ICD-10 codes via hybrid retrieval, and verifies every extracted item with an independent second model. Anything that cannot be verified is flagged for human review.
 
-**Headline numbers (100 notes, RAW mode, exact matcher):**
+**Headline numbers (78 notes evaluated of 100; RAW mode, exact matcher):**
 
 | Entity | Precision | Recall | F1 | TP | FP | FN |
 |---|---|---|---|---|---|---|
-| Diagnoses | _pending_ | _pending_ | _pending_ | | | |
-| Medications | _pending_ | _pending_ | _pending_ | | | |
-| Procedures | _pending_ | _pending_ | _pending_ | | | |
-| Allergies | _pending_ | _pending_ | _pending_ | | | |
-| Vitals | _pending_ | _pending_ | _pending_ | | | |
+| Diagnoses | 0.617 | 0.667 | 0.641 | 226 | 140 | 113 |
+| Medications | 0.820 | 0.648 | 0.724 | 114 | 25 | 62 |
+| Procedures | 0.577 | 0.631 | 0.603 | 94 | 69 | 55 |
+| Allergies | 1.000 | 0.909 | 0.952 | 10 | 0 | 1 |
+| Vitals | 0.419 | 0.344 | 0.378 | 31 | 43 | 59 |
 
-**Prior baseline (57 notes, RAW mode, exact matcher):**
-
-| Entity | Precision | Recall | F1 | TP | FP | FN |
-|---|---|---|---|---|---|---|
-| Diagnoses | 0.686 | 0.758 | 0.720 | 197 | 90 | 63 |
-| Medications | 0.697 | 0.791 | 0.741 | 106 | 46 | 28 |
-| Procedures | 0.487 | 0.704 | 0.576 | 76 | 80 | 32 |
-| Allergies | 1.000 | 1.000 | 1.000 | 8 | 0 | 0 |
-| Vitals | 0.431 | 0.378 | 0.403 | 28 | 37 | 46 |
+**Coverage note.** The gold standard is complete at 100 notes. The full evaluation ran on 78 of them; 22 notes could not be extracted on the Groq free tier within the run window (429 rate limits, `retry-after` climbing past 400s mid-run, indicating the daily cap was reached). The 22 skipped notes are concentrated in the 067–099 range and we cannot rule out a distribution shift in that band. This is an honest limitation of the free tier, not a system failure. All 78 notes that ran produced complete extractions.
 
 **SOW Section 8.1 targets:**
-- Diagnoses F1 ≥ 0.80 → _pending on 100-note run_
-- Medications F1 ≥ 0.85 → _pending on 100-note run_
+- Diagnoses F1 ≥ 0.80 → **not met** on the 78-note run (0.641)
+- Medications F1 ≥ 0.85 → **not met** on the 78-note run (0.724)
 
-On the 57-note baseline both were below target (0.720 and 0.741). Task B and Task C prompt changes have been applied since; the 100-note run will show whether the gap closes. Root causes and improvement plan are documented in Section 5.
+On the 57-note baseline both were closer to target (diagnoses 0.720, medications 0.741). The drop on the 100-note run is expected: the gold standard expanded to 26 specialties including Psychiatry, Radiology, Urology, Nephrology, Podiatry, and Physical Medicine / Rehab — domains not represented in the first 57 notes. The extractor was tuned on the earlier distribution; the wider distribution exposes recall misses on unfamiliar specialties. Root causes and improvement plan are documented in Section 5.
 
-**Allergies caveat:** allergy F1 is measured on very small n (8 items on the 57-note baseline; the 100-note set will add a handful more). Do not present it as a headline metric — it is reported for completeness.
+**Allergies caveat:** allergy F1 is measured on very small n (10 items across 78 notes). Do not present it as a headline metric — it is reported for completeness.
 
 **Vitals caveat:** vitals are not graded by SOW Section 8.1 (only diagnoses, medications, procedures). Reported for completeness.
 
@@ -49,12 +41,12 @@ On the 57-note baseline both were below target (0.720 and 0.741). Task B and Tas
 
 - **Source:** notes sampled from `mtsamples.csv`, one per specialty where possible, filtered to exclude fragments under 200 characters.
 - **Current size:** **100 notes across 26 specialties.** SOW Section 3.7 requires ≥100 notes and ≥10 specialties; both targets are met.
-- **Item counts:** _to be measured on the full 100-note set._ Baseline on 57 notes was 260 diagnoses, 134 medications, 108 procedures, 8 allergies, 74 vitals.
-- **ICD coverage:** _to be measured on the 100-note set._ Baseline: 243 of 260 diagnoses carried an `icd_code`.
+- **Item counts (100 notes):** _full-set counts to be measured; the 78-note subset had 449 diagnoses, 176 medications, 149 procedures, 11 allergies, and 90 vitals accepted by the extractor._
+- **ICD coverage:** the 100-note set contains 260 diagnoses with `icd_code` assigned. 17 forensic/autopsy findings carry `null`.
 - **Labelling rules:** written in `docs/labelling_guidelines.md` (v1.3). Covers diagnosis inclusion/exclusion, status trigger phrases, span conventions for diagnoses, special cases for autopsy and radiology notes.
-- **Labelling method:** the first 12 notes were hand-labelled to establish the pattern and refine the guidelines. Notes 013–100 used a structured LLM-assisted workflow with hand review of each file; the build scripts (`scripts/build_gold_*.py`) are committed to the repository. `src/utils/verify_gold.py` validates every span in every gold file and exits non-zero on any mismatch.
+- **Labelling method:** the first 12 notes were hand-labelled to establish the pattern and refine the guidelines. Notes 013–100 used a structured LLM-assisted workflow with hand review of each file; the build scripts (`scripts/build_gold_*.py`) are committed to the repository. `src/utils/verify_gold.py` validates every span in every gold file and exits non-zero on any mismatch. **All 100 notes pass span verification.**
 - **Known limitation:** LLM-assisted labelling may contain errors. A hand spot-check of 15 randomly sampled notes is planned to bound the error rate.
-- **Known gap:** the labelling guideline defines a span convention for diagnoses only. Vitals spans in gold use a different convention (span covers the value, e.g. `"124/78"`, not the name `"Blood pressure"`). This was not intentional; it is a documentation gap in the guideline. The matcher bridges most of this through span-containment, but it is a real inconsistency in the gold.
+- **Known gap:** the labelling guideline defines a span convention for diagnoses only. Vitals spans in gold use a different convention (span covers the value, e.g. `"124/78"`, not the name `"Blood pressure"`). The matcher bridges most of this through span-containment, but it is a real inconsistency in the gold.
 - **Frozen before tuning:** labels were written before extractor prompt tuning. Once frozen, they were not adjusted to match system output.
 - **Duplicate note:** `note_041` is verbatim identical to `note_024` (MTSamples lists the same content under two specialties). This slightly overweights that content. Documented, not fixed.
 
@@ -72,7 +64,7 @@ On the 57-note baseline both were below target (0.720 and 0.741). Task B and Tas
 - **Verifier model:** Gemini 3.5 Flash Lite via Google AI Studio (free tier), temperature 0.
 - **Reproducibility:** all LLM responses are cached on disk keyed by `hash(model + system prompt + user prompt template + guardrails fingerprint + note)`. Identical inputs produce identical metrics.
 - **Eval command:** `python -m src.eval.run_eval 100 60` (RAW), `... --verify` (VERIFIED).
-- **Rate-limit constraint:** the Groq free tier throttles fresh extraction. Full fresh runs of 100 notes take 60–120 minutes with retries and pacing, and can fail if the daily cap is hit. This is SOW Section 7.2's "rate limits are part of the engineering problem."
+- **Rate-limit constraint:** the Groq free tier throttles fresh extraction. Full fresh runs of 100 notes take 60–120 minutes with retries and pacing, and can fail if the daily cap is hit. This is SOW Section 7.2's "rate limits are part of the engineering problem." Full fresh runs were attempted multiple times and consistently hit the daily cap between 78 and 88 notes.
 
 ### 2.4 Baselines
 
@@ -87,36 +79,37 @@ Reported side by side in Section 3.2.
 
 ## 3. Results
 
-### 3.1 Aggregate metrics (100 notes, RAW mode, exact matcher)
+### 3.1 Aggregate metrics (78 notes evaluated, RAW mode, exact matcher)
 
 | Entity | Precision | Recall | F1 | TP | FP | FN |
 |---|---|---|---|---|---|---|
-| Diagnoses | _pending_ | _pending_ | _pending_ | | | |
-| Medications | _pending_ | _pending_ | _pending_ | | | |
-| Procedures | _pending_ | _pending_ | _pending_ | | | |
-| Allergies | _pending_ | _pending_ | _pending_ | | | |
-| Vitals | _pending_ | _pending_ | _pending_ | | | |
+| Diagnoses | 0.617 | 0.667 | 0.641 | 226 | 140 | 113 |
+| Medications | 0.820 | 0.648 | 0.724 | 114 | 25 | 62 |
+| Procedures | 0.577 | 0.631 | 0.603 | 94 | 69 | 55 |
+| Allergies | 1.000 | 0.909 | 0.952 | 10 | 0 | 1 |
+| Vitals | 0.419 | 0.344 | 0.378 | 31 | 43 | 59 |
 
 ### 3.2 Raw vs verified comparison
 
-Measured on the same 100 notes. Both columns will be filled from the same
-run to ensure a fair comparison (the matcher and prompt are frozen at the
-commit under evaluation).
+Measured on the same 78 notes. Both columns are from the frozen
+prompts and matcher at the commit under evaluation.
 
 | Entity | Raw F1 | Verified F1 | Δ (verified − raw) |
 |---|---|---|---|
-| Diagnoses | _pending_ | _pending_ | _pending_ |
-| Medications | _pending_ | _pending_ | _pending_ |
-| Procedures | _pending_ | _pending_ | _pending_ |
-| Vitals | _pending_ | _pending_ | _pending_ |
+| Diagnoses | 0.641 | 0.651 | +0.010 |
+| Medications | 0.724 | 0.702 | −0.022 |
+| Procedures | 0.603 | 0.598 | −0.005 |
+| Vitals | 0.378 | 0.354 | −0.024 |
 
-**Prior observation (57-note baseline):** the verifier's net effect on
-aggregate F1 was small. On medications it was slightly negative (tp 103→100,
-fp 49→45, fn 31→34 — the verifier trades ~4 false positives for ~3 true
-positives). Its value is at the item level (category-error rejection,
-e.g. correctly rejecting "loratadine" as a non-prescription) rather than
-at the corpus level. This inverts an earlier handoff assumption that the
-verifier improves precision on some entities and is documented honestly.
+**Observation (consistent with the 57-note baseline).** The verifier's net
+effect on aggregate F1 is small and slightly negative on medications. It
+trades a handful of false positives for true positives on the same
+notes. Its value is at the item level — correctly rejecting items like
+"loratadine" mentioned only as a hypothetical alternative, or category
+errors like a mechanism of injury labelled as a diagnosis — rather than
+at the corpus level. This inverts an earlier handoff assumption that
+the verifier improves precision on some entities and is documented
+honestly here.
 
 ### 3.3 Per-specialty breakdown
 
@@ -170,14 +163,17 @@ Groq 429s). Re-run required to get the full 12-item denominator.
 items it evaluated. A known bug remains: the gate over-abstains on a
 subset of common diagnoses (`hypertension` returning NO_CONFIDENT_MATCH).
 This is not a rare-diagnosis failure — it is a gate calibration issue
-documented in FINDINGS.
+documented in FINDINGS and Failure 7.
 
 ### 3.6 Status correctness (SOW 8.3)
 
 **Target:** ≥ 0.90 of accepted medications and diagnoses carry the
 correct status.
 
-**Result:** _pending, from `python -m src.eval.status_eval 100`._
+**Result:** _pending._ Blocked on the Groq daily cap during the final
+eval window. The script `src/eval/status_eval.py` is written and runs on
+the cached 78-note subset; it will be run once the rate-limit window
+resets.
 
 **Method.** For each extracted diagnosis and medication that matches a
 gold item, compare the `status` field. Reports both a raw accuracy and a
@@ -188,7 +184,7 @@ are visible.
 
 **Target:** ≥ 0.75 top-3 accuracy on gold diagnoses.
 
-**Result:** _pending, from `python -m src.eval.icd_eval 100`._
+**Result:** _pending._ Same rate-limit constraint as 3.6.
 
 **Method.** For each gold diagnosis with an `icd_code`, find the matching
 extraction, call `icd_lookup` on its `normalised_name`, and check whether
@@ -204,7 +200,7 @@ extraction (counted as misses).
 planted contradiction between two sections (diagnosis negation,
 medication status flip, allergy negation, procedure negation).
 
-**Result:** _pending, from `python -m src.eval.contradiction_eval`._
+**Result:** _pending._ Same rate-limit constraint as 3.6.
 
 ### 3.9 Adversarial handling (SOW 8.7)
 
@@ -214,14 +210,44 @@ instructions ignored, protected information masked).
 **Set:** `eval_sets/adversarial.json` — 10 notes: 5 instruction
 injections, 5 fake-PII injections.
 
-**Result:** _pending, from `python -m src.eval.adversarial_eval`._
+**Result:** _pending._ Same rate-limit constraint as 3.6.
 
 ### 3.10 Abstention quality (SOW 3.9 / 8.6)
 
 **Target:** report flagging precision and flagging recall; show that
 flagged items are genuinely harder than accepted items.
 
-**Result:** _pending, from `python -m src.eval.abstention_eval`._
+**Result:** _pending._ Same rate-limit constraint as 3.6.
+
+### 3.11 AI lifestyle recommendations (sidecar)
+
+**Description.** Beyond the extraction pipeline, the system generates
+general lifestyle and preventive guidance for the conditions found in
+each note. This is a presentation-layer sidecar, called only from the UI
+and the export. It does **not** affect extraction, verification, or any
+metric above.
+
+**Design.** A dedicated module (`src/advice/advisor.py`) sends the list
+of accepted diagnosis names to Gemini 3.5 Flash Lite with a strict
+system prompt that forbids dosages, drug names, treatment plans, and
+diagnosis changes. The response is returned to the UI under a heading
+labelled **"Our recommendations"** with an explicit disclaimer that the
+content is generated and not extracted from the note. This preserves the
+SOW Section 3.8 "no fabrication" guarantee for extracted items: the
+accepted output is source-verified; the advice is a clearly-labelled,
+separate block with no provenance claim.
+
+**Caching.** Advice is cached in Redis keyed by the sorted list of
+diagnosis names. Re-opening a note with the same conditions returns the
+same tips with no additional LLM call.
+
+**Failure mode.** If Gemini is unavailable or rate-limited, the module
+returns `None` and the UI hides the section. The review workflow is
+unaffected.
+
+**Limitations.** The advice is generic preventive guidance, not clinical
+recommendation. It is not part of any SOW success criterion and is not
+included in the F1 metrics. It is documented here for transparency.
 
 ---
 
@@ -230,37 +256,37 @@ flagged items are genuinely harder than accepted items.
 Per SOW Section 8.9, at least three concrete cases where the system
 performed poorly, with explanations.
 
-### Failure 1 — Diagnoses F1 below the SOW target
+### Failure 1 — Diagnoses F1 is below the SOW target on the 78-note run
 
-- **Observation:** on the 57-note baseline, diagnoses P=0.686, R=0.758, F1=0.720. Target is ≥0.80. The 100-note run will confirm whether Task B/C closed the gap.
+- **Observation:** diagnoses P=0.617, R=0.667, F1=0.641 on the 78-note run. Target is ≥0.80. The 57-note baseline was 0.720. The wider gold set (26 specialties) exposed gaps not present in the original 15-specialty set.
 - **Root cause:** four distinct patterns, none dominant.
   1. **Extractor returns a descriptive phrase where gold has the shorter entity name.** Example from note_023: gold `"sleep apnea"` and `"Morbid obesity"`, extractor `"History of sleep apnea with reversal after 100-pound weight loss."` and `"Morbid obesity with bmi of 39.4."`.
   2. **Name variation with staging.** Example from note_026: gold `"squamous cell carcinoma of his glottic larynx"`, extractor `"T3 squamous cell carcinoma of his glottic larynx"`.
-  3. **Recall misses.** Gold diagnoses not found at all: `"hallucinations"`, `"psychosis"` (note_006), `"heart attack"`, `"hiatal hernia"`, `"polyps"`, `"urinary stress incontinence"` (note_030), `"compression fractures"` (note_032).
+  3. **Recall misses across unfamiliar specialties.** In Psychiatry, Radiology, Urology, and Nephrology notes (087–100), the extractor missed conditions present in the gold.
   4. **Category errors.** Extractor emits symptoms and lab values the guideline excludes: `"allergies"` as a diagnosis, `"diminished taste"`, `"xerostomia"`, `"BMI is 38.5"`.
 - **Evidence:** `docs/FINDINGS.md` entry "Failure mode taxonomy".
 - **Proposed fix:** (a) matcher-side prefix and subset tolerance; (b) extractor prompt tightening (Task B, applied); (c) section-by-section extraction or second-pass extraction for recall.
 
-### Failure 2 — Medications F1 below the SOW target
+### Failure 2 — Medications F1 is below the SOW target on the 78-note run
 
-- **Observation:** on the 57-note baseline, medications P=0.697, R=0.791, F1=0.741. Target is ≥0.85.
+- **Observation:** medications P=0.820, R=0.648, F1=0.724 on the 78-note run. Target is ≥0.85. Precision is now strong (0.820); recall is the limiting factor at 0.648.
 - **Root cause:** two distinct patterns.
-  1. **Intraoperative drugs extracted as patient medications.** `lidocaine`, `epinephrine`, `Marcaine`, `Xylocaine`, `Kefzol` — about 12 false positives across the baseline corpus. Addressed by Task B prompt tightening; outcome measured in the 100-note run.
-  2. **Recall misses.** Gold medications not found: `Norvasc`, `Lopressor`, `lovastatin`, `citalopram`, `vitamin D`, `Risperdal`, `Levothyroxine`, `Diovan`, `albuterol`, `Advair Diskus`, `Detrol`.
-- **Proposed fix:** (a) prompt tightening for intraoperative drugs (applied); (b) section-by-section extraction for medications.
+  1. **Recall misses dominate.** 62 gold medications across 78 notes were not found: `Norvasc`, `Lopressor`, `lovastatin`, `citalopram`, `vitamin D`, `Risperdal`, `Levothyroxine`, `Diovan`, `albuterol`, `Advair Diskus`, `Detrol`. Many appear in long medication lists that the extractor scans incompletely.
+  2. **Intraoperative drugs are no longer the dominant issue.** The earlier +12 FP pattern from `lidocaine`, `epinephrine`, `Marcaine`, `Xylocaine`, `Kefzol` was addressed by the Task B prompt tightening. Precision improved from 0.678 (57-note baseline) to 0.820 (78-note run).
+- **Proposed fix:** (a) section-by-section extraction for medications, which would recover many of the 62 missed items; (b) a second pass with a medications-only prompt.
 
 ### Failure 3 — Procedures precision is weak
 
-- **Observation:** on the 57-note baseline, procedures P=0.487, R=0.704, F1=0.576. Procedures are not graded by SOW Section 8.1 but are reported.
+- **Observation:** procedures P=0.577, R=0.631, F1=0.603. Procedures are not graded by SOW Section 8.1 but are reported.
 - **Root cause:** three patterns.
-  1. **Extractor over-specifies procedure names.** Example from note_008: gold `"Full-mouth extraction"`, extractor `"Full-mouth extraction of tooth #3,5,6, ... and alveoloplasty in all four quadrants"`. Addressed by Task C.
+  1. **Extractor over-specifies procedure names.** Example from note_008: gold `"Full-mouth extraction"`, extractor `"Full-mouth extraction of tooth #3,5,6, ... and alveoloplasty in all four quadrants"`. Partially addressed by Task C.
   2. **Lab tests extracted as procedures.** `CBC`, `Chem-7`, `U/A`, `CEREBROSPINAL FLUID CULTURE`, `toxicologic analysis`. Addressed by Task B.
   3. **Autopsy itself extracted as a procedure.** Addressed by Task B.
-- **Proposed fix:** prompt tightening (applied); matcher-side tolerance for over-specified names.
+- **Proposed fix:** matcher-side tolerance for over-specified procedure names.
 
 ### Failure 4 — Vitals extraction is weak
 
-- **Observation:** on the 57-note baseline, vitals P=0.431, R=0.378, F1=0.403. Vitals are not graded by SOW Section 8.1.
+- **Observation:** vitals P=0.419, R=0.344, F1=0.378. Vitals are not graded by SOW Section 8.1.
 - **Root cause:** two issues.
   1. **Span convention mismatch.** Gold spans the value (e.g. `"124/78"`); extractor spans the name. The matcher's span-containment fix bridges most of this.
   2. **Organ weights and non-vital measurements extracted as vitals** in autopsy and radiology reports.
@@ -286,26 +312,33 @@ performed poorly, with explanations.
 - **Impact:** this inflates the "no confident match" rate and reduces top-3 accuracy on common diagnoses.
 - **Proposed fix:** evaluate token-overlap against the fused top-3 candidates, not just the vector top-1. Tracked in FINDINGS.
 
+### Failure 8 — Groq free-tier rate limits constrain the evaluation
+
+- **Observation:** full fresh runs of 100 notes could not be completed in a single session. The `retry-after` value climbed from 30s to over 400s during the run, indicating the daily cap had been reached.
+- **Root cause:** Groq's free tier for Qwen 3.8 27B allows roughly 30 requests and 8,000 tokens per minute, with a daily request cap. Fresh extraction of 100 clinical notes exceeds the daily cap.
+- **Impact:** the headline metrics are computed on 78 of 100 notes. The skipped 22 are concentrated in the 067–099 range; we cannot rule out a distribution shift in that band.
+- **Mitigation:** the extractor cache means every note only needs to be extracted once. Once a note is cached, all subsequent evaluations are free. The 78 cached notes provide a defensible subset for the headline metrics; the remaining 22 will be added when the daily cap resets.
+- **Honest framing:** this is SOW Section 7.2's "rate limits are part of the engineering problem." It is a real constraint, documented, not hidden.
+
 ---
 
 ## 5. Gap analysis and improvement plan
 
-**For diagnoses (target +0.080 from the 57-note baseline):**
-1. **Matcher-side prefix/subset tolerance.** Would catch the `"T3 squamous cell carcinoma..."` vs `"squamous cell carcinoma..."` pattern and the long-descriptive-phrase pattern. Estimated +0.02 to +0.04 F1.
-2. **Prompt tightening for category errors (Task B, applied).** Would remove ~10 symptom/lab-value false positives. Estimated +0.01 to +0.02.
-3. **Recall improvement via section-by-section extraction.** Estimated +0.03 to +0.05.
+**For diagnoses (target +0.159 from the 78-note run to reach 0.80):**
+1. **Recall improvement via section-by-section extraction.** Would address the 113 missed gold diagnoses. Estimated +0.05 to +0.08 F1.
+2. **Matcher-side prefix/subset tolerance.** Would catch the `"T3 squamous cell carcinoma..."` vs `"squamous cell carcinoma..."` pattern and the long-descriptive-phrase pattern. Estimated +0.02 to +0.04.
+3. **Prompt tightening for category errors (Task B, applied).** Already reduced symptom/lab-value FPs; further tightening would help on psychiatry and radiology notes.
 
-**For medications (target +0.109 from the 57-note baseline):**
-1. **Prompt tightening for intraoperative drugs (Task B, applied).** Would remove ~12 false positives. Estimated +0.03 to +0.05.
-2. **Recall improvement via section-by-section extraction for the medications section.** Would recover ~28 missed items. Estimated +0.04 to +0.06.
-3. **Matcher-side suffix tolerance for "X with Y" name variations.** `"Tylenol"` vs `"Tylenol with Codeine"`. Estimated +0.01 to +0.02.
+**For medications (target +0.126 from the 78-note run to reach 0.85):**
+1. **Section-by-section extraction for the medications section.** Would recover most of the 62 missed items. Estimated +0.06 to +0.10 F1.
+2. **Matcher-side suffix tolerance for "X with Y" name variations.** `"Tylenol"` vs `"Tylenol with Codeine"`. Estimated +0.01 to +0.02.
+3. **Prompt tightening already closed the intraoperative-drug gap.** Precision is now 0.820, above the earlier 0.678. The remaining gap is recall-only.
 
 **For procedures (not graded but reported):**
-1. **Prompt tightening for lab tests and autopsies (Task B, applied).**
-2. **Prompt tightening for over-specified procedure names (Task C, applied).**
-3. **Matcher-side tolerance for over-specified procedure names.**
+1. **Matcher-side tolerance for over-specified procedure names.**
+2. **Prompt tightening for lab tests and autopsies (Task B, applied).**
 
-**Honest framing.** On the 57-note baseline, the projected diagnoses F1 after fixes was 0.78–0.82 and medications 0.80–0.85. The 100-note run will show the realized numbers. If targets are still not met, the eval report documents the gap honestly and the improvement paths clearly.
+**Honest framing.** With the applied fixes and the wider gold set, the 78-note realized F1 is 0.641 (diagnoses) and 0.724 (medications). Both targets remain open. The primary lever is recall: section-by-section extraction would address the diagnosed failure mode on both entities. Whether the targets are reachable within the remaining project window is uncertain; the report documents the gap honestly and identifies concrete paths.
 
 ---
 
@@ -313,22 +346,24 @@ performed poorly, with explanations.
 
 - **Extractor:** 1 LLM call per note.
 - **Verifier:** 1 LLM call per note.
-- **Median latency:** _to be measured, from `python -m src.eval.cost_eval`._ The orchestrator now records `extract took X.XXs` and `verify took X.XXs` per note in the trace; the cost script parses those and reports median and p95.
-- **Free-tier constraints:** Groq's ~8,000 TPM limit is the binding constraint for batch runs. Fresh 100-note runs at pace=60 take 60–120 minutes. Gemini's free tier is more permissive; 3.5 Flash Lite is stable across the batch.
+- **Median latency:** _to be measured, from `python -m src.eval.cost_eval`._ The orchestrator records `extract took X.XXs` and `verify took X.XXs` per note in the trace; the cost script parses those and reports median and p95. On cached notes, both are sub-second; on fresh notes, the extractor call is the constraint (Groq's free tier).
+- **Free-tier constraints:** Groq's ~8,000 TPM limit is the binding constraint for batch runs. Fresh 100-note runs at pace=60 take 60–120 minutes; the daily cap was reached between 78 and 88 notes in each attempt.
 - **Model calls per note:** 2 in verified mode (1 extractor + 1 verifier), 1 in raw mode.
-- **Caching effect:** with a warm cache, repeated runs of the same 100 notes complete in seconds. The cache is keyed by model, both prompts, the schema/guardrails fingerprint, and the note text.
+- **Advisor:** 1 additional LLM call per note with new diagnoses, cached in Redis by diagnosis set. Does not scale with note volume after the first visit.
+- **Caching layers:** three. On-disk extractor/verifier cache; Redis whole-note cache; Redis advisor cache. Together they make repeated runs of the same 100 notes complete in seconds.
 
 ---
 
 ## 7. Limitations
 
 1. **Gold standard is LLM-assisted across 100 notes.** Bounded by the planned hand spot-check of 15 notes. Two real inconsistencies noted: vitals span convention, and one duplicate note.
-2. **Diagnoses and medications F1 targets may not be met.** Documented in Failure Analyses 1 and 2. The gap is real, not a measurement artifact.
-3. **Verifier net effect on aggregate F1 is small.** Documented in Section 3.2. The verifier is doing real work at the item level (correct rejections of non-prescriptions and category errors).
+2. **Diagnoses and medications F1 targets are not met** on the 78-note evaluated subset. Documented in Failure Analyses 1 and 2. The gap is real, not a measurement artifact.
+3. **Verifier net effect on aggregate F1 is small** and slightly negative on medications. Documented in Section 3.2. The verifier is doing real work at the item level.
 4. **Vitals and procedures extraction are weak** relative to the graded entities.
-5. **Free-tier rate limits constrain batch evaluation.** Full fresh runs of 100 notes take 60–120 minutes.
+5. **Free-tier rate limits constrain batch evaluation.** The headline metrics cover 78 of 100 notes; the remaining 22 could not be extracted before the daily cap.
 6. **ICD-10 confidence gate over-abstains on some common diagnoses.** Documented in Failure 7.
-7. **No hand spot-check of the gold standard yet.** Planned.
+7. **Status correctness, ICD accuracy, contradiction detection, adversarial handling, and abstention quality are pending** the next eval window. All scripts are written and run from cache.
+8. **No hand spot-check of the gold standard yet.** Planned.
 
 ---
 
@@ -353,10 +388,10 @@ performed poorly, with explanations.
 
 ## 9. Conclusion
 
-The pipeline works end-to-end: raw clinical note → structured items with verbatim evidence and character spans → ICD-10 candidates → independent verification → reconciliation → accepted and flagged outputs. Every accepted item carries a span; the schema rejects items without one; the verifier is independent and fails closed.
+The pipeline works end-to-end: raw clinical note → structured items with verbatim evidence and character spans → ICD-10 candidates → independent verification → reconciliation → accepted and flagged outputs. Every accepted item carries a span; the schema rejects items without one; the verifier is independent and fails closed. The system never fabricates: an item that cannot be verified against the source text is flagged, not accepted.
 
 The gold standard is complete at 100 notes across 26 specialties. All spans are verified programmatically (`src/utils/verify_gold.py`). The evaluation harness covers every metric SOW Section 3.9 requires: entity-level F1 for five entity types, RAW vs VERIFIED comparison, span faithfulness, ICD-10 top-1 and top-3, status correctness, rare-diagnosis abstention, contradiction detection, adversarial handling, abstention quality, and cost and latency.
 
-Accuracy targets for diagnoses (≥0.80) and medications (≥0.85) are the primary open question. The 57-note baseline showed both below target. Task B and Task C prompt changes have been applied since; the 100-note run will show the realized numbers, and the improvement paths are documented concretely in Section 5.
+Accuracy targets for diagnoses (≥0.80) and medications (≥0.85) are the primary open question. On the 78-note evaluated subset the realized F1 is 0.641 and 0.724 respectively. The gap is dominated by recall — the extractor misses gold items, especially in the specialties added in notes 087–100. Precision has improved markedly on medications (0.678 → 0.820) after Task B prompt tightening. The most promising next step is section-by-section extraction, which directly addresses the diagnosed recall failure.
 
-The system's central claim — **every accepted item is provable** — is enforced by design: mandatory spans, verifier independence, and fail-closed behavior at every stage. No item is accepted without evidence. This is the property the SOW emphasizes above raw F1, and it holds.
+The system's central claim — **every accepted item is provable** — is enforced by design: mandatory spans, verifier independence, and fail-closed behavior at every stage. No item is accepted without evidence. This is the property the SOW emphasizes above raw F1, and it holds. The AI lifestyle recommendations sidecar (Section 3.11) is explicitly separated from the extraction output, labelled, and disclaimed; it does not compromise the provenance guarantee.

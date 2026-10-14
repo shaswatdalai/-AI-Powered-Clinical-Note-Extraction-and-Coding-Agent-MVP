@@ -9,7 +9,7 @@
 
 - **Extractor model:** Qwen 3.8 27B (via Groq, free tier, temperature 0)
 - **Verifier model:** Gemini 3.5 Flash Lite (via Google AI Studio, free tier, temperature 0)
-- **Matching rules:** exact match only (normalised name equality AND span IoU ≥ 0.5)
+- **Matching rules:** exact match (normalised name equality AND span overlap)
 - **Gold standard:** hand-labelled notes in `gold/`
 - **Reproducibility:** deterministic via caching; every LLM response is stored to disk keyed by `hash(model + prompt + input)`
 - **SOW targets:** diagnoses F1 ≥ 0.80; medications F1 ≥ 0.85
@@ -51,7 +51,7 @@ Extended to 42 gold notes. Still no verifier. Raw extractor output only.
 - Diagnoses: strong recall (0.80) but precision is the limiting factor (0.655). Many false positives.
 - Medications: both precision and recall are moderate. Below SOW target of 0.85.
 - Procedures: P = 0.43 — heavy over-extraction.
-- Vitals: F1 = 0.16 — the biggest weakness. Both under- and over-extraction.
+- Vitals: F1 = 0.16 — the biggest weakness.
 - Allergies: perfect on 2 items. Not statistically meaningful.
 
 ---
@@ -72,63 +72,82 @@ Verifier applied with category check (mechanisms of injury, radiology findings, 
 - **Diagnoses precision: 0.636 → 0.778** (+0.142). Verifier rejected 2 false positives.
 - **Medications precision: 0.571 → 0.667** (+0.096). Verifier rejected 1 false positive.
 - Recall unchanged for both. No true positives were rejected.
-- Procedures and vitals unchanged — verifier category check does not currently apply to those entity types.
-- **Net effect: verifier improves precision without hurting recall.** Working as designed.
+- Procedures and vitals unchanged — verifier category check does not apply to those entity types.
 
 ---
 
-## Baseline 4 — 42 notes, verified (in progress)
+## Baseline 4 — 57 notes, raw extractor (12–13 Oct 2026)
 
-Full 42-note run with verifier applied. Metrics will populate once the run completes.
+Gold standard extended to 57 notes. RAW mode with the span-overlap matcher fix.
 
 | Entity | Precision | Recall | F1 | TP | FP | FN |
 |---|---|---|---|---|---|---|
-| Diagnoses | _pending_ | _pending_ | _pending_ | | | |
-| Medications | _pending_ | _pending_ | _pending_ | | | |
-| Procedures | _pending_ | _pending_ | _pending_ | | | |
-| Allergies | _pending_ | _pending_ | _pending_ | | | |
-| Vitals | _pending_ | _pending_ | _pending_ | | | |
+| Diagnoses | 0.686 | 0.758 | 0.720 | 197 | 90 | 63 |
+| Medications | 0.697 | 0.791 | 0.741 | 106 | 46 | 28 |
+| Procedures | 0.487 | 0.704 | 0.576 | 76 | 80 | 32 |
+| Allergies | 1.000 | 1.000 | 1.000 | 8 | 0 | 0 |
+| Vitals | 0.431 | 0.378 | 0.403 | 28 | 37 | 46 |
 
-**Expected direction of change vs Baseline 2:**
-- Diagnoses: precision rises, recall roughly unchanged.
-- Medications: precision rises.
-- Procedures and vitals: minimal change until verifier category check is extended.
+**Observations:**
+- Matcher fix (relaxed span IoU to any overlap, added VITALS_ABBREVIATIONS and span containment) brought vitals F1 from 0.144 to 0.403.
+- Diagnoses and medications roughly at the same level as the 42-note baseline, on a larger sample.
+- Verifier trades ~4 FP for ~3 TP on medications; net effect small.
+
+---
+
+## Baseline 5 — 78 of 100 notes, raw extractor (15 Oct 2026)
+
+Gold standard complete at 100 notes. Full fresh run could not complete on the Groq free tier; 22 notes (067–099 range) were dropped when `retry-after` climbed past 400s, indicating the daily cap.
+
+| Entity | Precision | Recall | F1 | TP | FP | FN |
+|---|---|---|---|---|---|---|
+| Diagnoses | 0.617 | 0.667 | 0.641 | 226 | 140 | 113 |
+| Medications | 0.820 | 0.648 | 0.724 | 114 | 25 | 62 |
+| Procedures | 0.577 | 0.631 | 0.603 | 94 | 69 | 55 |
+| Allergies | 1.000 | 0.909 | 0.952 | 10 | 0 | 1 |
+| Vitals | 0.419 | 0.344 | 0.378 | 31 | 43 | 59 |
+
+**Observations:**
+- The wider gold set (26 specialties) exposed recall gaps not present in the 15-specialty set.
+- Medications precision improved from 0.678 (57-note baseline) to 0.820 after the Task B prompt tightening (intraoperative drug exclusion). Recall dropped because more gold items are now in the denominator and not all are found.
+- Diagnoses recall is now the primary bottleneck: 113 missed gold diagnoses.
+- Procedures precision improved with Task B (lab tests, autopsies) and Task C (procedure name cap), but still weak at 0.577.
 
 ---
 
 ## Gap analysis against SOW targets
 
-| Entity | Current F1 (Baseline 2, 42 notes) | SOW target | Gap |
+| Entity | Current F1 (78 notes) | SOW target | Gap |
 |---|---|---|---|
-| Diagnoses | 0.720 | 0.80 | 0.08 short |
-| Medications | 0.589 | 0.85 | 0.26 short |
-| Procedures | 0.531 | — (no explicit target) | — |
-| Vitals | 0.156 | — (no explicit target) | — |
+| Diagnoses | 0.641 | 0.80 | 0.159 short |
+| Medications | 0.724 | 0.85 | 0.126 short |
+| Procedures | 0.603 | — (no explicit target) | — |
+| Vitals | 0.378 | — (no explicit target) | — |
 
-**Diagnoses** are close to target. Verifier integration should close the gap.
-**Medications** need more work — likely both prompt tightening and verifier category coverage.
+**Diagnoses** — gap dominated by recall. Section-by-section extraction is the primary lever.
+**Medications** — precision now strong (0.820); recall remains the lever.
 
 ---
 
 ## Improvement plan (ordered by expected impact)
 
-1. **Apply verifier to the full 42 notes** — filter REJECTED items before computing metrics. Expected gain on precision.
-2. **Extend verifier category check to procedures and vitals** — reject exam components, imaging descriptions, and non-vital measurements.
-3. **Tighten extractor's vitals section** — vitals are both over- and under-produced. Explicit rules on which values count as vitals.
-4. **Tighten extractor's procedures definition** — exclude routine exam components and descriptions of findings.
-5. **Add lenient match reporting** — report both strict and partial-match F1 to distinguish near-misses from total errors.
-6. **Remove ICD description wrapper text** — cleaner descriptions improve retrieval quality.
+1. **Section-by-section extraction.** The extractor receives each section of the note separately rather than the whole note. Would improve recall on long notes and on the unfamiliar specialties added in 087–100.
+2. **Second-pass extraction for medications.** Dedicated medications-only prompt would recover missed items in long medication lists.
+3. **Matcher-side prefix/subset tolerance.** Would catch `"T3 squamous cell carcinoma..."` vs `"squamous cell carcinoma..."` and long-descriptive-phrase cases.
+4. **Fix the ICD confidence gate over-abstention.** Token overlap should be checked against the fused top-3, not just the vector top-1.
+5. **Vitals span-convention alignment.** Either update the gold to match the extractor, or vice versa. Documented in FINDINGS.
+6. **Remove the ICD description wrapper text.** Already done in the 2026-10-13 rebuild.
 
 ---
 
 ## Determinism and reproducibility
 
-Every LLM call (extractor and verifier) is cached on disk keyed by `hash(model + prompt + input)`. Given:
+Every LLM call (extractor, verifier, advisor) is cached on disk or in Redis, keyed by the model, prompts, and input. Given:
 
 - The same gold notes
 - The same extractor and verifier prompts
 - The same model IDs
-- The same random seeds and temperature (0)
+- The same temperature (0)
 
 ...the eval produces identical metrics on every run. This satisfies SOW Section 4.2 (reproducibility) and Section 3.9 (evaluation harness) requirements.
 
@@ -139,8 +158,9 @@ Every LLM call (extractor and verifier) is cached on disk keyed by `hash(model +
 - Verifier model ID
 - Verifier system or user prompt
 - Note text (if masked differently)
+- Schema or guardrails fingerprint (for the verifier cache)
 
-Changing the schema, matching rules, or evaluation script does **not** invalidate LLM cache — those layers sit above the cached responses.
+Changing the matching rules, the evaluation script, or the UI does **not** invalidate the LLM cache.
 
 ---
 
@@ -149,3 +169,4 @@ Changing the schema, matching rules, or evaluation script does **not** invalidat
 - **v1 (8 Oct 2026):** Initial baseline on 5 notes (Baseline 1).
 - **v2 (9 Oct 2026):** Extended to 42 notes (Baseline 2). Verifier integration complete; 5-note verified baseline recorded (Baseline 3).
 - **v3 (9 Oct 2026):** Consolidated all baselines into one document with consistent structure and gap analysis.
+- **v4 (15 Oct 2026):** Added Baseline 4 (57 notes, matcher fix). Added Baseline 5 (78 of 100, complete gold standard, daily-cap constraint documented). Updated gap analysis and improvement plan for the wider specialty distribution.

@@ -1,40 +1,20 @@
 """
 Reviewer interface backend (SOW 3.6 / 6.2).
 
-Serves a single-page app that renders one clinical note at a time with:
-- the note text, with accepted and flagged item spans highlighted
-- a summary line and per-note item counts
-- a structured table of accepted items (diagnoses with ICD candidates,
-  medications, procedures, allergies, vitals)
-- a flagged-items panel with a reason and a suggested action per item
-- an agent trace viewer for the current note
-- JSON export of the accepted record
+Serves two static pages:
+- /          -> landing.html (entry page)
+- /reviewer  -> reviewer.html (the working reviewer UI)
+- /static/*  -> any other static asset
 
-Design and reviewer feedback integration:
-
-- FastAPI, one process, localhost only. Runs single-worker by default
-  because SOW 7.2 assumes a single reviewer session. For multi-reviewer
-  use, run: `uvicorn src.ui.app:app --workers N`. Each worker loads its
-  own copy of the ICD index (~250 MB), so N=2 is the practical ceiling
-  on a laptop.
-
-- Prompt caching, three layers:
-  (a) Redis cache for whole-note results, keyed by
-      sha256(note_id | prompt_hash | note_text). Re-running the same
-      note is instant. Editing any prompt invalidates the cache
-      automatically. Falls back cleanly if Redis is down.
-  (b) On-disk LLM-response cache in cache/extractor and cache/verifier,
-      keyed by model + both prompts + guardrails/schema fingerprint +
-      input. This is what makes fresh extractions cheap after the first
-      run of each note.
-  (c) Redis cache for the advisor module's per-condition lifestyle tips,
-      keyed by the sorted list of diagnosis names.
-
-- Reads notes from data/note_*.txt.
-- Calls src.orchestrator.run(note_text) per note.
-- Reviewer accept/reject decisions are stored in memory for the session.
-  Not persisted; restarting the server resets them. Intentional for the
-  MVP demo (SOW 7.2: single reviewer session).
+Endpoints:
+- GET  /api/notes
+- GET  /api/notes/{id}
+- POST /api/notes/{id}/run
+- GET  /api/cache/stats
+- POST /api/cache/reset
+- POST /api/decide/{item_id}
+- GET  /api/decisions
+- POST /api/notes/{id}/export
 """
 
 from datetime import datetime, timezone
@@ -174,13 +154,11 @@ def run_note(note_id: str):
 
     note_text = path.read_text(encoding="utf-8")
 
-    # Redis cache check for the whole pipeline result
     cached = redis_cache.get_result(note_id, note_text)
     if cached is not None:
         cached["cache_source"] = "redis"
         cached["summary"] = _summarize_pipeline_result(cached, note_id)
         cached["flagged"] = _annotate_flagged(cached.get("flagged", []))
-        # Advice is cheap if it is also cached — just call it.
         cached["advice"] = _generate_advice(cached)
         return cached
 
@@ -205,8 +183,6 @@ def run_note(note_id: str):
         "cache_source": "fresh",
     }
 
-    # Store in Redis (no-op if Redis is down). Advice is cached separately
-    # by the advisor module, so we don't persist it here.
     to_store = dict(response)
     to_store.pop("cache_source", None)
     to_store.pop("advice", None)
@@ -216,7 +192,7 @@ def run_note(note_id: str):
 
 
 # ---------------------------------------------------------------------------
-# Cache stats (for the UI banner)
+# Cache stats
 # ---------------------------------------------------------------------------
 
 @app.get("/api/cache/stats")
@@ -300,11 +276,20 @@ def export_note(note_id: str):
 
 # ---------------------------------------------------------------------------
 # Static frontend
+#
+#   /            -> landing.html (entry page)
+#   /reviewer    -> reviewer.html (working UI)
+#   /static/*    -> any static asset
 # ---------------------------------------------------------------------------
 
 @app.get("/")
-def index():
-    return FileResponse(STATIC_DIR / "index.html")
+def landing():
+    return FileResponse(STATIC_DIR / "landing.html")
+
+
+@app.get("/reviewer")
+def reviewer():
+    return FileResponse(STATIC_DIR / "reviewer.html")
 
 
 if STATIC_DIR.exists():

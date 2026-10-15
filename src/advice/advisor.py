@@ -13,13 +13,20 @@ Design rules:
   specific patient. Only generic lifestyle and preventive guidance.
 - Output is labelled in the UI as "Our recommendations" with a disclaimer
   that it is NOT extracted from the note.
-- If the LLM call fails, the module returns None and the UI hides the
-  section. The review still works.
+- If the LLM call fails, the module returns None and the UI shows the
+  unavailable state. The review still works.
+
+Rate limiting:
+- Gemini's free tier limits requests per minute. When the UI runs several
+  notes back-to-back, every advisor call after the first hits 429 unless
+  we space them out. A module-level lock serialises calls and enforces a
+  minimum interval between them.
 """
 
 import hashlib
 import json
 import os
+import threading
 import time
 from pathlib import Path
 
@@ -36,6 +43,12 @@ GOOGLE_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model
 GOOGLE_MODEL = "gemini-3.5-flash-lite"
 MAX_RETRIES = 3
 CACHE_TTL_SECONDS = 24 * 60 * 60
+
+# Serialise advisor calls and enforce a minimum gap between them so the
+# Gemini free tier does not 429 when the UI pages through notes quickly.
+MIN_CALL_INTERVAL_SECONDS = 1.5
+_call_lock = threading.Lock()
+_last_call_time = [0.0]
 
 SYSTEM_PROMPT = (
     "You are a preventive-health advisor writing short, general lifestyle "
@@ -99,6 +112,21 @@ def _redis_set(key: str, value: dict) -> None:
         pass
 
 
+def _throttle() -> None:
+    """Enforce a minimum interval between Gemini calls.
+
+    Called before every outbound request. Serialises concurrent callers
+    through a module-level lock and sleeps if the previous call happened
+    less than MIN_CALL_INTERVAL_SECONDS ago.
+    """
+    with _call_lock:
+        now = time.time()
+        elapsed = now - _last_call_time[0]
+        if elapsed < MIN_CALL_INTERVAL_SECONDS:
+            time.sleep(MIN_CALL_INTERVAL_SECONDS - elapsed)
+        _last_call_time[0] = time.time()
+
+
 def _call_gemini(conditions: list[str]) -> dict | None:
     api_key = os.environ.get("GOOGLE_API_KEY")
     if not api_key:
@@ -120,11 +148,14 @@ def _call_gemini(conditions: list[str]) -> dict | None:
     }
 
     for attempt in range(MAX_RETRIES + 1):
+        _throttle()
         try:
             r = httpx.post(url, params={"key": api_key}, json=body, timeout=30.0)
             if r.status_code != 200:
                 if r.status_code == 429 or r.status_code >= 500:
-                    time.sleep(min(2 ** attempt, 8))
+                    # Give the free tier a longer window for rate limits.
+                    sleep_for = 5 if r.status_code == 429 else min(2 ** attempt, 8)
+                    time.sleep(sleep_for)
                     continue
                 return None
             data = r.json()

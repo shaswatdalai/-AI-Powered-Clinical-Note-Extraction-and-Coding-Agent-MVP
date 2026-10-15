@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Clinical Extraction · Mirai Labs</title>
+
+<script>
+/* Apply stored theme before paint to avoid flash */
+(function () {
+  try {
+    var t = localStorage.getItem("theme");
+    if (t === "light" || t === "dark") {
+      document.documentElement.dataset.theme = t;
+    }
+  } catch (e) {}
+})();
+</script>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+  html, body { height: 100%; margin: 0; }
+
+  :root {
+    --bg-base: #0a0d11;
+    --text-primary: #f1f5f9;
+    --text-secondary: #aab4c0;
+    --text-tertiary: #78828f;
+    --surface: rgba(255,255,255,0.03);
+    --surface-hover: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.14);
+    --accent: #2dd4bf;
+    --accent-glow: rgba(45,212,191,0.25);
+  }
+  html[data-theme="light"] {
+    --bg-base: #fafaf9;
+    --text-primary: #0f1216;
+    --text-secondary: #494e57;
+    --text-tertiary: #7b8189;
+    --surface: rgba(0,0,0,0.02);
+    --surface-hover: rgba(0,0,0,0.04);
+    --border: rgba(0,0,0,0.08);
+    --border-strong: rgba(0,0,0,0.14);
+    --accent: #0d9488;
+    --accent-glow: rgba(13,148,136,0.20);
+  }
+
+  body {
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-family: Inter, system-ui, sans-serif;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    transition: background 240ms ease, color 240ms ease;
+  }
+
+  #scene { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; display: block; }
+  .scene-vignette {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background:
+      radial-gradient(ellipse at 50% 40%, transparent 0%, transparent 45%, var(--bg-base) 100%),
+      linear-gradient(to bottom, transparent 0%, var(--bg-base) 92%);
+    opacity: 0.9;
+  }
+
+  .content { position: relative; z-index: 2; height: 100vh; display: grid; grid-template-rows: auto 1fr auto; }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 24px 32px; }
+  .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; letter-spacing: -0.02em; font-size: 15px; }
+  .brand-mark {
+    width: 32px; height: 32px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent) 0%, #0f766e 60%, #6d28d9 120%);
+    display: grid; place-items: center;
+    color: white; font-weight: 800; font-size: 13px;
+    letter-spacing: -0.03em;
+    box-shadow: 0 4px 20px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.25);
+  }
+  .brand-sub {
+    color: var(--text-tertiary); font-weight: 400; font-size: 13px;
+    margin-left: 6px; padding-left: 12px;
+    border-left: 1px solid var(--border);
+  }
+
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 18px; border-radius: 12px;
+    font-size: 13.5px; font-weight: 500; letter-spacing: -0.005em;
+    border: 1px solid transparent;
+    cursor: pointer; text-decoration: none;
+    transition: transform 120ms ease, background 160ms ease, border-color 160ms ease, box-shadow 200ms ease;
+    white-space: nowrap;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-ghost { background: transparent; border-color: var(--border-strong); color: var(--text-primary); }
+  .btn-ghost:hover { background: var(--surface-hover); border-color: var(--text-tertiary); }
+  .btn-primary {
+    background: var(--text-primary); color: var(--bg-base);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  }
+  .btn-primary:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.35); transform: translateY(-1px); }
+  .btn-icon {
+    width: 40px; height: 40px; padding: 0; justify-content: center;
+    background: transparent; border-color: var(--border); color: var(--text-secondary); border-radius: 12px;
+  }
+  .btn-icon:hover { background: var(--surface-hover); color: var(--text-primary); }
+
+  .hero {
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; padding: 0 32px; max-width: 980px; margin: 0 auto; width: 100%;
+    animation: heroEnter 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes heroEnter { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 8px 16px 8px 14px; border-radius: 999px;
+    border: 1px solid var(--border-strong); background: var(--surface);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    font-size: 13px; font-weight: 500; color: var(--text-secondary);
+    margin-bottom: 32px; letter-spacing: -0.005em;
+    animation: heroEnter 900ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both;
+  }
+  .chip-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+    animation: pulseDot 2.4s ease-in-out infinite;
+  }
+  @keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+  .headline {
+    font-size: clamp(40px, 6.2vw, 82px); line-height: 1.02;
+    letter-spacing: -0.04em; font-weight: 600;
+    margin: 0 0 24px 0; color: var(--text-primary); max-width: 900px;
+    animation: heroEnter 900ms cubic-bezier(0.22, 1, 0.36, 1) 200ms both;
+  }
+  .headline em {
+    font-style: italic; font-weight: 400;
+    font-family: Georgia, 'Times New Roman', serif;
+    letter-spacing: -0.02em; color: var(--text-primary); opacity: 0.9;
+  }
+
+  .subhead {
+    font-size: clamp(15px, 1.4vw, 17px); line-height: 1.55;
+    color: var(--text-secondary); max-width: 620px; margin: 0 auto 40px auto;
+    letter-spacing: -0.005em;
+    animation: heroEnter 900ms cubic-bezier(0.22, 1, 0.36, 1) 280ms both;
+  }
+
+  .cta-row { display: flex; gap: 12px; justify-content: center; animation: heroEnter 900ms cubic-bezier(0.22, 1, 0.36, 1) 360ms both; }
+  .cta-row .btn { padding: 12px 24px; font-size: 14.5px; border-radius: 14px; }
+
+  .footer-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 32px; font-size: 12px; color: var(--text-tertiary);
+    letter-spacing: -0.005em;
+    animation: heroEnter 900ms cubic-bezier(0.22, 1, 0.36, 1) 440ms both;
+  }
+  .footer-bar .stat { display: inline-flex; align-items: center; gap: 8px; }
+  .footer-bar .stat + .stat { margin-left: 20px; }
+  .footer-bar .stat-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .footer-bar .stat-dot.dim { background: var(--text-tertiary); }
+
+  @media (max-width: 720px) {
+    .topbar { padding: 18px 20px; }
+    .hero { padding: 0 20px; }
+    .cta-row { flex-direction: column; width: 100%; }
+    .cta-row .btn { justify-content: center; }
+    .footer-bar { padding: 16px 20px; flex-direction: column; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="scene"></canvas>
+<div class="scene-vignette"></div>
+
+<div class="content">
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">CX</div>
+      Clinical Extraction
+      <span class="brand-sub">Mirai Labs</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-icon" id="theme-toggle" title="Toggle theme" aria-label="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <a class="btn btn-ghost" href="/reviewer">Open Reviewer</a>
+      <a class="btn btn-primary" href="/reviewer">Run pipeline</a>
+    </div>
+  </header>
+
+  <main class="hero">
+    <div class="chip">
+      <span class="chip-dot"></span>
+      Independent verification · Fail-closed
+    </div>
+
+    <h1 class="headline">
+      Extract clinical facts,<br />
+      <em>prove</em> where every one came from.
+    </h1>
+
+    <p class="subhead">
+      An agent that reads free-text clinical notes, extracts diagnoses,
+      medications, procedures, allergies, and vitals, maps each diagnosis to
+      ICD-10 candidates, and verifies every item with a second independent
+      model. Anything unsupported is flagged, never accepted.
+    </p>
+
+    <div class="cta-row">
+      <a class="btn btn-ghost" href="/reviewer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        Browse notes
+      </a>
+      <a class="btn btn-primary" href="/reviewer">
+        Open the reviewer
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <footer class="footer-bar">
+    <div>
+      <span class="stat"><span class="stat-dot"></span>100 gold notes · 26 specialties</span>
+      <span class="stat"><span class="stat-dot dim"></span>2-model verification</span>
+    </div>
+    <div>
+      SOW §3.6 · SOW §8 · Clinical Review MVP · 15 Oct 2026
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  const canvas = document.getElementById('scene');
+  if (!canvas) return;
+  const gl = canvas.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: false });
+  if (!gl) { canvas.style.background = 'radial-gradient(ellipse at 50% 30%, rgba(45,212,191,0.06), transparent 60%)'; return; }
+
+  const vertSrc = `attribute vec2 a_position; varying vec2 v_uv; void main(){ v_uv = a_position*0.5+0.5; gl_Position=vec4(a_position,0.0,1.0); }`;
+  const fragSrc = `
+    precision highp float;
+    varying vec2 v_uv;
+    uniform vec2 u_resolution;
+    uniform float u_time;
+    uniform float u_theme;
+    uniform vec2 u_pointer;
+
+    float hash(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+    float noise(vec2 p) {
+      vec2 i = floor(p); vec2 f = fract(p);
+      float a = hash(i), b = hash(i + vec2(1.0, 0.0)), c = hash(i + vec2(0.0, 1.0)), d = hash(i + vec2(1.0, 1.0));
+      vec2 u = f * f * (3.0 - 2.0 * f);
+      return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+    }
+    float fbm(vec2 p) { float v = 0.0; float a = 0.5; for (int i = 0; i < 5; i++) { v += a * noise(p); p *= 2.02; a *= 0.5; } return v; }
+
+    void main() {
+      vec2 uv = v_uv;
+      vec2 p = (uv - 0.5) * vec2(u_resolution.x / u_resolution.y, 1.0);
+      vec2 pointerOffset = (u_pointer - 0.5) * 0.35;
+      float t = u_time * 0.06;
+      vec2 q = vec2(fbm(p * 1.6 + vec2(0.0, t * 0.9) + pointerOffset), fbm(p * 1.6 + vec2(t * 0.7, 0.0)));
+      vec2 r = vec2(fbm(p * 2.2 + 2.0 * q + vec2(1.7, 9.2) + t * 0.4), fbm(p * 2.2 + 2.0 * q + vec2(8.3, 2.8) + t * 0.5));
+      float f = fbm(p * 1.8 + 1.4 * r);
+      float band = smoothstep(0.32, 0.72, f + 0.25 * q.x + 0.15 * r.y);
+      float centreFalloff = 1.0 - smoothstep(0.35, 1.15, abs(p.y));
+      band *= centreFalloff;
+      float verticalFade = smoothstep(0.0, 0.35, uv.y) * (1.0 - smoothstep(0.65, 1.0, uv.y) * 0.6);
+      band *= verticalFade;
+      vec3 darkInk = vec3(0.945, 0.965, 1.0);
+      vec3 lightInk = vec3(0.04, 0.05, 0.07);
+      vec2 grad = vec2(fbm(p * 2.4 + 3.0 * r + vec2(0.0, t)) - f, fbm(p * 2.4 + 3.0 * q + vec2(t, 0.0)) - f);
+      float shading = clamp(0.5 + dot(grad, normalize(vec2(0.7, 0.9))) * 3.0, 0.0, 1.0);
+      vec3 lineColour = mix(darkInk, lightInk, u_theme);
+      vec3 glowColour = mix(vec3(0.176, 0.831, 0.749), vec3(0.051, 0.580, 0.533), u_theme);
+      float alpha = band * (0.35 + 0.55 * shading);
+      alpha *= 0.92;
+      float crest = smoothstep(0.78, 0.94, band);
+      vec3 colour = mix(lineColour, lineColour + glowColour * 0.35, crest);
+      float grain = (hash(uv * u_resolution + u_time) - 0.5) * 0.02;
+      colour += grain;
+      gl_FragColor = vec4(colour, alpha);
+    }
+  `;
+
+  function compile(type, source) { const sh = gl.createShader(type); gl.shaderSource(sh, source); gl.compileShader(sh); if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) { console.error(gl.getShaderInfoLog(sh)); return null; } return sh; }
+  const vs = compile(gl.VERTEX_SHADER, vertSrc);
+  const fs = compile(gl.FRAGMENT_SHADER, fragSrc);
+  if (!vs || !fs) { canvas.style.background = 'radial-gradient(ellipse at 50% 30%, rgba(45,212,191,0.06), transparent 60%)'; return; }
+  const prog = gl.createProgram(); gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+  gl.useProgram(prog);
+
+  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
+  const aPos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(aPos); gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uTheme = gl.getUniformLocation(prog, 'u_theme');
+  const uPointer = gl.getUniformLocation(prog, 'u_pointer');
+
+  let pointer = { x: 0.5, y: 0.5 };
+  let pointerTarget = { x: 0.5, y: 0.5 };
+  let theme = document.documentElement.dataset.theme === 'light' ? 1.0 : 0.0;
+
+  window.addEventListener('pointermove', (e) => {
+    pointerTarget.x = e.clientX / window.innerWidth;
+    pointerTarget.y = 1.0 - e.clientY / window.innerHeight;
+  });
+
+  const themeBtn = document.getElementById('theme-toggle');
+  if (themeBtn) {
+    themeBtn.addEventListener('click', () => {
+      const cur = document.documentElement.dataset.theme;
+      const next = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      theme = next === 'light' ? 1.0 : 0.0;
+      try { localStorage.setItem("theme", next); } catch (e) {}
+    });
+  }
+
+  function resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.floor(canvas.clientWidth * dpr);
+    const h = Math.floor(canvas.clientHeight * dpr);
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; gl.viewport(0, 0, w, h); }
+  }
+  window.addEventListener('resize', resize); resize();
+
+  let rafId = null; let start = performance.now(); let lastFrame = 0; const FRAME_INTERVAL = 1000 / 60;
+  function frame(now) {
+    rafId = requestAnimationFrame(frame);
+    if (document.hidden) return;
+    if (now - lastFrame < FRAME_INTERVAL) return;
+    lastFrame = now;
+    pointer.x += (pointerTarget.x - pointer.x) * 0.05;
+    pointer.y += (pointerTarget.y - pointer.y) * 0.05;
+    resize();
+    gl.useProgram(prog);
+    gl.uniform2f(uRes, canvas.width, canvas.height);
+    gl.uniform1f(uTime, (now - start) / 1000.0);
+    gl.uniform1f(uTheme, theme);
+    gl.uniform2f(uPointer, pointer.x, pointer.y);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+  }
+  rafId = requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>

@@ -1,2 +1,7 @@
+﻿[project]
+name = "clinical-note-extraction-agent"
+version = "0.1.0"
+requires-python = ">=3.11"
+
 [tool.vercel]
-entrypoint = "src.ui.app:app"
+entrypoint = "src/ui/app.py"

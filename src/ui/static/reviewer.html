@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reviewer · Clinical Extraction</title>
+
+<script>
+/* Apply stored theme before paint to avoid flash */
+(function () {
+  try {
+    var t = localStorage.getItem("theme");
+    if (t === "light" || t === "dark") {
+      document.documentElement.dataset.theme = t;
+    }
+  } catch (e) {}
+})();
+</script>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  --bg-base: #0a0d11;
+  --text-primary: #f1f5f9;
+  --text-secondary: #aab4c0;
+  --text-tertiary: #78828f;
+  --text-quaternary: #515a66;
+  --surface: rgba(255,255,255,0.025);
+  --surface-2: rgba(255,255,255,0.045);
+  --surface-hover: rgba(255,255,255,0.06);
+  --border-subtle: rgba(255,255,255,0.06);
+  --border: rgba(255,255,255,0.10);
+  --border-strong: rgba(255,255,255,0.16);
+  --accent: #2dd4bf;
+  --accent-soft: rgba(45,212,191,0.14);
+  --accent-faint: rgba(45,212,191,0.06);
+  --accent-glow: rgba(45,212,191,0.28);
+  --success: #4ade80; --success-soft: rgba(74,222,128,0.14);
+  --warning: #fbbf24; --warning-soft: rgba(251,191,36,0.14);
+  --danger:  #f87171; --danger-soft:  rgba(248,113,113,0.14);
+  --info:    #a78bfa; --info-soft:    rgba(167,139,250,0.14);
+  --highlight-accepted: rgba(74,222,128,0.16);
+  --highlight-accepted-border: #4ade80;
+  --highlight-flagged: rgba(251,191,36,0.18);
+  --highlight-flagged-border: #fbbf24;
+
+  --card-w: 420px;
+  --card-gap: 40px;
+}
+html[data-theme="light"] {
+  --bg-base: #fafaf9;
+  --text-primary: #0f1216;
+  --text-secondary: #494e57;
+  --text-tertiary: #7b8189;
+  --text-quaternary: #a4a9b0;
+  --surface: rgba(0,0,0,0.02);
+  --surface-2: rgba(0,0,0,0.04);
+  --surface-hover: rgba(0,0,0,0.05);
+  --border-subtle: rgba(0,0,0,0.06);
+  --border: rgba(0,0,0,0.10);
+  --border-strong: rgba(0,0,0,0.16);
+  --accent: #0d9488;
+  --accent-soft: #ccfbf1;
+  --accent-faint: #f0fdfa;
+  --accent-glow: rgba(13,148,136,0.22);
+  --success: #059669; --success-soft: #d1fae5;
+  --warning: #b45309; --warning-soft: #fef3c7;
+  --danger:  #dc2626; --danger-soft:  #fee2e2;
+  --info:    #6d28d9; --info-soft:    #ede9fe;
+  --highlight-accepted: rgba(5,150,105,0.14);
+  --highlight-accepted-border: #059669;
+  --highlight-flagged: rgba(180,83,9,0.16);
+  --highlight-flagged-border: #b45309;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: Inter, system-ui, sans-serif;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "cv02","cv03","cv04","cv11";
+  transition: background 240ms ease, color 240ms ease;
+}
+
+#scene { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; display: block; }
+.scene-vignette {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 30%, transparent 0%, transparent 42%, var(--bg-base) 115%),
+    linear-gradient(to bottom, transparent 0%, var(--bg-base) 97%);
+  opacity: 0.94;
+}
+
+.app { position: relative; z-index: 2; height: 100vh; display: grid; grid-template-rows: 64px 1fr; }
+
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: color-mix(in srgb, var(--bg-base) 55%, transparent);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+}
+.brand {
+  display: flex; align-items: center; gap: 12px;
+  font-weight: 600; letter-spacing: -0.02em; font-size: 15px;
+  color: inherit; text-decoration: none;
+}
+.brand-mark {
+  width: 32px; height: 32px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent) 0%, #0f766e 60%, #6d28d9 120%);
+  display: grid; place-items: center;
+  color: white; font-weight: 800; font-size: 13px;
+  letter-spacing: -0.03em;
+  box-shadow: 0 4px 20px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.25);
+}
+.brand-sub {
+  color: var(--text-tertiary); font-weight: 400; font-size: 13px;
+  margin-left: 6px; padding-left: 12px;
+  border-left: 1px solid var(--border-subtle);
+}
+.topbar-center { flex: 1; max-width: 520px; margin: 0 32px; position: relative; }
+.topbar-search {
+  width: 100%;
+  padding: 10px 14px 10px 38px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  color: var(--text-primary);
+  font-size: 13.5px; outline: none;
+  transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+.topbar-search::placeholder { color: var(--text-tertiary); }
+.topbar-search:focus {
+  border-color: var(--accent);
+  background: var(--surface-2);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.topbar-search-icon {
+  position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+  color: var(--text-tertiary); pointer-events: none;
+}
+.topbar-actions { display: flex; align-items: center; gap: 10px; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 18px; border-radius: 12px;
+  font-size: 13.5px; font-weight: 500; letter-spacing: -0.005em;
+  border: 1px solid transparent;
+  cursor: pointer; text-decoration: none;
+  transition: transform 120ms ease, background 160ms ease, border-color 160ms ease, box-shadow 200ms ease, color 160ms ease;
+  white-space: nowrap; font-family: inherit;
+}
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-ghost { background: transparent; border-color: var(--border-strong); color: var(--text-primary); }
+.btn-ghost:hover:not(:disabled) { background: var(--surface-hover); border-color: var(--text-tertiary); }
+.btn-primary {
+  background: var(--text-primary); color: var(--bg-base);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+}
+.btn-primary:hover:not(:disabled) { box-shadow: 0 6px 24px rgba(0,0,0,0.35); transform: translateY(-1px); }
+.btn-icon {
+  width: 40px; height: 40px; padding: 0; justify-content: center;
+  background: transparent; border-color: var(--border); color: var(--text-secondary); border-radius: 12px;
+}
+.btn-icon:hover:not(:disabled) { background: var(--surface-hover); color: var(--text-primary); }
+
+.cache-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px; border-radius: 999px;
+  font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: -0.01em;
+  color: var(--text-secondary); background: var(--surface); border: 1px solid var(--border);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  transition: color 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+.cache-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-quaternary); transition: background 160ms ease, box-shadow 160ms ease; }
+.cache-pill.active { color: var(--success); background: var(--success-soft); border-color: transparent; }
+.cache-pill.active .cache-dot { background: var(--success); box-shadow: 0 0 0 3px color-mix(in srgb, var(--success) 22%, transparent); }
+.cache-pill.inactive { color: var(--danger); background: var(--danger-soft); border-color: transparent; }
+.cache-pill.inactive .cache-dot { background: var(--danger); }
+
+.main { overflow: hidden; display: grid; }
+.view { grid-area: 1/1; display: none; height: 100%; min-height: 0; }
+.view.active { display: grid; }
+
+/* ============ Carousel ============ */
+.view-carousel {
+  grid-template-rows: 1fr auto;
+  padding: 24px 0 20px 0;
+  gap: 20px;
+  overflow: hidden;
+  position: relative;
+}
+.carousel {
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
+.carousel-scroll {
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  display: flex;
+  align-items: center;
+  padding: 0 calc(50% - var(--card-w) / 2);
+  gap: var(--card-gap);
+}
+.carousel-scroll::-webkit-scrollbar { display: none; }
+
+.note-card {
+  flex: 0 0 var(--card-w);
+  height: 100%;
+  max-height: 520px;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg-base) 60%, transparent);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  padding: 32px;
+  display: flex; flex-direction: column; gap: 20px;
+  cursor: pointer;
+  scroll-snap-align: center;
+  transition:
+    border-color 260ms ease,
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 320ms ease,
+    opacity 260ms ease,
+    background 260ms ease;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.28);
+  opacity: 0.32;
+  transform: scale(0.92);
+  font-family: inherit; color: inherit;
+  overflow: hidden;
+}
+html[data-theme="light"] .note-card {
+  background: color-mix(in srgb, white 72%, transparent);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+}
+.note-card.active {
+  opacity: 1;
+  transform: scale(1);
+  border-color: var(--accent);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.35), 0 0 0 1px var(--accent);
+}
+html[data-theme="light"] .note-card.active {
+  box-shadow: 0 24px 80px rgba(0,0,0,0.10), 0 0 0 1px var(--accent);
+}
+.note-card:hover:not(.active) {
+  opacity: 0.72;
+  border-color: var(--border-strong);
+  transform: scale(0.94) translateY(-4px);
+  box-shadow: 0 28px 70px rgba(0,0,0,0.4);
+}
+html[data-theme="light"] .note-card:hover:not(.active) {
+  box-shadow: 0 28px 70px rgba(0,0,0,0.12);
+}
+.note-card.active:hover {
+  transform: scale(1.01) translateY(-2px);
+  box-shadow: 0 30px 90px rgba(0,0,0,0.4), 0 0 0 1px var(--accent), 0 0 40px var(--accent-glow);
+}
+
+.note-card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.note-card-status {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 12px 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 11.5px; font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: -0.005em;
+}
+.note-card-status .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--text-quaternary);
+  transition: background 200ms ease, box-shadow 200ms ease;
+}
+.note-card-status.success { color: var(--success); border-color: color-mix(in srgb, var(--success) 40%, transparent); }
+.note-card-status.success .dot { background: var(--success); box-shadow: 0 0 0 3px var(--success-soft); }
+.note-card-status.warning { color: var(--warning); border-color: color-mix(in srgb, var(--warning) 40%, transparent); }
+.note-card-status.warning .dot { background: var(--warning); box-shadow: 0 0 0 3px var(--warning-soft); }
+.note-card-status.danger { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 40%, transparent); }
+.note-card-status.danger .dot { background: var(--danger); box-shadow: 0 0 0 3px var(--danger-soft); }
+.note-card-index {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  color: var(--text-tertiary);
+  letter-spacing: -0.01em;
+}
+.note-card-title {
+  font-size: 40px;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+.note-card-title em {
+  font-style: italic; font-weight: 400;
+  font-family: Georgia, 'Times New Roman', serif;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+  display: block;
+  font-size: 0.72em;
+  margin-top: 4px;
+}
+
+.note-card-meta {
+  font-size: 13px; color: var(--text-secondary);
+  line-height: 1.6; letter-spacing: -0.005em;
+  max-height: calc(1.6em * 4);
+  overflow: hidden;
+}
+
+.note-card-preview {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; line-height: 1.7;
+  color: var(--text-tertiary);
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  flex: 1;
+  overflow: hidden;
+  word-break: break-word;
+}
+.note-card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+}
+.note-card-footer .pill-small {
+  font-size: 11px; color: var(--text-tertiary);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.carousel-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg-base) 70%, transparent);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  color: var(--text-primary);
+  display: grid; place-items: center;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease, opacity 200ms ease;
+  z-index: 5;
+}
+.carousel-nav:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--bg-base) 90%, transparent);
+  border-color: var(--border-strong);
+  transform: translateY(-50%) scale(1.08);
+}
+.carousel-nav:active:not(:disabled) {
+  transform: translateY(-50%) scale(0.96);
+}
+.carousel-nav:disabled { opacity: 0.3; cursor: not-allowed; }
+.carousel-nav.prev { left: 24px; }
+.carousel-nav.next { right: 24px; }
+
+.carousel-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px;
+}
+.carousel-dots { display: flex; align-items: center; gap: 6px; }
+.carousel-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--border-strong);
+  transition: background 160ms ease, width 160ms ease;
+  cursor: pointer; border: none; padding: 0;
+}
+.carousel-dot.active { background: var(--accent); width: 24px; border-radius: 3px; }
+.carousel-hint {
+  font-size: 12px; color: var(--text-tertiary);
+  display: inline-flex; align-items: center; gap: 10px;
+  letter-spacing: -0.005em;
+}
+.carousel-hint kbd {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px; padding: 2px 6px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+}
+
+/* Reviewer switch-note buttons */
+.pane-nav-btn {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  display: grid; place-items: center;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 120ms ease;
+  font-family: inherit;
+}
+.pane-nav-btn:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+.pane-nav-btn:active:not(:disabled) { transform: scale(0.94); }
+.pane-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* ============ Reviewer ============ */
+.view-reviewer {
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 20px 32px 32px 32px;
+  overflow: hidden;
+}
+.pane {
+  display: flex; flex-direction: column;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg-base) 55%, transparent);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  overflow: hidden; min-height: 0;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.22);
+  animation: fadeUp 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+html[data-theme="light"] .pane {
+  background: color-mix(in srgb, white 72%, transparent);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+}
+.pane-scroll { flex: 1; overflow-y: auto; min-height: 0; }
+.pane-scroll::-webkit-scrollbar { width: 8px; }
+.pane-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.pane-scroll::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
+
+.reviewer-strip {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+.back-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px; border-radius: 10px;
+  font-size: 12.5px; font-weight: 500;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+.back-btn:hover { background: var(--surface-hover); color: var(--text-primary); border-color: var(--border-strong); }
+
+.note-hero {
+  padding: 28px 32px 22px 32px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.note-hero-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  font-size: 12px; font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  letter-spacing: -0.005em;
+}
+.note-hero-chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+.note-hero-chip.success { color: var(--success); border-color: color-mix(in srgb, var(--success) 40%, transparent); }
+.note-hero-chip.success .dot { background: var(--success); box-shadow: 0 0 0 3px var(--success-soft); }
+.note-hero-chip.warning { color: var(--warning); border-color: color-mix(in srgb, var(--warning) 40%, transparent); }
+.note-hero-chip.warning .dot { background: var(--warning); box-shadow: 0 0 0 3px var(--warning-soft); }
+.note-hero-chip.danger { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 40%, transparent); }
+.note-hero-chip.danger .dot { background: var(--danger); box-shadow: 0 0 0 3px var(--danger-soft); }
+
+.note-hero-title {
+  font-size: clamp(26px, 2.6vw, 36px);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 10px 0;
+}
+.note-hero-title em {
+  font-style: italic; font-weight: 400;
+  font-family: Georgia, 'Times New Roman', serif;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+  display: block;
+  font-size: 0.62em;
+  margin-top: 6px;
+}
+.note-hero-meta { font-size: 12.5px; color: var(--text-tertiary); letter-spacing: -0.005em; }
+
+.note-text-wrap { padding: 20px 24px; }
+.note-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px; line-height: 1.85;
+  white-space: pre-wrap; word-break: break-word;
+  color: var(--text-secondary);
+  padding: 24px; border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+}
+
+mark {
+  background: transparent; color: inherit;
+  padding: 1px 3px; margin: 0 1px; border-radius: 4px;
+  cursor: pointer; position: relative;
+  transition: background 120ms ease, box-shadow 120ms ease;
+  box-shadow: inset 0 -2px 0 0 transparent;
+}
+mark.accepted { background: var(--highlight-accepted); box-shadow: inset 0 -2px 0 0 var(--highlight-accepted-border); }
+mark.flagged { background: var(--highlight-flagged); box-shadow: inset 0 -2px 0 0 var(--highlight-flagged-border); }
+mark:hover, mark.hover { background: var(--accent-soft); box-shadow: inset 0 -2px 0 0 var(--accent), 0 0 0 2px var(--accent-soft); z-index: 1; }
+mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 11px; padding-left: 2px; letter-spacing: -1px; }
+
+.advice-card {
+  margin: 4px 24px 24px 24px;
+  border-radius: 18px;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  overflow: hidden; position: relative;
+  animation: fadeUp 600ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both;
+}
+.advice-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); }
+.advice-card.state-success::before { background: var(--success); }
+.advice-card.state-warning::before { background: var(--warning); }
+.advice-card.state-danger::before  { background: var(--danger); }
+.advice-inner { padding: 20px 24px 16px 28px; display: flex; align-items: flex-start; gap: 16px; }
+.advice-icon {
+  width: 44px; height: 44px; border-radius: 14px;
+  display: grid; place-items: center;
+  background: var(--accent-soft); color: var(--accent); flex-shrink: 0;
+}
+.advice-card.state-success .advice-icon { background: var(--success-soft); color: var(--success); }
+.advice-card.state-warning .advice-icon { background: var(--warning-soft); color: var(--warning); }
+.advice-card.state-danger .advice-icon  { background: var(--danger-soft);  color: var(--danger); }
+.advice-body { flex: 1; min-width: 0; }
+.advice-title { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary); margin-bottom: 4px; }
+.advice-sub { font-size: 12.5px; color: var(--text-secondary); font-family: 'JetBrains Mono', monospace; letter-spacing: -0.005em; }
+.advice-recs { padding: 4px 24px 20px 28px; display: flex; flex-direction: column; gap: 8px; }
+.advice-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 14px; border-radius: 12px;
+  font-size: 12.5px; line-height: 1.55;
+  background: var(--surface); color: var(--text-secondary);
+  border-left: 2px solid var(--border-strong);
+}
+.advice-item .glyph { flex-shrink: 0; font-weight: 700; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.2; color: var(--text-tertiary); }
+.advice-item.tip { border-left-color: var(--accent); background: var(--accent-faint); }
+.advice-item.tip .glyph { color: var(--accent); }
+.advice-item.warning { border-left-color: var(--warning); background: var(--warning-soft); color: var(--warning); }
+.advice-item.warning .glyph { color: var(--warning); }
+.advice-item.danger { border-left-color: var(--danger); background: var(--danger-soft); color: var(--danger); }
+.advice-item.danger .glyph { color: var(--danger); }
+.advice-item.success { border-left-color: var(--success); background: var(--success-soft); color: var(--success); }
+.advice-item.success .glyph { color: var(--success); }
+
+.our-recs-wrap { border-top: 1px solid var(--border-subtle); }
+.our-recs-header { padding: 18px 24px 10px 28px; display: flex; align-items: center; justify-content: space-between; }
+.our-recs-title {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-secondary);
+}
+.our-recs-title::before {
+  content: ""; width: 14px; height: 14px; border-radius: 5px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--info) 100%);
+  flex-shrink: 0;
+}
+.our-recs-badge {
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 999px;
+  background: var(--accent-soft); color: var(--accent);
+}
+.our-recs-disclaimer {
+  padding: 0 24px 14px 28px;
+  font-size: 12px; font-style: italic;
+  color: var(--text-tertiary); line-height: 1.55;
+}
+.our-recs-list { padding: 0 24px 22px 28px; display: flex; flex-direction: column; gap: 12px; }
+.our-recs-condition {
+  border-left: 2px solid var(--accent);
+  padding: 12px 16px; background: var(--accent-faint);
+  border-radius: 12px;
+}
+.our-recs-condition-name {
+  font-size: 13px; font-weight: 700; color: var(--accent);
+  text-transform: capitalize; margin-bottom: 8px; letter-spacing: -0.005em;
+}
+.our-recs-tip {
+  font-size: 12.5px; color: var(--text-secondary);
+  line-height: 1.6; padding-left: 16px; position: relative; margin-top: 4px;
+}
+.our-recs-tip::before { content: "•"; position: absolute; left: 3px; color: var(--accent); font-weight: 700; }
+.our-recs-unavailable {
+  padding: 0 24px 22px 28px;
+  font-size: 12.5px; color: var(--text-tertiary); font-style: italic;
+  line-height: 1.55;
+}
+
+.results-card { border-bottom: 1px solid var(--border-subtle); }
+.results-card:last-child { border-bottom: none; }
+.results-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.results-title {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-secondary);
+}
+.results-title .count {
+  font-size: 10.5px; font-weight: 700;
+  padding: 2px 8px; border-radius: 999px;
+  background: var(--surface); color: var(--text-tertiary);
+  letter-spacing: 0; font-variant-numeric: tabular-nums;
+}
+.item-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.item-table thead th {
+  text-align: left; font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  padding: 12px 20px;
+  background: color-mix(in srgb, var(--bg-base) 75%, transparent);
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky; top: 0;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  z-index: 1;
+}
+.item-table tbody tr { border-bottom: 1px solid var(--border-subtle); transition: background 120ms ease; }
+.item-table tbody tr:last-child { border-bottom: none; }
+.item-table tbody tr:hover, .item-table tbody tr.hover { background: var(--surface-2); }
+.item-table td { padding: 14px 20px; vertical-align: top; overflow-wrap: anywhere; }
+.cell-id { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-tertiary); font-weight: 500; white-space: nowrap; }
+.cell-name { font-weight: 500; color: var(--text-primary); margin-bottom: 4px; letter-spacing: -0.005em; }
+.cell-sub { font-size: 11.5px; color: var(--text-tertiary); }
+.cell-reason { font-size: 11.5px; color: var(--text-tertiary); font-style: italic; line-height: 1.55; }
+
+.type-badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 8px;
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap;
+}
+.type-badge.diagnosis { background: var(--accent-soft);   color: var(--accent); }
+.type-badge.medication { background: var(--success-soft); color: var(--success); }
+.type-badge.procedure  { background: var(--warning-soft); color: var(--warning); }
+.type-badge.allergy    { background: var(--info-soft);    color: var(--info); }
+.type-badge.vital      { background: var(--danger-soft);  color: var(--danger); }
+
+.status-chip {
+  display: inline-block; font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px; font-weight: 500;
+  padding: 2px 8px; border-radius: 6px;
+  background: var(--surface); color: var(--text-secondary);
+}
+.status-chip.active { background: var(--accent-soft); color: var(--accent); }
+.status-chip.historical { background: var(--surface); color: var(--text-tertiary); }
+.status-chip.ruled_out { background: var(--danger-soft); color: var(--danger); }
+.status-chip.suspected { background: var(--warning-soft); color: var(--warning); }
+
+.icd-list { margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+.icd-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 5px 10px; border-radius: 8px;
+  background: var(--surface); font-family: 'JetBrains Mono', monospace; font-size: 11px;
+}
+.icd-item .code { font-weight: 700; color: var(--text-primary); flex-shrink: 0; letter-spacing: -0.02em; }
+.icd-item .desc { color: var(--text-tertiary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; flex: 1; }
+
+.flag-chip {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 8px;
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
+}
+.flag-chip.contradiction { background: var(--danger-soft);  color: var(--danger); }
+.flag-chip.status        { background: var(--warning-soft); color: var(--warning); }
+.flag-chip.rejected      { background: var(--warning-soft); color: var(--warning); }
+.flag-chip.missing       { background: var(--surface);      color: var(--text-tertiary); }
+.flag-chip.unavailable   { background: var(--danger-soft);  color: var(--danger); }
+.flag-chip.other         { background: var(--surface);      color: var(--text-secondary); }
+
+.suggestion { font-size: 11.5px; color: var(--accent); margin-top: 6px; line-height: 1.55; font-weight: 500; }
+.suggestion::before { content: "→ "; font-weight: 700; }
+
+.row-actions { display: flex; gap: 6px; justify-content: flex-end; }
+.row-actions .btn {
+  width: 32px; height: 32px; padding: 0; justify-content: center;
+  font-size: 13px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary);
+}
+.row-actions .btn:hover:not(:disabled) { background: var(--surface-2); color: var(--text-primary); }
+.btn.accept-on { background: var(--success-soft); color: var(--success); border-color: transparent; }
+.btn.reject-on { background: var(--danger-soft); color: var(--danger); border-color: transparent; }
+
+.trace { padding: 18px 22px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; line-height: 1.7; }
+.trace-line { display: grid; grid-template-columns: 28px 18px 1fr; gap: 10px; padding: 4px 0; align-items: start; }
+.trace-line .idx { text-align: right; color: var(--text-quaternary); font-size: 10.5px; font-weight: 500; padding-top: 3px; user-select: none; }
+.trace-line .dot-cell { position: relative; align-self: stretch; min-height: 20px; }
+.trace-line .dot-cell::before {
+  content: ""; position: absolute; left: 50%; top: 0; bottom: 0;
+  width: 1px; background: var(--border-subtle); transform: translateX(-50%);
+}
+.trace-line:first-child .dot-cell::before { top: 12px; }
+.trace-line:last-child  .dot-cell::before { bottom: calc(100% - 14px); }
+.trace-line .dot-cell::after {
+  content: ""; position: absolute; left: 50%; top: 6px;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--bg-base); border: 2px solid var(--border-strong);
+  transform: translateX(-50%); z-index: 1;
+}
+.trace-line.emphasis .dot-cell::after { border-color: var(--accent); background: var(--accent); }
+.trace-line.warn     .dot-cell::after { border-color: var(--warning); background: var(--warning); }
+.trace-line.error    .dot-cell::after { border-color: var(--danger); background: var(--danger); }
+.trace-line .msg { color: var(--text-secondary); padding-top: 1px; overflow-wrap: anywhere; }
+
+.escalated-banner {
+  display: none; align-items: center; gap: 12px;
+  padding: 12px 24px; font-size: 12.5px; font-weight: 600;
+  background: var(--danger-soft); color: var(--danger);
+  border-bottom: 1px solid var(--danger); flex-shrink: 0;
+}
+.escalated-banner.show { display: flex; }
+
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px 40px; text-align: center; gap: 14px;
+  color: var(--text-tertiary); height: 100%;
+}
+.empty-icon {
+  width: 68px; height: 68px; border-radius: 20px;
+  background: var(--surface); border: 1px solid var(--border);
+  display: grid; place-items: center; color: var(--text-tertiary);
+}
+.empty-title { font-size: 15px; font-weight: 600; color: var(--text-secondary); letter-spacing: -0.01em; }
+.empty-text { font-size: 12.5px; max-width: 320px; line-height: 1.6; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid var(--border); border-top-color: var(--accent);
+  animation: spin 0.7s linear infinite; display: inline-block;
+}
+
+@media (max-width: 1100px) {
+  .view-reviewer { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+}
+@media (max-width: 900px) {
+  .topbar-center { display: none; }
+  .topbar { padding: 0 16px; }
+  .view-carousel { padding: 16px 0; }
+  :root { --card-w: 320px; --card-gap: 24px; }
+  .carousel-nav.prev { left: 8px; }
+  .carousel-nav.next { right: 8px; }
+  .carousel-footer { padding: 0 16px; }
+  .view-reviewer { padding: 12px 16px 20px; gap: 12px; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="scene"></canvas>
+<div class="scene-vignette"></div>
+
+<div class="app">
+
+  <header class="topbar">
+    <a href="/" class="brand">
+      <div class="brand-mark">CX</div>
+      Clinical Extraction
+      <span class="brand-sub">Mirai Labs</span>
+    </a>
+
+    <div class="topbar-center">
+      <span class="topbar-search-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </span>
+      <input id="search-input" class="topbar-search" placeholder="Search notes…" />
+    </div>
+
+    <div class="topbar-actions">
+      <span class="cache-pill" id="cache-pill" title="Redis result-cache hit rate this session">
+        <span class="cache-dot"></span>
+        <span id="cache-text">cache —</span>
+      </span>
+      <button class="btn btn-icon" id="theme-toggle" title="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <button class="btn btn-ghost" id="export-btn" disabled>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Export
+      </button>
+      <button class="btn btn-primary" id="run-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
+        Run pipeline
+      </button>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <section class="view view-carousel active" id="view-carousel">
+      <div class="carousel">
+        <button class="carousel-nav prev" id="carousel-prev" aria-label="Previous note">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </button>
+
+        <div class="carousel-scroll" id="carousel-track"></div>
+
+        <button class="carousel-nav next" id="carousel-next" aria-label="Next note">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="carousel-footer">
+        <div class="carousel-dots" id="carousel-dots"></div>
+        <div class="carousel-hint">
+          <kbd>←</kbd><kbd>→</kbd> navigate
+          <kbd>⌘K</kbd> search
+          <kbd>Enter</kbd> open
+        </div>
+      </div>
+    </section>
+
+    <section class="view view-reviewer" id="view-reviewer">
+      <div class="pane">
+        <div class="reviewer-strip">
+          <button class="back-btn" id="back-to-carousel">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+            All notes
+          </button>
+          <div class="carousel-hint">
+            <button class="pane-nav-btn" id="pane-prev" aria-label="Previous note">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+              </svg>
+            </button>
+            <button class="pane-nav-btn" id="pane-next" aria-label="Next note">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+            <span>switch note</span>
+          </div>
+        </div>
+
+        <div class="escalated-banner" id="escalated-banner">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <span>Note escalated — flagged fraction exceeds 40%. Review every item manually.</span>
+        </div>
+
+        <div class="pane-scroll" id="left-pane-scroll">
+          <div class="note-hero">
+            <div class="note-hero-chip" id="note-hero-chip">
+              <span class="dot"></span>
+              <span id="note-hero-chip-text">Ready to review</span>
+            </div>
+            <h1 class="note-hero-title" id="note-hero-title">
+              Clinical note
+              <em id="note-hero-id">—</em>
+            </h1>
+            <div class="note-hero-meta" id="note-hero-meta">Run the pipeline to see the extraction</div>
+          </div>
+
+          <div class="note-text-wrap">
+            <div class="note-text" id="note-text">Select a note and click "Run pipeline".</div>
+          </div>
+
+          <div class="advice-card" id="advice-card" style="display:none;">
+            <div class="advice-inner">
+              <div class="advice-icon" id="advice-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+              </div>
+              <div class="advice-body">
+                <div class="advice-title" id="advice-title">Ready to review</div>
+                <div class="advice-sub" id="advice-sub"></div>
+              </div>
+            </div>
+            <div class="advice-recs" id="advice-recs"></div>
+
+            <div class="our-recs-wrap" id="our-recs-wrap">
+              <div class="our-recs-header">
+                <span class="our-recs-title">Our recommendations</span>
+                <span class="our-recs-badge">AI-generated</span>
+              </div>
+              <div class="our-recs-disclaimer" id="our-recs-disclaimer">
+                General lifestyle and preventive guidance generated by our system.
+                Not extracted from this note and not a substitute for clinical judgement.
+              </div>
+              <div class="our-recs-list" id="our-recs-list"></div>
+              <div class="our-recs-unavailable" id="our-recs-unavailable" style="display:none;">
+                Recommendations are temporarily unavailable — retry in a moment, or continue without them.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane">
+        <div id="results-empty" class="pane-scroll">
+          <div class="empty-state">
+            <div class="empty-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+            <div class="empty-title">No results yet</div>
+            <div class="empty-text">Run the pipeline to see accepted items, flagged items, and the agent trace.</div>
+          </div>
+        </div>
+
+        <div id="results-view" class="pane-scroll" style="display:none;">
+          <div class="results-card">
+            <div class="results-header">
+              <div class="results-title">
+                Accepted
+                <span class="count" id="accepted-count">0</span>
+              </div>
+              <div style="font-size:11px;color:var(--text-tertiary);" id="accepted-summary"></div>
+            </div>
+            <table class="item-table">
+              <thead>
+                <tr><th style="width:52px;">ID</th><th style="width:110px;">Type</th><th>Item</th><th style="width:88px;"></th></tr>
+              </thead>
+              <tbody id="accepted-tbody"></tbody>
+            </table>
+          </div>
+
+          <div class="results-card">
+            <div class="results-header">
+              <div class="results-title">
+                Flagged
+                <span class="count" id="flagged-count">0</span>
+              </div>
+            </div>
+            <table class="item-table">
+              <thead>
+                <tr><th style="width:52px;">ID</th><th style="width:110px;">Type</th><th>Item</th><th style="width:260px;">Reason</th></tr>
+              </thead>
+              <tbody id="flagged-tbody"></tbody>
+            </table>
+          </div>
+
+          <div class="results-card">
+            <div class="results-header">
+              <div class="results-title">Agent trace</div>
+              <div style="font-size:11px;color:var(--text-tertiary);" id="trace-count"></div>
+            </div>
+            <div class="trace" id="trace-body"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function () {
+  const canvas = document.getElementById('scene');
+  if (!canvas) return;
+  const gl = canvas.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: false });
+  if (!gl) { canvas.style.background = 'radial-gradient(ellipse at 50% 30%, rgba(45,212,191,0.05), transparent 60%)'; return; }
+  const vertSrc = `attribute vec2 a_position; varying vec2 v_uv; void main(){ v_uv = a_position*0.5+0.5; gl_Position=vec4(a_position,0.0,1.0); }`;
+  const fragSrc = `
+    precision highp float;
+    varying vec2 v_uv;
+    uniform vec2 u_resolution;
+    uniform float u_time;
+    uniform float u_theme;
+    float hash(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
+    float noise(vec2 p){vec2 i=floor(p),f=fract(p);float a=hash(i),b=hash(i+vec2(1.0,0.0));float c=hash(i+vec2(0.0,1.0)),d=hash(i+vec2(1.0,1.0));vec2 u=f*f*(3.0-2.0*f);return mix(a,b,u.x)+(c-a)*u.y*(1.0-u.x)+(d-b)*u.x*u.y;}
+    float fbm(vec2 p){float v=0.0,a=0.5;for(int i=0;i<5;i++){v+=a*noise(p);p*=2.02;a*=0.5;}return v;}
+    void main(){
+      vec2 uv=v_uv;
+      vec2 p=(uv-0.5)*vec2(u_resolution.x/u_resolution.y,1.0);
+      float t=u_time*0.055;
+      vec2 q=vec2(fbm(p*1.15+vec2(0.0,t*0.75)),fbm(p*1.15+vec2(t*0.55,0.0)));
+      vec2 r=vec2(fbm(p*1.6+2.0*q+vec2(1.7,9.2)+t*0.35),fbm(p*1.6+2.0*q+vec2(8.3,2.8)+t*0.4));
+      float f=fbm(p*1.3+1.2*r);
+      float band=smoothstep(0.38,0.85,f+0.20*q.x);
+      float centreFalloff=1.0-smoothstep(0.5,1.35,abs(p.y));
+      band*=centreFalloff;
+      float verticalFade=smoothstep(-0.1,0.5,uv.y);
+      band*=verticalFade;
+      vec3 darkInk=vec3(0.86,0.90,0.95);
+      vec3 lightInk=vec3(0.08,0.10,0.13);
+      vec2 grad=vec2(fbm(p*1.8+2.5*r+vec2(0.0,t))-f,fbm(p*1.8+2.5*q+vec2(t,0.0))-f);
+      float shading=clamp(0.5+dot(grad,normalize(vec2(0.65,0.85)))*2.6,0.0,1.0);
+      vec3 colour=mix(darkInk,lightInk,u_theme);
+      float crest=smoothstep(0.85,0.99,band);
+      vec3 accent=mix(vec3(0.176,0.831,0.749),vec3(0.051,0.580,0.533),u_theme);
+      colour=mix(colour,colour+accent*0.22,crest);
+      float alpha=band*(0.30+0.32*shading);
+      colour+=(hash(uv*u_resolution+u_time)-0.5)*0.015;
+      gl_FragColor=vec4(colour,alpha);
+    }
+  `;
+  function compile(type, src) { const sh = gl.createShader(type); gl.shaderSource(sh, src); gl.compileShader(sh); if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) { console.error(gl.getShaderInfoLog(sh)); return null; } return sh; }
+  const vs = compile(gl.VERTEX_SHADER, vertSrc); const fs = compile(gl.FRAGMENT_SHADER, fragSrc);
+  if (!vs || !fs) return;
+  const prog = gl.createProgram(); gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return; gl.useProgram(prog);
+  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]), gl.STATIC_DRAW);
+  const aPos = gl.getAttribLocation(prog, 'a_position'); gl.enableVertexAttribArray(aPos); gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+  const uRes = gl.getUniformLocation(prog, 'u_resolution'); const uTime = gl.getUniformLocation(prog, 'u_time'); const uTheme = gl.getUniformLocation(prog, 'u_theme');
+  let theme = document.documentElement.dataset.theme === 'light' ? 1.0 : 0.0;
+  const btn = document.getElementById('theme-toggle'); btn && btn.addEventListener('click', () => {
+    const cur = document.documentElement.dataset.theme; const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next; theme = next === 'light' ? 1.0 : 0.0;
+    try { localStorage.setItem("theme", next); } catch (e) {}
+  });
+  function resize() { const dpr = Math.min(window.devicePixelRatio || 1, 2); const w = Math.floor(canvas.clientWidth * dpr); const h = Math.floor(canvas.clientHeight * dpr); if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; gl.viewport(0, 0, w, h); } }
+  window.addEventListener('resize', resize); resize();
+  let start = performance.now(), last = 0; const FRAME = 1000 / 60;
+  function loop(now) {
+    requestAnimationFrame(loop); if (document.hidden) return; if (now - last < FRAME) return; last = now;
+    resize(); gl.useProgram(prog);
+    gl.uniform2f(uRes, canvas.width, canvas.height);
+    gl.uniform1f(uTime, (now - start) / 1000.0);
+    gl.uniform1f(uTheme, theme);
+    gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.TRIANGLES, 0, 6);
+  }
+  requestAnimationFrame(loop);
+})();
+
+const state = {
+  notes: [], filtered: [], index: 0, noteId: null,
+  noteText: "", summary: "",
+  accepted: [], flagged: [], trace: [], escalated: false, error: null,
+  advice: null, decisions: {}, runNotes: new Set(), searchQuery: "",
+  view: "carousel",
+  suppressScrollSync: false,
+};
+const $ = (id) => document.getElementById(id);
+const MAX_MARK_DISPLAY_LEN = 70;
+
+function escapeHtml(s) {
+  return (s ?? "").replace(/[&<>"']/g, (c) => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+function classifyFlagReason(reason) {
+  const r = (reason || "").toLowerCase();
+  if (r.includes("contradict"))  return { key: "contradiction", label: "contradiction" };
+  if (r.includes("status"))      return { key: "status", label: "status mismatch" };
+  if (r.includes("no verdict"))  return { key: "missing", label: "no verdict" };
+  if (r.includes("unavailable")) return { key: "unavailable", label: "verifier unavailable" };
+  if (r.includes("reject"))      return { key: "rejected", label: "verifier rejected" };
+  return { key: "other", label: "flagged" };
+}
+
+async function refreshCacheStats() {
+  try {
+    const res = await fetch("/api/cache/stats");
+    const data = await res.json();
+    const pill = $("cache-pill"), txt = $("cache-text");
+    if (!pill || !txt) return;
+    if (!data.redis_available) {
+      pill.classList.add("inactive"); pill.classList.remove("active");
+      txt.textContent = "cache off"; return;
+    }
+    pill.classList.add("active"); pill.classList.remove("inactive");
+    const pct = Math.round((data.hit_rate || 0) * 100);
+    const total = (data.hits || 0) + (data.misses || 0);
+    txt.textContent = total > 0 ? `cache ${pct}%` : "cache ready";
+  } catch (_) {}
+}
+
+async function loadNotes() {
+  try {
+    const res = await fetch("/api/notes");
+    const data = await res.json();
+    state.notes = data.notes || [];
+    applySearch();
+  } catch (e) {}
+}
+function applySearch() {
+  const q = state.searchQuery.toLowerCase();
+  state.filtered = state.notes.filter(n => !q || n.toLowerCase().includes(q));
+  state.index = 0;
+  state.noteId = state.filtered.length ? state.filtered[0] : null;
+  renderCarousel();
+}
+
+function renderCarousel() {
+  const track = $("carousel-track");
+  if (!track) return;
+  track.innerHTML = "";
+
+  if (!state.filtered.length) {
+    track.style.padding = "0";
+    track.innerHTML = `<div class="empty-state" style="min-height:400px; flex: 1 0 100%;"><div class="empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="empty-title">No matching notes</div><div class="empty-text">Try a different search term.</div></div>`;
+    updateDots(); return;
+  }
+
+  state.filtered.forEach((noteId, i) => {
+    const hasRun = state.runNotes.has(noteId);
+    const card = document.createElement("div");
+    card.className = "note-card" + (i === state.index ? " active" : "");
+    card.dataset.index = i;
+    card.dataset.id = noteId;
+
+    const status = hasRun
+      ? `<div class="note-card-status success"><span class="dot"></span>Reviewed</div>`
+      : `<div class="note-card-status"><span class="dot"></span>Not yet run</div>`;
+
+    card.innerHTML = `
+      <div class="note-card-top">
+        <span class="note-card-index">${String(i + 1).padStart(2, "0")} / ${String(state.filtered.length).padStart(2, "0")}</span>
+        ${status}
+      </div>
+      <h2 class="note-card-title">
+        Clinical note
+        <em>${escapeHtml(noteId)}</em>
+      </h2>
+      <div class="note-card-meta">
+        Extracted diagnoses, medications, procedures, allergies and vitals —
+        each with a character span proving where in the note it came from.
+      </div>
+      <div class="note-card-preview">Click to open this note and run the pipeline.</div>
+      <div class="note-card-footer">
+        <span class="pill-small">${hasRun ? "Reviewed this session" : "Awaiting extraction"}</span>
+        <span class="pill-small">→ open</span>
+      </div>
+    `;
+    card.addEventListener("click", () => {
+      if (i === state.index) {
+        openReviewer();
+        return;
+      }
+      state.index = i;
+      state.noteId = noteId;
+      scrollToIndex(i);
+    });
+    card.addEventListener("dblclick", () => {
+      state.index = i;
+      state.noteId = noteId;
+      scrollToIndex(i);
+      openReviewer();
+    });
+    track.appendChild(card);
+  });
+
+  updateNavButtons();
+  updateDots();
+  requestAnimationFrame(() => {
+    state.suppressScrollSync = true;
+    scrollToIndex(state.index, "auto");
+    setTimeout(() => { state.suppressScrollSync = false; }, 400);
+  });
+}
+
+function scrollToIndex(index, behavior = "smooth") {
+  const track = $("carousel-track");
+  if (!track) return;
+  const cards = track.querySelectorAll(".note-card");
+  const card = cards[index];
+  if (!card) return;
+  const targetLeft = card.offsetLeft - (track.clientWidth - card.offsetWidth) / 2;
+  try {
+    track.scrollTo({ left: targetLeft, behavior });
+  } catch {
+    track.scrollLeft = targetLeft;
+  }
+  cards.forEach((c, i) => c.classList.toggle("active", i === index));
+  updateNavButtons();
+  updateDots();
+}
+
+function onCarouselScroll() {
+  if (state.suppressScrollSync) return;
+  const track = $("carousel-track");
+  if (!track) return;
+  const cards = track.querySelectorAll(".note-card");
+  if (!cards.length) return;
+  const center = track.scrollLeft + track.clientWidth / 2;
+  let best = 0, bestDist = Infinity;
+  cards.forEach((c, i) => {
+    const cardCenter = c.offsetLeft + c.offsetWidth / 2;
+    const dist = Math.abs(cardCenter - center);
+    if (dist < bestDist) { bestDist = dist; best = i; }
+  });
+  if (best !== state.index) {
+    state.index = best;
+    state.noteId = state.filtered[best];
+    cards.forEach((c, i) => c.classList.toggle("active", i === best));
+    updateNavButtons();
+    updateDots();
+  }
+}
+
+function updateDots() {
+  const dots = $("carousel-dots");
+  if (!dots) return;
+  dots.innerHTML = "";
+  const n = state.filtered.length;
+  if (n <= 1) return;
+  if (n <= 12) {
+    for (let i = 0; i < n; i++) {
+      const b = document.createElement("button");
+      b.className = "carousel-dot" + (i === state.index ? " active" : "");
+      b.dataset.index = i;
+      b.addEventListener("click", () => {
+        state.index = i;
+        state.noteId = state.filtered[i];
+        scrollToIndex(i);
+      });
+      dots.appendChild(b);
+    }
+  } else {
+    dots.innerHTML = `<span style="font-size:11px;color:var(--text-tertiary);font-family:'JetBrains Mono',monospace;">${state.index + 1} of ${n}</span>`;
+  }
+}
+
+function updateNavButtons() {
+  const prev = $("carousel-prev"), next = $("carousel-next");
+  if (prev) prev.disabled = state.index <= 0;
+  if (next) next.disabled = state.index >= state.filtered.length - 1;
+
+  // Also update the reviewer-pane nav buttons.
+  const pp = $("pane-prev"), pn = $("pane-next");
+  if (pp) pp.disabled = state.index <= 0;
+  if (pn) pn.disabled = state.index >= state.filtered.length - 1;
+}
+
+// Carousel-view movement: advance index and slide the track.
+function moveCarousel(delta) {
+  const next = state.index + delta;
+  if (next < 0 || next >= state.filtered.length) return;
+  state.index = next;
+  state.noteId = state.filtered[next];
+  scrollToIndex(next);
+}
+
+// Reviewer-view movement: advance index, then load the new note into the panes.
+// Does NOT touch the carousel scroll (which isn't visible).
+function switchNoteInReviewer(delta) {
+  const next = state.index + delta;
+  if (next < 0 || next >= state.filtered.length) return;
+  state.index = next;
+  state.noteId = state.filtered[next];
+  updateNavButtons();
+  updateDots();
+  resetReviewerView();
+  fetchNote();
+}
+
+function openReviewer() {
+  state.view = "reviewer";
+  $("view-carousel").classList.remove("active");
+  $("view-reviewer").classList.add("active");
+  resetReviewerView();
+  fetchNote();
+  updateNavButtons();
+}
+function closeReviewer() {
+  state.view = "carousel";
+  $("view-reviewer").classList.remove("active");
+  $("view-carousel").classList.add("active");
+  requestAnimationFrame(() => {
+    state.suppressScrollSync = true;
+    scrollToIndex(state.index, "auto");
+    setTimeout(() => { state.suppressScrollSync = false; }, 100);
+  });
+}
+
+async function fetchNote() {
+  if (!state.noteId) return;
+  try {
+    const res = await fetch(`/api/notes/${state.noteId}`);
+    if (!res.ok) return;
+    const data = await res.json();
+    state.noteText = data.text || "";
+    $("note-text").textContent = state.noteText;
+    $("note-hero-id").textContent = state.noteId;
+    $("note-hero-meta").textContent = state.runNotes.has(state.noteId)
+      ? "Reviewed this session — results available on the right."
+      : "Click \"Run pipeline\" to extract and verify items from this note.";
+    $("note-hero-chip").className = "note-hero-chip";
+    $("note-hero-chip-text").textContent = state.runNotes.has(state.noteId)
+      ? "Reviewed" : "Ready to review";
+  } catch (e) {}
+}
+
+function resetReviewerView() {
+  state.accepted = []; state.flagged = []; state.trace = [];
+  state.escalated = false; state.error = null; state.advice = null;
+  $("results-empty").style.display = "";
+  $("results-view").style.display = "none";
+  $("advice-card").style.display = "none";
+  $("escalated-banner").classList.remove("show");
+}
+
+async function runPipeline() {
+  if (!state.noteId) return;
+  if (state.view !== "reviewer") openReviewer();
+  const noteId = state.noteId;
+  $("run-btn").disabled = true;
+  $("export-btn").disabled = true;
+  try {
+    const res = await fetch(`/api/notes/${noteId}/run`, { method: "POST" });
+    if (!res.ok) return;
+    const data = await res.json();
+    state.noteText = data.note_text;
+    state.summary = data.summary || "";
+    state.accepted = data.accepted || [];
+    state.flagged = data.flagged || [];
+    state.trace = data.trace || [];
+    state.escalated = !!data.escalated;
+    state.error = data.error;
+    state.advice = data.advice || null;
+    state.runNotes.add(noteId);
+    renderAll();
+    $("export-btn").disabled = false;
+    renderCarousel();
+    refreshCacheStats();
+  } catch (e) {}
+  finally { $("run-btn").disabled = false; }
+}
+
+function renderAdvice() {
+  const card = $("advice-card");
+  const title = $("advice-title"), sub = $("advice-sub"), icon = $("advice-icon"), recsEl = $("advice-recs");
+  if (!card || !recsEl) return;
+  card.style.display = "block";
+  card.classList.remove("state-success","state-warning","state-danger");
+  const byReason = { contradiction:0, status:0, missing:0, rejected:0, unavailable:0, other:0 };
+  for (const f of state.flagged) { const cls = classifyFlagReason(f.reason); byReason[cls.key] = (byReason[cls.key] || 0) + 1; }
+
+  let stateClass = "state-success", heading = "Ready to review", subline = state.summary || "";
+  let iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+  if (state.error) {
+    stateClass = "state-danger"; heading = "Pipeline error"; subline = String(state.error).slice(0, 120);
+    iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+  } else if (state.escalated) {
+    stateClass = "state-danger"; heading = "Escalated — manual review";
+    iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+  } else if (state.flagged.length > 0) {
+    stateClass = "state-warning"; heading = `${state.flagged.length} item${state.flagged.length > 1 ? "s" : ""} need your attention`;
+    iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+  } else heading = "All items accepted";
+
+  card.classList.add(stateClass);
+  title.textContent = heading; sub.textContent = subline; icon.innerHTML = iconSvg;
+
+  const recs = [];
+  if (state.error) recs.push({ kind:"danger", glyph:"!", text:"The pipeline did not complete. Re-run the pipeline for this note before reviewing." });
+  if (state.escalated) recs.push({ kind:"danger", glyph:"!", text:"More than 40% of items were flagged. Compare every item against the source note before accepting." });
+  if (byReason.contradiction > 0) recs.push({ kind:"danger", glyph:"!", text:`${byReason.contradiction} contradiction${byReason.contradiction > 1 ? "s" : ""} — the note contradicts itself.` });
+  if (byReason.status > 0) recs.push({ kind:"warning", glyph:"!", text:`${byReason.status} status mismatch${byReason.status > 1 ? "es" : ""} — check whether the item is active, historical, or ruled out.` });
+  if (byReason.unavailable > 0) recs.push({ kind:"warning", glyph:"!", text:`Verifier was unavailable for ${byReason.unavailable} item${byReason.unavailable > 1 ? "s" : ""}. Re-run before trusting the extraction.` });
+  if (byReason.missing > 0) recs.push({ kind:"warning", glyph:"!", text:`${byReason.missing} item${byReason.missing > 1 ? "s" : ""} have no verdict. Manually verify against the source note.` });
+  if (byReason.rejected > 0) recs.push({ kind:"warning", glyph:"!", text:`${byReason.rejected} item${byReason.rejected > 1 ? "s" : ""} rejected by the verifier — consider removing them.` });
+  if ((state.trace || []).some(l => l.toLowerCase().includes("missed item"))) recs.push({ kind:"warning", glyph:"!", text:"The verifier reported items the extractor missed. Consider a second pass." });
+  recs.push({ kind:"tip", glyph:"→", text:"Walk through each span before accepting. Hover a highlight to see the row; click to jump to it." });
+  recs.push({ kind:"tip", glyph:"→", text:"Spot-check the ICD candidates. Top-1 is often correct, but the coder decides." });
+  if (state.accepted.length > 0 && state.flagged.length === 0 && !state.escalated && !state.error) {
+    recs.push({ kind:"success", glyph:"✓", text:`All ${state.accepted.length} item${state.accepted.length > 1 ? "s" : ""} were accepted by both the extractor and the verifier. Ready to export.` });
+  }
+  recsEl.innerHTML = recs.map(r => `<div class="advice-item ${r.kind}"><span class="glyph">${escapeHtml(r.glyph)}</span><span>${escapeHtml(r.text)}</span></div>`).join("");
+}
+
+function renderOurRecommendations() {
+  const wrap = $("our-recs-wrap"), list = $("our-recs-list"), unavail = $("our-recs-unavailable");
+  if (!wrap || !list || !unavail) return;
+  wrap.style.display = "block";
+  const hasAdvice = state.advice && Array.isArray(state.advice.advice) && state.advice.advice.length > 0;
+  if (!hasAdvice) { list.innerHTML = ""; unavail.style.display = "block"; return; }
+  unavail.style.display = "none";
+  list.innerHTML = state.advice.advice.map(item => {
+    const cond = escapeHtml(item.condition || "");
+    const tips = (item.tips || []).map(t => `<div class="our-recs-tip">${escapeHtml(t)}</div>`).join("");
+    return `<div class="our-recs-condition"><div class="our-recs-condition-name">${cond}</div>${tips}</div>`;
+  }).join("");
+}
+
+function renderNoteHero() {
+  const chip = $("note-hero-chip"), chipText = $("note-hero-chip-text"), heroId = $("note-hero-id"), meta = $("note-hero-meta");
+  if (!chip || !chipText) return;
+  chip.className = "note-hero-chip";
+  let label = "Ready to review";
+  if (state.error) { chip.classList.add("danger"); label = "Pipeline error"; }
+  else if (state.escalated) { chip.classList.add("danger"); label = "Escalated · manual review"; }
+  else if (state.flagged.length > 0) { chip.classList.add("warning"); label = `${state.flagged.length} item${state.flagged.length > 1 ? "s" : ""} flagged`; }
+  else if (state.accepted.length > 0) { chip.classList.add("success"); label = "All items accepted"; }
+  chipText.textContent = label;
+  heroId.textContent = state.noteId || "—";
+  const counts = { diagnosis:0, medication:0, procedure:0, allergy:0, vital:0 };
+  for (const it of state.accepted) if (it.type in counts) counts[it.type]++;
+  const parts = [];
+  for (const k of Object.keys(counts)) { const n = counts[k]; if (n) parts.push(`${n} ${k}${n > 1 ? "s" : ""}`); }
+  meta.textContent = parts.length ? parts.join(" · ") : "Run the pipeline to extract and verify items from this note.";
+}
+
+function renderNote() {
+  const items = [
+    ...state.accepted.map(it => ({ id: it.id, kind: "accepted", type: it.type, text: it.text || "", span: it.span, reason: it.reason || "" })),
+    ...state.flagged.map(f => { const it = f.item || {}; return { id: f.id, kind: "flagged", type: it.type, text: it.text || "", span: it.span, reason: f.reason || "" }; }),
+  ].filter(it => Array.isArray(it.span) && it.span.length === 2 && it.span[0] < it.span[1]);
+  const raw = state.noteText;
+  let escaped = "";
+  const offsetMap = new Array(raw.length + 1);
+  for (let i = 0; i < raw.length; i++) { offsetMap[i] = escaped.length; escaped += escapeHtml(raw[i]); }
+  offsetMap[raw.length] = escaped.length;
+  items.sort((a, b) => b.span[0] - a.span[0]);
+  let html = escaped;
+  const seen = new Set();
+  for (const it of items) {
+    const key = `${it.span[0]}-${it.span[1]}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const s = offsetMap[it.span[0]], e = offsetMap[it.span[1]];
+    if (s == null || e == null || s >= e) continue;
+    let eDisplay = e, truncated = false;
+    if (e - s > MAX_MARK_DISPLAY_LEN) {
+      const slice = escaped.slice(s, s + MAX_MARK_DISPLAY_LEN);
+      const lastBreak = Math.max(slice.lastIndexOf(" "), slice.lastIndexOf("\n"), slice.lastIndexOf(","));
+      const cut = lastBreak > 30 ? s + lastBreak : s + MAX_MARK_DISPLAY_LEN;
+      eDisplay = cut; truncated = true;
+    }
+    const before = html.slice(0, s), mid = html.slice(s, eDisplay), after = html.slice(eDisplay);
+    const tooltip = `${it.type || "item"}: ${it.text}` + (it.reason ? ` — ${it.reason}` : "");
+    const cls = `mark ${it.kind}${truncated ? " truncated" : ""}`;
+    html = `${before}<mark class="${cls}" data-id="${escapeHtml(it.id)}" title="${escapeHtml(tooltip)}">${mid}</mark>${after}`;
+  }
+  $("note-text").innerHTML = html;
+  document.querySelectorAll("mark").forEach(el => {
+    el.addEventListener("mouseenter", () => highlightRow(el.dataset.id, true));
+    el.addEventListener("mouseleave", () => highlightRow(el.dataset.id, false));
+    el.addEventListener("click", () => scrollRowIntoView(el.dataset.id));
+  });
+}
+
+function highlightRow(id, on) {
+  document.querySelectorAll(`tr[data-id="${cssEscape(id)}"]`).forEach(row => row.classList.toggle("hover", on));
+}
+function scrollRowIntoView(id) {
+  const row = document.querySelector(`tr[data-id="${cssEscape(id)}"]`);
+  if (row) row.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+function cssEscape(s) { return String(s).replace(/["\\]/g, "\\$&"); }
+
+function renderAccepted() {
+  $("accepted-count").textContent = state.accepted.length;
+  const counts = {};
+  for (const it of state.accepted) counts[it.type] = (counts[it.type] || 0) + 1;
+  $("accepted-summary").textContent = Object.entries(counts).map(([k, v]) => `${v} ${k}${v > 1 ? "s" : ""}`).join(" · ");
+  const tbody = $("accepted-tbody");
+  if (!state.accepted.length) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--text-tertiary);padding:32px;font-style:italic;font-size:12px;">No accepted items.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = state.accepted.map(it => {
+    const id = it.id, decision = state.decisions[id];
+    const icdHtml = (it.icd_candidates && Array.isArray(it.icd_candidates) && it.icd_candidates.length)
+      ? `<div class="icd-list">${it.icd_candidates.slice(0, 3).map(c =>
+          `<div class="icd-item"><span class="code">${escapeHtml(c.code || "")}</span><span class="desc">${escapeHtml((c.description || "").slice(0, 90))}</span></div>`
+        ).join("")}</div>` : "";
+    const statusClass = it.status ? String(it.status).replace(/[^a-z_]/gi, "") : "";
+    const statusHtml = it.status ? `<span class="status-chip ${statusClass}">${escapeHtml(it.status)}</span>` : "";
+    return `<tr data-id="${escapeHtml(id)}">
+      <td class="cell-id">${escapeHtml(id)}</td>
+      <td><span class="type-badge ${escapeHtml(it.type || "")}">${escapeHtml(it.type || "")}</span></td>
+      <td><div class="cell-name">${escapeHtml(it.text || "")}</div>${statusHtml ? `<div class="cell-sub">${statusHtml}</div>` : ""}${icdHtml}</td>
+      <td><div class="row-actions">
+        <button class="btn ${decision === "accepted" ? "accept-on" : ""}" data-decide="accepted" data-id="${escapeHtml(id)}">✓</button>
+        <button class="btn ${decision === "rejected" ? "reject-on" : ""}" data-decide="rejected" data-id="${escapeHtml(id)}">✗</button>
+      </div></td>
+    </tr>`;
+  }).join("");
+  document.querySelectorAll('[data-decide]').forEach(btn => {
+    btn.addEventListener("click", () => decide(btn.dataset.id, btn.dataset.decide));
+  });
+  attachRowHover();
+}
+
+function renderFlagged() {
+  $("flagged-count").textContent = state.flagged.length;
+  const tbody = $("flagged-tbody");
+  if (!state.flagged.length) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--text-tertiary);padding:32px;font-style:italic;font-size:12px;">No flagged items.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = state.flagged.map(f => {
+    const it = f.item || {}, flag = classifyFlagReason(f.reason);
+    const suggestion = f.suggested_action ? `<div class="suggestion">${escapeHtml(f.suggested_action)}</div>` : "";
+    return `<tr data-id="${escapeHtml(f.id)}">
+      <td class="cell-id">${escapeHtml(f.id)}</td>
+      <td><span class="type-badge ${escapeHtml(it.type || "")}">${escapeHtml(it.type || "")}</span></td>
+      <td><div class="cell-name">${escapeHtml(it.text || "")}</div></td>
+      <td><span class="flag-chip ${flag.key}">${flag.label}</span><div class="cell-reason" style="margin-top:6px;">${escapeHtml(f.reason || "")}</div>${suggestion}</td>
+    </tr>`;
+  }).join("");
+  attachRowHover();
+}
+
+function attachRowHover() {
+  document.querySelectorAll("tbody tr[data-id]").forEach(row => {
+    row.addEventListener("mouseenter", () => {
+      document.querySelectorAll(`mark[data-id="${cssEscape(row.dataset.id)}"]`).forEach(m => m.classList.add("hover"));
+    });
+    row.addEventListener("mouseleave", () => {
+      document.querySelectorAll(`mark[data-id="${cssEscape(row.dataset.id)}"]`).forEach(m => m.classList.remove("hover"));
+    });
+  });
+}
+
+function renderTrace() {
+  $("trace-count").textContent = `${state.trace.length} step${state.trace.length === 1 ? "" : "s"}`;
+  const body = $("trace-body");
+  if (!state.trace.length) {
+    body.innerHTML = `<div style="padding:20px;color:var(--text-tertiary);font-style:italic;">No trace.</div>`;
+    return;
+  }
+  body.innerHTML = state.trace.map((line, i) => {
+    const l = line.toLowerCase();
+    let cls = "";
+    if (l.includes("escalat") || l.includes("fail") || l.includes("error")) cls = "error";
+    else if (l.includes("flag") || l.includes("contradiction") || l.includes("missed")) cls = "warn";
+    else if (l.includes("accept") || l.includes("extracted") || l.includes("sectioned")) cls = "emphasis";
+    return `<div class="trace-line ${cls}"><span class="idx">${String(i).padStart(2,"0")}</span><span class="dot-cell"></span><span class="msg">${escapeHtml(line)}</span></div>`;
+  }).join("");
+}
+
+function renderEscalation() {
+  const banner = $("escalated-banner");
+  if (state.escalated) banner.classList.add("show"); else banner.classList.remove("show");
+}
+
+function renderAll() {
+  $("results-empty").style.display = "none";
+  $("results-view").style.display = "block";
+  renderAdvice();
+  renderOurRecommendations();
+  renderNoteHero();
+  renderNote();
+  renderAccepted();
+  renderFlagged();
+  renderTrace();
+  renderEscalation();
+}
+
+async function decide(itemId, decision) {
+  try {
+    await fetch(`/api/decide/${encodeURIComponent(itemId)}?decision=${decision}`, { method: "POST" });
+    if (decision === "clear") delete state.decisions[itemId]; else state.decisions[itemId] = decision;
+    renderAccepted();
+  } catch (e) {}
+}
+async function exportJson() {
+  if (!state.noteId) return;
+  try {
+    const res = await fetch(`/api/notes/${state.noteId}/export`, { method: "POST" });
+    if (!res.ok) return;
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `${state.noteId}_accepted.json`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  } catch (e) {}
+}
+
+function initSearch() {
+  const input = $("search-input");
+  if (!input) return;
+  input.addEventListener("input", (e) => {
+    state.searchQuery = e.target.value || "";
+    applySearch();
+  });
+}
+
+document.addEventListener("keydown", (e) => {
+  const meta = e.metaKey || e.ctrlKey;
+  if (meta && e.key.toLowerCase() === "k") {
+    e.preventDefault();
+    const input = $("search-input");
+    if (input) { input.focus(); input.select(); }
+    return;
+  }
+  if (state.view === "carousel") {
+    if (e.key === "ArrowLeft") { e.preventDefault(); moveCarousel(-1); }
+    else if (e.key === "ArrowRight") { e.preventDefault(); moveCarousel(1); }
+    else if (e.key === "Enter" && state.noteId) { e.preventDefault(); openReviewer(); }
+  } else {
+    if (e.key === "Escape") { e.preventDefault(); closeReviewer(); }
+    else if (e.key === "ArrowLeft") { e.preventDefault(); switchNoteInReviewer(-1); }
+    else if (e.key === "ArrowRight") { e.preventDefault(); switchNoteInReviewer(1); }
+  }
+});
+
+$("carousel-prev").addEventListener("click", () => moveCarousel(-1));
+$("carousel-next").addEventListener("click", () => moveCarousel(1));
+$("pane-prev").addEventListener("click", () => switchNoteInReviewer(-1));
+$("pane-next").addEventListener("click", () => switchNoteInReviewer(1));
+$("back-to-carousel").addEventListener("click", closeReviewer);
+$("run-btn").addEventListener("click", runPipeline);
+$("export-btn").addEventListener("click", exportJson);
+window.addEventListener("resize", () => {
+  if (state.view === "carousel") {
+    requestAnimationFrame(() => {
+      state.suppressScrollSync = true;
+      scrollToIndex(state.index, "auto");
+      setTimeout(() => { state.suppressScrollSync = false; }, 100);
+    });
+  }
+});
+$("carousel-track").addEventListener("scroll", onCarouselScroll, { passive: true });
+initSearch();
+loadNotes();
+refreshCacheStats();
+setInterval(refreshCacheStats, 3000);
+</script>
+
+</body>
+</html>

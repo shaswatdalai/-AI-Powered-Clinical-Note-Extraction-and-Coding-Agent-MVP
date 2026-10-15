@@ -56,6 +56,11 @@ _SUGGESTIONS: dict[str, str] = {
     "verifier unavailable": "Retry the run; the verifier did not respond.",
     "contradiction": "The note contradicts itself. Confirm which statement is correct.",
     "icd": "No confident ICD-10 match. Review the coding manually.",
+    # Recall-check findings (verifier-promoted). Either accept them as
+    # genuine additions to the record, or dismiss them as false positives.
+    "verifier recall check": "The verifier found this in the note but the extractor missed it. Accept if genuine, otherwise dismiss.",
+    "missed by extractor": "The verifier found this in the note but the extractor missed it. Accept if genuine, otherwise dismiss.",
+    "verifier found this in the note": "The verifier found this in the note but the extractor missed it. Accept if genuine, otherwise dismiss.",
 }
 
 
@@ -103,21 +108,56 @@ def _annotate_flagged(flagged: list[dict]) -> list[dict]:
     return out
 
 
-def _generate_advice(result: dict) -> dict | None:
+def _generate_advice(result: dict) -> dict:
     """Sidecar: call the advisor with the note's accepted diagnoses.
 
-    Fails silently if the advisor module or the LLM is unavailable —
-    the review interface still works.
+    Always returns a dict of the shape:
+        {"advice": [...], "reason": "ok" | "no_diagnoses" | "empty_tips"
+                                    | "unavailable" | "error", "message": str}
     """
+    diag_names = [
+        (it.get("text") or "")
+        for it in result.get("accepted", [])
+        if it.get("type") == "diagnosis"
+    ]
+    diag_names = [d for d in diag_names if d and d.strip()]
+
+    if not diag_names:
+        return {
+            "advice": [],
+            "reason": "no_diagnoses",
+            "message": "No diagnoses were accepted for this note.",
+        }
+
     try:
-        diag_names = [
-            (it.get("text") or "")
-            for it in result.get("accepted", [])
-            if it.get("type") == "diagnosis"
-        ]
-        return advisor.generate(diag_names)
-    except Exception:
-        return None
+        out = advisor.generate(diag_names)
+    except Exception as e:
+        return {
+            "advice": [],
+            "reason": "error",
+            "message": f"{type(e).__name__}: {str(e)[:120]}",
+        }
+
+    if out is None:
+        return {
+            "advice": [],
+            "reason": "unavailable",
+            "message": "Advisor returned no usable advice.",
+        }
+
+    advice_list = out.get("advice") or []
+    if not advice_list:
+        return {
+            "advice": [],
+            "reason": "empty_tips",
+            "message": "The model returned no actionable tips for these diagnoses.",
+        }
+
+    return {
+        "advice": advice_list,
+        "disclaimer": out.get("disclaimer"),
+        "reason": "ok",
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -276,10 +316,6 @@ def export_note(note_id: str):
 
 # ---------------------------------------------------------------------------
 # Static frontend
-#
-#   /            -> landing.html (entry page)
-#   /reviewer    -> reviewer.html (working UI)
-#   /static/*    -> any static asset
 # ---------------------------------------------------------------------------
 
 @app.get("/")

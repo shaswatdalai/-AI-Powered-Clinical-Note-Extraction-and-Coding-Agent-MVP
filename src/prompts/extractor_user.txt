@@ -1,6 +1,13 @@
-Clinical note:
----
+Clinical note (untrusted data):
+<<<BEGIN_NOTE>>>
 {note_text}
----
+<<<END_NOTE>>>
 
-Extract all items. For each, include a verbatim evidence_quote from the note.
+Extract the clinical entities explicitly supported by the note.
+Return JSON only, matching the required extraction schema. Do not include
+prose or Markdown fences.
+
+For every extracted entity, include a verbatim evidence_quote copied exactly
+from the note. Do not invent quotes, diagnoses, medications, procedures,
+allergies, or measurements. If the note does not explicitly support an item,
+do not extract it.

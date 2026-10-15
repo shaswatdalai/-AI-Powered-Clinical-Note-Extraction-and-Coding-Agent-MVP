@@ -1,10 +1,86 @@
-Masked clinical note:
----
+Masked clinical note (untrusted data):
+<<<BEGIN_NOTE>>>
 {note_masked}
----
+<<<END_NOTE>>>
 
-Items to verify:
+Items the extractor produced (verify each against the note above):
 {items_json}
 
-For each item, return SUPPORTED or REJECTED with a reason.
-Also flag any contradictions and any items you think were missed.
+Your job:
+1. For every supplied item, decide whether the note supports it.
+2. Identify contradictions explicitly supported by the note.
+3. Look for genuinely distinct clinical entities the extractor missed.
+
+Return JSON only. Do not include prose or Markdown fences.
+The top-level object must contain exactly these three keys: "verdicts",
+"contradictions", and "missed_items".
+
+Required shape:
+{{
+  "verdicts": [
+    {{
+      "id": "<copy the item's id verbatim>",
+      "verdict": "SUPPORTED" or "REJECTED",
+      "status_correct": true or false,
+      "icd_fit": "good", "poor", or "none",
+      "reason": "short factual explanation, at most 30 words"
+    }}
+  ],
+  "contradictions": [
+    {{
+      "items": ["<id>", "<id>"],
+      "description": "<short explanation of the contradiction>"
+    }}
+  ],
+  "missed_items": [
+    {{
+      "type": "diagnosis", "medication", "procedure", "allergy", or "vital",
+      "text": "<exact phrase from the note>",
+      "span_text": "<short verbatim quote from the note supporting it>"
+    }}
+  ]
+}}
+
+VERDICT RULES
+- Return exactly one verdict for every supplied item, copying each ID exactly.
+- Use only SUPPORTED or REJECTED for verdict.
+- Judge support from the note, not from outside medical knowledge.
+- A diagnosis must be a diagnosis, not merely a symptom, mechanism of injury,
+  physical-exam observation, radiology finding, lab value, social fact, family
+  history, or normal state.
+- A medication counts only when the note says it was prescribed, administered,
+  or is currently being taken. Do not count hypothetical alternatives.
+- For diagnosis ICD fit, use "good" when the candidate is a reasonable match,
+  "poor" when it is a weak match, and "none" when no candidate is suitable.
+- If an item is not a diagnosis or has no ICD candidates, use "none" for icd_fit.
+- Set status_correct to false when a diagnosis's extracted status conflicts with
+  the note. For non-diagnosis items, set it to true.
+- Keep reasons short and factual. Do not put recall-check commentary in a verdict.
+
+CONTRADICTION RULES
+- Report only clear contradictions supported by the note, such as the same
+  diagnosis being described as both active and ruled out in relevant sections.
+- If there are no contradictions, return an empty array.
+
+MISSED-ITEM RULES — BE CONSERVATIVE
+Only report a missed item when ALL of these are true:
+1. The note explicitly states a clinical fact in one of the five supported types.
+2. It is a genuine, distinct entity, not just a symptom or sub-finding.
+3. It is not already represented in the supplied items, including under a
+   synonym, abbreviation, alternate spelling, broader item, or sub-item.
+4. You can quote exact supporting text from the note in span_text.
+
+Do NOT report:
+- Negated or ruled-out findings as present conditions.
+- Symptoms or complaints that are not diagnosed conditions.
+- Family history, social history, or unrelated historical procedures unless
+  they are explicitly part of the current assessment.
+- A component or sub-finding already covered by an extracted item.
+- A synonym or abbreviation of an extracted item (for example, do not report
+  hypertension if HTN is already listed).
+- Text inferred from general medical knowledge but not explicitly stated.
+- An item merely because its wording differs from the extracted wording.
+
+If no genuine missed items exist, return "missed_items": []. This is the normal
+and preferred outcome. When uncertain, do not report the item. Never invent an
+item to fill the array. The "text" and "span_text" must be copied from the note.

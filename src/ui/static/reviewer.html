@@ -504,6 +504,88 @@ html[data-theme="light"] .pane {
 }
 .note-hero-meta { font-size: 12.5px; color: var(--text-tertiary); letter-spacing: -0.005em; }
 
+/* ============ Legend ============ */
+.legend {
+  padding: 14px 24px 16px 24px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+  background: color-mix(in srgb, var(--bg-base) 40%, transparent);
+}
+.legend-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-tertiary);
+  margin-bottom: 10px;
+}
+.legend-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.legend-row-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-quaternary);
+  width: 62px;
+  flex-shrink: 0;
+}
+.legend-items {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface);
+  font-size: 11px;
+  color: var(--text-secondary);
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+}
+.legend-swatch {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.legend-swatch.diagnosis { background: var(--accent);   box-shadow: 0 0 0 2px var(--accent-soft); }
+.legend-swatch.medication { background: var(--success); box-shadow: 0 0 0 2px var(--success-soft); }
+.legend-swatch.procedure  { background: var(--warning); box-shadow: 0 0 0 2px var(--warning-soft); }
+.legend-swatch.allergy    { background: var(--info);    box-shadow: 0 0 0 2px var(--info-soft); }
+.legend-swatch.vital      { background: var(--danger);  box-shadow: 0 0 0 2px var(--danger-soft); }
+.legend-swatch.accepted {
+  background: var(--highlight-accepted);
+  border-bottom: 2px solid var(--highlight-accepted-border);
+  border-radius: 3px;
+  width: 14px;
+}
+.legend-swatch.flagged {
+  background: var(--highlight-flagged);
+  border-bottom: 2px solid var(--highlight-flagged-border);
+  border-radius: 3px;
+  width: 14px;
+}
+
+@media (max-width: 900px) {
+  .legend-row-label { width: 100%; margin-bottom: 2px; }
+}
+
 .note-text-wrap { padding: 20px 24px; }
 .note-text {
   font-family: 'JetBrains Mono', monospace;
@@ -569,6 +651,22 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
 .advice-item.danger .glyph { color: var(--danger); }
 .advice-item.success { border-left-color: var(--success); background: var(--success-soft); color: var(--success); }
 .advice-item.success .glyph { color: var(--success); }
+.advice-item.clickable { cursor: pointer; }
+.advice-item.clickable:hover { background: color-mix(in srgb, var(--warning) 14%, transparent); }
+
+.state-warning {
+  display: none;
+  margin: 8px 24px 16px 28px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border-left: 2px solid var(--info);
+  background: var(--info-soft);
+  color: var(--info);
+  font-size: 11.5px;
+  font-family: 'JetBrains Mono', monospace;
+  line-height: 1.5;
+}
+.state-warning.show { display: block; }
 
 .our-recs-wrap { border-top: 1px solid var(--border-subtle); }
 .our-recs-header { padding: 18px 24px 10px 28px; display: flex; align-items: center; justify-content: space-between; }
@@ -614,6 +712,93 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
   font-size: 12.5px; color: var(--text-tertiary); font-style: italic;
   line-height: 1.55;
 }
+
+/* ---------- Missed-items panel ---------- */
+.missed-panel {
+  margin: 12px 20px 4px 20px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--warning) 40%, transparent);
+  background: var(--warning-soft);
+  overflow: hidden;
+}
+.missed-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 12.5px; font-weight: 600;
+  color: var(--warning);
+  transition: background 160ms ease;
+}
+.missed-panel-header:hover { background: color-mix(in srgb, var(--warning) 10%, transparent); }
+.missed-panel-title {
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.missed-panel-title .glyph {
+  display: inline-grid; place-items: center;
+  width: 16px; height: 16px; border-radius: 5px;
+  background: var(--warning); color: #0a0d11;
+  font-weight: 800; font-size: 11px;
+}
+.missed-panel-chevron {
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  color: var(--warning);
+}
+.missed-panel.open .missed-panel-chevron { transform: rotate(90deg); }
+.missed-panel-body {
+  display: none;
+  padding: 4px 14px 14px 14px;
+  border-top: 1px solid color-mix(in srgb, var(--warning) 25%, transparent);
+}
+.missed-panel.open .missed-panel-body { display: block; }
+
+.missed-item {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--bg-base) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--warning) 25%, transparent);
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.missed-item:first-child { margin-top: 12px; }
+.missed-item-top {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 6px;
+}
+.missed-item-text {
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.005em;
+}
+.missed-item-span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  margin-top: 6px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.missed-item-actions {
+  display: flex; gap: 6px; margin-top: 8px;
+}
+.missed-item-actions .btn {
+  padding: 5px 10px;
+  font-size: 11px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-family: inherit;
+  cursor: pointer;
+}
+.missed-item-actions .btn:hover { background: var(--surface-hover); color: var(--text-primary); }
+.missed-item-actions .btn.accept { color: var(--success); border-color: color-mix(in srgb, var(--success) 40%, transparent); }
+.missed-item-actions .btn.dismiss { color: var(--text-tertiary); }
 
 .results-card { border-bottom: 1px solid var(--border-subtle); }
 .results-card:last-child { border-bottom: none; }
@@ -666,6 +851,7 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
 .type-badge.procedure  { background: var(--warning-soft); color: var(--warning); }
 .type-badge.allergy    { background: var(--info-soft);    color: var(--info); }
 .type-badge.vital      { background: var(--danger-soft);  color: var(--danger); }
+.type-badge.unknown    { background: var(--surface);      color: var(--text-secondary); }
 
 .status-chip {
   display: inline-block; font-family: 'JetBrains Mono', monospace;
@@ -696,7 +882,7 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
 .flag-chip.contradiction { background: var(--danger-soft);  color: var(--danger); }
 .flag-chip.status        { background: var(--warning-soft); color: var(--warning); }
 .flag-chip.rejected      { background: var(--warning-soft); color: var(--warning); }
-.flag-chip.missing       { background: var(--surface);      color: var(--text-tertiary); }
+.flag-chip.missing       { background: var(--warning-soft); color: var(--warning); }
 .flag-chip.unavailable   { background: var(--danger-soft);  color: var(--danger); }
 .flag-chip.other         { background: var(--surface);      color: var(--text-secondary); }
 
@@ -905,6 +1091,29 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
             <div class="note-hero-meta" id="note-hero-meta">Run the pipeline to see the extraction</div>
           </div>
 
+          <div class="legend" id="legend">
+            <div class="legend-title">Legend</div>
+            <div class="legend-rows">
+              <div class="legend-row">
+                <span class="legend-row-label">Type</span>
+                <div class="legend-items">
+                  <span class="legend-item"><span class="legend-swatch diagnosis"></span>Diagnosis</span>
+                  <span class="legend-item"><span class="legend-swatch medication"></span>Medication</span>
+                  <span class="legend-item"><span class="legend-swatch procedure"></span>Procedure</span>
+                  <span class="legend-item"><span class="legend-swatch allergy"></span>Allergy</span>
+                  <span class="legend-item"><span class="legend-swatch vital"></span>Vital</span>
+                </div>
+              </div>
+              <div class="legend-row">
+                <span class="legend-row-label">Mark</span>
+                <div class="legend-items">
+                  <span class="legend-item"><span class="legend-swatch accepted"></span>Accepted</span>
+                  <span class="legend-item"><span class="legend-swatch flagged"></span>Flagged</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="note-text-wrap">
             <div class="note-text" id="note-text">Select a note and click "Run pipeline".</div>
           </div>
@@ -923,6 +1132,7 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
               </div>
             </div>
             <div class="advice-recs" id="advice-recs"></div>
+            <div class="state-warning" id="state-warning"></div>
 
             <div class="our-recs-wrap" id="our-recs-wrap">
               <div class="our-recs-header">
@@ -980,6 +1190,7 @@ mark.truncated::after { content: "…"; color: var(--text-tertiary); font-size: 
                 <span class="count" id="flagged-count">0</span>
               </div>
             </div>
+            <div id="missed-panel-slot"></div>
             <table class="item-table">
               <thead>
                 <tr><th style="width:52px;">ID</th><th style="width:110px;">Type</th><th>Item</th><th style="width:260px;">Reason</th></tr>
@@ -1079,6 +1290,7 @@ const state = {
   advice: null, decisions: {}, runNotes: new Set(), searchQuery: "",
   view: "carousel",
   suppressScrollSync: false,
+  missedPanelOpen: false,
 };
 const $ = (id) => document.getElementById(id);
 const MAX_MARK_DISPLAY_LEN = 70;
@@ -1090,12 +1302,40 @@ function escapeHtml(s) {
 }
 function classifyFlagReason(reason) {
   const r = (reason || "").toLowerCase();
+  if (r.includes("verifier recall check") || r.includes("missed by extractor") || r.includes("verifier found this in the note"))
+    return { key: "missing", label: "missed by extractor" };
   if (r.includes("contradict"))  return { key: "contradiction", label: "contradiction" };
   if (r.includes("status"))      return { key: "status", label: "status mismatch" };
   if (r.includes("no verdict"))  return { key: "missing", label: "no verdict" };
   if (r.includes("unavailable")) return { key: "unavailable", label: "verifier unavailable" };
   if (r.includes("reject"))      return { key: "rejected", label: "verifier rejected" };
   return { key: "other", label: "flagged" };
+}
+
+// Distinguish "missed by extractor" flagged entries from ordinary ones.
+function isMissedItem(f) {
+  const id = String(f?.id || "");
+  const reason = String(f?.reason || "").toLowerCase();
+  return id.startsWith("missed:")
+      || reason.includes("verifier recall check")
+      || reason.includes("missed by extractor")
+      || reason.includes("verifier found this in the note");
+}
+function splitFlagged() {
+  const missed = [];
+  const other = [];
+  for (const f of state.flagged) {
+    (isMissedItem(f) ? missed : other).push(f);
+  }
+  return { missed, other };
+}
+
+// Trace-marker detection. The orchestrator writes exactly one
+// `MISSED_ITEMS_PROMOTED: N` line when it promoted any items, and
+// `RECALL_CHECK_OK: ...` otherwise. We only match on the fixed token so
+// verifier reasons echoed into the trace can never trigger this.
+function traceHasMissedPromotion() {
+  return (state.trace || []).some(l => /^MISSED_ITEMS_PROMOTED:\s*\d+/.test(l));
 }
 
 async function refreshCacheStats() {
@@ -1266,13 +1506,11 @@ function updateNavButtons() {
   if (prev) prev.disabled = state.index <= 0;
   if (next) next.disabled = state.index >= state.filtered.length - 1;
 
-  // Also update the reviewer-pane nav buttons.
   const pp = $("pane-prev"), pn = $("pane-next");
   if (pp) pp.disabled = state.index <= 0;
   if (pn) pn.disabled = state.index >= state.filtered.length - 1;
 }
 
-// Carousel-view movement: advance index and slide the track.
 function moveCarousel(delta) {
   const next = state.index + delta;
   if (next < 0 || next >= state.filtered.length) return;
@@ -1281,13 +1519,12 @@ function moveCarousel(delta) {
   scrollToIndex(next);
 }
 
-// Reviewer-view movement: advance index, then load the new note into the panes.
-// Does NOT touch the carousel scroll (which isn't visible).
 function switchNoteInReviewer(delta) {
   const next = state.index + delta;
   if (next < 0 || next >= state.filtered.length) return;
   state.index = next;
   state.noteId = state.filtered[next];
+  state.missedPanelOpen = false;
   updateNavButtons();
   updateDots();
   resetReviewerView();
@@ -1334,10 +1571,12 @@ async function fetchNote() {
 function resetReviewerView() {
   state.accepted = []; state.flagged = []; state.trace = [];
   state.escalated = false; state.error = null; state.advice = null;
+  state.missedPanelOpen = false;
   $("results-empty").style.display = "";
   $("results-view").style.display = "none";
   $("advice-card").style.display = "none";
   $("escalated-banner").classList.remove("show");
+  const w = $("state-warning"); if (w) w.classList.remove("show");
 }
 
 async function runPipeline() {
@@ -1376,6 +1615,9 @@ function renderAdvice() {
   const byReason = { contradiction:0, status:0, missing:0, rejected:0, unavailable:0, other:0 };
   for (const f of state.flagged) { const cls = classifyFlagReason(f.reason); byReason[cls.key] = (byReason[cls.key] || 0) + 1; }
 
+  const { missed, other: otherFlagged } = splitFlagged();
+  const traceSaysMissed = traceHasMissedPromotion();
+
   let stateClass = "state-success", heading = "Ready to review", subline = state.summary || "";
   let iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
   if (state.error) {
@@ -1384,8 +1626,11 @@ function renderAdvice() {
   } else if (state.escalated) {
     stateClass = "state-danger"; heading = "Escalated — manual review";
     iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
-  } else if (state.flagged.length > 0) {
-    stateClass = "state-warning"; heading = `${state.flagged.length} item${state.flagged.length > 1 ? "s" : ""} need your attention`;
+  } else if (otherFlagged.length > 0) {
+    stateClass = "state-warning"; heading = `${otherFlagged.length} item${otherFlagged.length > 1 ? "s" : ""} need your attention`;
+    iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+  } else if (missed.length > 0) {
+    stateClass = "state-warning"; heading = `Extractor missed ${missed.length} item${missed.length > 1 ? "s" : ""}`;
     iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
   } else heading = "All items accepted";
 
@@ -1398,29 +1643,88 @@ function renderAdvice() {
   if (byReason.contradiction > 0) recs.push({ kind:"danger", glyph:"!", text:`${byReason.contradiction} contradiction${byReason.contradiction > 1 ? "s" : ""} — the note contradicts itself.` });
   if (byReason.status > 0) recs.push({ kind:"warning", glyph:"!", text:`${byReason.status} status mismatch${byReason.status > 1 ? "es" : ""} — check whether the item is active, historical, or ruled out.` });
   if (byReason.unavailable > 0) recs.push({ kind:"warning", glyph:"!", text:`Verifier was unavailable for ${byReason.unavailable} item${byReason.unavailable > 1 ? "s" : ""}. Re-run before trusting the extraction.` });
-  if (byReason.missing > 0) recs.push({ kind:"warning", glyph:"!", text:`${byReason.missing} item${byReason.missing > 1 ? "s" : ""} have no verdict. Manually verify against the source note.` });
+  if (byReason.missing > 0 && missed.length === 0) recs.push({ kind:"warning", glyph:"!", text:`${byReason.missing} item${byReason.missing > 1 ? "s" : ""} have no verdict. Manually verify against the source note.` });
   if (byReason.rejected > 0) recs.push({ kind:"warning", glyph:"!", text:`${byReason.rejected} item${byReason.rejected > 1 ? "s" : ""} rejected by the verifier — consider removing them.` });
-  if ((state.trace || []).some(l => l.toLowerCase().includes("missed item"))) recs.push({ kind:"warning", glyph:"!", text:"The verifier reported items the extractor missed. Consider a second pass." });
+
+  // Missed-items warning. Only fires when we can actually see the items
+  // in the flagged set. Never triggers on raw trace text.
+  if (missed.length > 0) {
+    recs.push({
+      kind: "warning",
+      glyph: "!",
+      text: `The verifier found ${missed.length} item${missed.length > 1 ? "s" : ""} the extractor missed — click to review them below.`,
+      action: "toggle-missed",
+    });
+  }
+
   recs.push({ kind:"tip", glyph:"→", text:"Walk through each span before accepting. Hover a highlight to see the row; click to jump to it." });
   recs.push({ kind:"tip", glyph:"→", text:"Spot-check the ICD candidates. Top-1 is often correct, but the coder decides." });
-  if (state.accepted.length > 0 && state.flagged.length === 0 && !state.escalated && !state.error) {
+  if (state.accepted.length > 0 && otherFlagged.length === 0 && missed.length === 0 && !state.escalated && !state.error) {
     recs.push({ kind:"success", glyph:"✓", text:`All ${state.accepted.length} item${state.accepted.length > 1 ? "s" : ""} were accepted by both the extractor and the verifier. Ready to export.` });
   }
-  recsEl.innerHTML = recs.map(r => `<div class="advice-item ${r.kind}"><span class="glyph">${escapeHtml(r.glyph)}</span><span>${escapeHtml(r.text)}</span></div>`).join("");
+
+  recsEl.innerHTML = recs.map(r => {
+    const actionAttr = r.action ? ` data-action="${r.action}"` : "";
+    const clickable = r.action ? " clickable" : "";
+    return `<div class="advice-item ${r.kind}${clickable}"${actionAttr}><span class="glyph">${escapeHtml(r.glyph)}</span><span>${escapeHtml(r.text)}</span></div>`;
+  }).join("");
+
+  recsEl.querySelectorAll("[data-action='toggle-missed']").forEach(el => {
+    el.addEventListener("click", () => {
+      state.missedPanelOpen = true;
+      const p = $("missed-panel");
+      if (p) {
+        p.classList.add("open");
+        p.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    });
+  });
+
+  // Debug banner: only shows if the pipeline trace EXPLICITLY says it
+  // promoted items but the frontend received none. That combination is
+  // the only one that indicates a real bug (serialization or caching).
+  const _w = $("state-warning");
+  if (_w) {
+    if (traceSaysMissed && missed.length === 0) {
+      _w.textContent = "State mismatch: pipeline promoted missed items but the frontend received none. This is a serialization bug — check the JSON response for a `flagged` array with entries whose ids start with `missed:`.";
+      _w.classList.add("show");
+    } else {
+      _w.classList.remove("show");
+    }
+  }
 }
 
+/* ---------- Recommendations card: reason-aware ---------- */
 function renderOurRecommendations() {
   const wrap = $("our-recs-wrap"), list = $("our-recs-list"), unavail = $("our-recs-unavailable");
   if (!wrap || !list || !unavail) return;
   wrap.style.display = "block";
-  const hasAdvice = state.advice && Array.isArray(state.advice.advice) && state.advice.advice.length > 0;
-  if (!hasAdvice) { list.innerHTML = ""; unavail.style.display = "block"; return; }
-  unavail.style.display = "none";
-  list.innerHTML = state.advice.advice.map(item => {
-    const cond = escapeHtml(item.condition || "");
-    const tips = (item.tips || []).map(t => `<div class="our-recs-tip">${escapeHtml(t)}</div>`).join("");
-    return `<div class="our-recs-condition"><div class="our-recs-condition-name">${cond}</div>${tips}</div>`;
-  }).join("");
+
+  const advice = state.advice || {};
+  const items = Array.isArray(advice.advice) ? advice.advice : [];
+  const reason = advice.reason || (items.length ? "ok" : "unavailable");
+
+  if (items.length > 0) {
+    unavail.style.display = "none";
+    list.innerHTML = items.map(item => {
+      const cond = escapeHtml(item.condition || "");
+      const tips = (item.tips || []).map(t => `<div class="our-recs-tip">${escapeHtml(t)}</div>`).join("");
+      return `<div class="our-recs-condition"><div class="our-recs-condition-name">${cond}</div>${tips}</div>`;
+    }).join("");
+    return;
+  }
+
+  list.innerHTML = "";
+  if (reason === "no_diagnoses") {
+    unavail.textContent = "No diagnoses were accepted for this note, so there's nothing to base recommendations on.";
+  } else if (reason === "empty_tips") {
+    unavail.textContent = "No actionable tips were generated for these diagnoses.";
+  } else if (reason === "error") {
+    unavail.textContent = "Recommendations could not be generated — " + (advice.message || "unknown error") + ".";
+  } else {
+    unavail.textContent = "Recommendations are temporarily unavailable — retry in a moment, or continue without them.";
+  }
+  unavail.style.display = "block";
 }
 
 function renderNoteHero() {
@@ -1444,7 +1748,9 @@ function renderNoteHero() {
 function renderNote() {
   const items = [
     ...state.accepted.map(it => ({ id: it.id, kind: "accepted", type: it.type, text: it.text || "", span: it.span, reason: it.reason || "" })),
-    ...state.flagged.map(f => { const it = f.item || {}; return { id: f.id, kind: "flagged", type: it.type, text: it.text || "", span: it.span, reason: f.reason || "" }; }),
+    ...state.flagged
+      .filter(f => !isMissedItem(f))
+      .map(f => { const it = f.item || {}; return { id: f.id, kind: "flagged", type: it.type, text: it.text || "", span: it.span, reason: f.reason || "" }; }),
   ].filter(it => Array.isArray(it.span) && it.span.length === 2 && it.span[0] < it.span[1]);
   const raw = state.noteText;
   let escaped = "";
@@ -1507,10 +1813,13 @@ function renderAccepted() {
         ).join("")}</div>` : "";
     const statusClass = it.status ? String(it.status).replace(/[^a-z_]/gi, "") : "";
     const statusHtml = it.status ? `<span class="status-chip ${statusClass}">${escapeHtml(it.status)}</span>` : "";
+    const manualBadge = it.reviewer_manual_accept
+      ? `<span class="status-chip" style="background:var(--info-soft);color:var(--info);margin-left:6px;">added by reviewer</span>`
+      : "";
     return `<tr data-id="${escapeHtml(id)}">
       <td class="cell-id">${escapeHtml(id)}</td>
       <td><span class="type-badge ${escapeHtml(it.type || "")}">${escapeHtml(it.type || "")}</span></td>
-      <td><div class="cell-name">${escapeHtml(it.text || "")}</div>${statusHtml ? `<div class="cell-sub">${statusHtml}</div>` : ""}${icdHtml}</td>
+      <td><div class="cell-name">${escapeHtml(it.text || "")}</div>${statusHtml || manualBadge ? `<div class="cell-sub">${statusHtml}${manualBadge}</div>` : ""}${icdHtml}</td>
       <td><div class="row-actions">
         <button class="btn ${decision === "accepted" ? "accept-on" : ""}" data-decide="accepted" data-id="${escapeHtml(id)}">✓</button>
         <button class="btn ${decision === "rejected" ? "reject-on" : ""}" data-decide="rejected" data-id="${escapeHtml(id)}">✗</button>
@@ -1524,13 +1833,77 @@ function renderAccepted() {
 }
 
 function renderFlagged() {
+  const { missed, other } = splitFlagged();
+
   $("flagged-count").textContent = state.flagged.length;
+
+  const slot = $("missed-panel-slot");
+  if (slot) {
+    if (missed.length === 0) {
+      slot.innerHTML = "";
+    } else {
+      const openClass = state.missedPanelOpen ? " open" : "";
+      const itemsHtml = missed.map(f => {
+        const it = f.item || {};
+        const type = escapeHtml(it.type || "unknown");
+        const text = escapeHtml(it.text || "");
+        const spanText = escapeHtml(it.span_text || it.span || "");
+        const id = escapeHtml(f.id || "");
+        return `
+          <div class="missed-item" data-id="${id}">
+            <div class="missed-item-top">
+              <span class="missed-item-text">${text || "(no text)"}</span>
+              <span class="type-badge ${type}">${type}</span>
+            </div>
+            ${spanText ? `<div class="missed-item-span">${spanText}</div>` : ""}
+            <div class="missed-item-actions">
+              <button class="btn accept" data-missed-action="accept" data-id="${id}">Accept anyway</button>
+              <button class="btn dismiss" data-missed-action="dismiss" data-id="${id}">Dismiss</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+      slot.innerHTML = `
+        <div class="missed-panel${openClass}" id="missed-panel">
+          <div class="missed-panel-header" id="missed-panel-header">
+            <span class="missed-panel-title">
+              <span class="glyph">!</span>
+              Extractor missed ${missed.length} item${missed.length > 1 ? "s" : ""} — verifier found these in the note
+            </span>
+            <span class="missed-panel-chevron">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </span>
+          </div>
+          <div class="missed-panel-body">${itemsHtml}</div>
+        </div>
+      `;
+      const header = $("missed-panel-header");
+      header && header.addEventListener("click", () => {
+        state.missedPanelOpen = !state.missedPanelOpen;
+        const p = $("missed-panel");
+        p && p.classList.toggle("open", state.missedPanelOpen);
+      });
+      slot.querySelectorAll("[data-missed-action]").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const action = btn.dataset.missedAction;
+          const id = btn.dataset.id;
+          handleMissedAction(id, action);
+        });
+      });
+    }
+  }
+
   const tbody = $("flagged-tbody");
-  if (!state.flagged.length) {
-    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--text-tertiary);padding:32px;font-style:italic;font-size:12px;">No flagged items.</td></tr>`;
+  if (!other.length) {
+    tbody.innerHTML = missed.length
+      ? `<tr><td colspan="4" style="text-align:center;color:var(--text-tertiary);padding:24px;font-style:italic;font-size:12px;">No verifier-rejected items. ${missed.length} missed item${missed.length > 1 ? "s" : ""} shown above.</td></tr>`
+      : `<tr><td colspan="4" style="text-align:center;color:var(--text-tertiary);padding:32px;font-style:italic;font-size:12px;">No flagged items.</td></tr>`;
     return;
   }
-  tbody.innerHTML = state.flagged.map(f => {
+  tbody.innerHTML = other.map(f => {
     const it = f.item || {}, flag = classifyFlagReason(f.reason);
     const suggestion = f.suggested_action ? `<div class="suggestion">${escapeHtml(f.suggested_action)}</div>` : "";
     return `<tr data-id="${escapeHtml(f.id)}">
@@ -1541,6 +1914,21 @@ function renderFlagged() {
     </tr>`;
   }).join("");
   attachRowHover();
+}
+
+function handleMissedAction(id, action) {
+  const item = state.flagged.find(f => f.id === id);
+  if (!item) return;
+  if (action === "accept") {
+    state.flagged = state.flagged.filter(f => f.id !== id);
+    state.accepted.push({ ...item.item, reviewer_manual_accept: true });
+  } else if (action === "dismiss") {
+    state.flagged = state.flagged.filter(f => f.id !== id);
+  }
+  renderAccepted();
+  renderFlagged();
+  renderNoteHero();
+  renderAdvice();
 }
 
 function attachRowHover() {
@@ -1564,9 +1952,9 @@ function renderTrace() {
   body.innerHTML = state.trace.map((line, i) => {
     const l = line.toLowerCase();
     let cls = "";
-    if (l.includes("escalat") || l.includes("fail") || l.includes("error")) cls = "error";
-    else if (l.includes("flag") || l.includes("contradiction") || l.includes("missed")) cls = "warn";
-    else if (l.includes("accept") || l.includes("extracted") || l.includes("sectioned")) cls = "emphasis";
+    if (l.includes("escalat") || l.includes("fail") || l.includes("error") || l.startsWith("flagged_fraction_high")) cls = "error";
+    else if (l.includes("flag") || l.includes("contradiction") || l.startsWith("missed_items_promoted") || l.startsWith("missed_item_detail")) cls = "warn";
+    else if (l.includes("accept") || l.includes("extracted") || l.includes("sectioned") || l.startsWith("recall_check_ok")) cls = "emphasis";
     return `<div class="trace-line ${cls}"><span class="idx">${String(i).padStart(2,"0")}</span><span class="dot-cell"></span><span class="msg">${escapeHtml(line)}</span></div>`;
   }).join("");
 }

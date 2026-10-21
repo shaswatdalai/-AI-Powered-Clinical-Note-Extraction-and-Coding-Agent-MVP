@@ -18,7 +18,9 @@ Endpoints:
 """
 
 from datetime import datetime, timezone
+import logging
 from pathlib import Path
+import time
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
@@ -30,6 +32,12 @@ from src.icd_index import load_index
 from src.orchestrator import run
 
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+)
+logger = logging.getLogger(__name__)
+
 DATA_DIR = Path("data")
 STATIC_DIR = Path(__file__).parent / "static"
 
@@ -39,7 +47,22 @@ app = FastAPI(title="Clinical Extraction Reviewer")
 @app.on_event("startup")
 def _startup():
     """Load the ICD index once at startup. Redis is optional."""
-    load_index()
+    logger.info("FastAPI startup: initiating ICD index loading...")
+    t0 = time.perf_counter()
+    try:
+        load_index()
+        elapsed = time.perf_counter() - t0
+        logger.info(
+            "FastAPI startup: ICD index loaded successfully in %.3fs.",
+            elapsed,
+        )
+    except Exception:
+        elapsed = time.perf_counter() - t0
+        logger.exception(
+            "FastAPI startup: ICD index loading failed after %.3fs.",
+            elapsed,
+        )
+        raise
 
 
 _reviewer_decisions: dict[str, str] = {}

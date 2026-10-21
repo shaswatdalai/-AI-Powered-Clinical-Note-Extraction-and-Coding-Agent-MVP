@@ -29,15 +29,23 @@ Run:
 """
 
 import json
+import logging
 import pickle
 import re
 import sys
+import time
 from pathlib import Path
 
 import chromadb
 import pandas as pd
 from rank_bm25 import BM25Okapi
 from sentence_transformers import SentenceTransformer
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 
 ICD_CSV = Path("data/icd10cm_data.csv")
@@ -188,28 +196,93 @@ def load_index():
     """
     global _bm25, _bm25_codes, _bm25_descs, _embedder, _chroma_collection
 
+    t_total = time.perf_counter()
+    logger.info("Starting ICD-10 index loading...")
+
     if not BM25_PATH.exists():
-        raise FileNotFoundError(
-            f"{BM25_PATH} not found. Run: python -m src.icd_index --build"
+        err_msg = f"{BM25_PATH} not found. Run: python -m src.icd_index --build"
+        logger.error(err_msg)
+        raise FileNotFoundError(err_msg)
+
+    # 1. BM25 pickle loading
+    t_bm25 = time.perf_counter()
+    logger.info("[1/3] Loading BM25 index from '%s'...", BM25_PATH)
+    try:
+        data = pickle.loads(BM25_PATH.read_bytes())
+        _bm25 = data["bm25"]
+        _bm25_codes = data["codes"]
+        raw_descs = data["descs"]
+        # Re-clean in case the pickle was built before the wrapper strip.
+        _bm25_descs = [_clean_description(d) if "description about this code:" in d
+                       else d for d in raw_descs]
+        bm25_elapsed = time.perf_counter() - t_bm25
+        logger.info(
+            "[1/3 DONE] BM25 index loaded successfully in %.3fs (%d codes).",
+            bm25_elapsed,
+            len(_bm25_codes),
         )
+    except Exception:
+        bm25_elapsed = time.perf_counter() - t_bm25
+        logger.exception(
+            "[1/3 FAILED] Failed to load BM25 index after %.3fs.",
+            bm25_elapsed,
+        )
+        raise
 
-    print("Loading BM25 index...")
-    data = pickle.loads(BM25_PATH.read_bytes())
-    _bm25 = data["bm25"]
-    _bm25_codes = data["codes"]
-    raw_descs = data["descs"]
-    # Re-clean in case the pickle was built before the wrapper strip.
-    _bm25_descs = [_clean_description(d) if "description about this code:" in d
-                   else d for d in raw_descs]
+    # 2. ChromaDB initialization and collection loading
+    t_chroma = time.perf_counter()
+    logger.info(
+        "[2/3] Initializing ChromaDB persistent client at '%s' (collection: '%s')...",
+        CHROMA_DIR,
+        CHROMA_COLLECTION,
+    )
+    try:
+        client = chromadb.PersistentClient(path=str(CHROMA_DIR))
+        _chroma_collection = client.get_collection(CHROMA_COLLECTION)
+        chroma_elapsed = time.perf_counter() - t_chroma
+        logger.info(
+            "[2/3 DONE] ChromaDB collection '%s' loaded successfully in %.3fs.",
+            CHROMA_COLLECTION,
+            chroma_elapsed,
+        )
+    except Exception:
+        chroma_elapsed = time.perf_counter() - t_chroma
+        logger.exception(
+            "[2/3 FAILED] Failed to load ChromaDB collection '%s' after %.3fs.",
+            CHROMA_COLLECTION,
+            chroma_elapsed,
+        )
+        raise
 
-    print("Loading ChromaDB...")
-    client = chromadb.PersistentClient(path=str(CHROMA_DIR))
-    _chroma_collection = client.get_collection(CHROMA_COLLECTION)
+    # 3. SentenceTransformer initialization
+    t_embed = time.perf_counter()
+    logger.info(
+        "[3/3] Initializing SentenceTransformer model '%s'...",
+        EMBED_MODEL,
+    )
+    try:
+        _embedder = SentenceTransformer(EMBED_MODEL)
+        embed_elapsed = time.perf_counter() - t_embed
+        logger.info(
+            "[3/3 DONE] SentenceTransformer model '%s' loaded in %.3fs.",
+            EMBED_MODEL,
+            embed_elapsed,
+        )
+    except Exception:
+        embed_elapsed = time.perf_counter() - t_embed
+        logger.exception(
+            "[3/3 FAILED] Failed to initialize SentenceTransformer model '%s' after %.3fs.",
+            EMBED_MODEL,
+            embed_elapsed,
+        )
+        raise
 
-    print("Loading embedding model...")
-    _embedder = SentenceTransformer(EMBED_MODEL)
-
-    print(f"ICD index ready ({len(_bm25_codes)} codes).")
+    total_elapsed = time.perf_counter() - t_total
+    logger.info(
+        "ICD index ready (%d codes). Total load time: %.3fs.",
+        len(_bm25_codes),
+        total_elapsed,
+    )
 
 
 def _bm25_search(query: str, k: int = 20) -> list[tuple[int, float]]:

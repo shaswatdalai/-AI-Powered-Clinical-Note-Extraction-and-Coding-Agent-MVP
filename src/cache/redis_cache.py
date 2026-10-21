@@ -5,10 +5,18 @@ Redis-backed result cache for pipeline runs.
 If Redis is available, results are cached for 24 hours.
 If Redis or its Python package is unavailable, the app
 continues normally without caching.
+
+Configuration:
+- Redis Cloud: set REDIS_HOST, REDIS_PORT, REDIS_USERNAME,
+  and REDIS_PASSWORD. TLS is enabled by default when credentials
+  are configured.
+- Local development: without cloud credentials, defaults to
+  localhost:6379.
 """
 
 import hashlib
 import json
+import os
 from typing import Optional
 
 # Redis is optional. Do not crash if its package is missing.
@@ -20,9 +28,23 @@ except ImportError:
     _REDIS_AVAILABLE = False
 
 
-REDIS_HOST = "localhost"
-REDIS_PORT = 6379
-REDIS_DB = 0
+# Read configuration from environment variables.
+REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
+REDIS_DB = int(os.getenv("REDIS_DB", "0"))
+REDIS_USERNAME = os.getenv("REDIS_USERNAME")
+REDIS_PASSWORD = os.getenv("REDIS_PASSWORD")
+
+# Enable TLS by default when Redis Cloud credentials are configured.
+# Set REDIS_SSL=false only if your provider requires a non-TLS connection.
+_cloud_credentials_configured = bool(
+    REDIS_USERNAME and REDIS_PASSWORD
+)
+REDIS_SSL = os.getenv(
+    "REDIS_SSL",
+    "true" if _cloud_credentials_configured else "false",
+).strip().lower() in {"1", "true", "yes", "on"}
+
 TTL_SECONDS = 24 * 60 * 60
 
 _client = None
@@ -40,18 +62,33 @@ def _get_client():
         return _client
 
     try:
-        client = _redis.Redis(
-            host=REDIS_HOST,
-            port=REDIS_PORT,
-            db=REDIS_DB,
-            socket_connect_timeout=1.0,
-            socket_timeout=1.0,
-        )
+        client_options = {
+            "host": REDIS_HOST,
+            "port": REDIS_PORT,
+            "db": REDIS_DB,
+            "socket_connect_timeout": 3.0,
+            "socket_timeout": 3.0,
+            "decode_responses": False,
+        }
+
+        if REDIS_USERNAME:
+            client_options["username"] = REDIS_USERNAME
+
+        if REDIS_PASSWORD:
+            client_options["password"] = REDIS_PASSWORD
+
+        if REDIS_SSL:
+            client_options["ssl"] = True
+
+        client = _redis.Redis(**client_options)
         client.ping()
+
         _client = client
         _connection_ok = True
         return _client
+
     except Exception:
+        # Redis failure must not crash the application.
         _connection_ok = False
         return None
 
@@ -82,10 +119,13 @@ def _prompt_hash() -> str:
             _guardrails_fingerprint(),
             _schema_fingerprint(),
         ])
+
     except Exception:
         blob = "static"
 
-    return hashlib.sha256(blob.encode("utf-8")).hexdigest()[:16]
+    return hashlib.sha256(
+        blob.encode("utf-8")
+    ).hexdigest()[:16]
 
 
 def _key(note_id: str, note_text: str) -> str:
@@ -95,30 +135,46 @@ def _key(note_id: str, note_text: str) -> str:
     h.update(_prompt_hash().encode("utf-8"))
     h.update(b"|")
     h.update(note_text.encode("utf-8"))
+
     return f"pipeline:{h.hexdigest()}"
 
 
-def get_result(note_id: str, note_text: str) -> Optional[dict]:
+def get_result(
+    note_id: str,
+    note_text: str,
+) -> Optional[dict]:
     """Return cached result, or None if absent/unavailable."""
     client = _get_client()
+
     if client is None:
         return None
 
     try:
         raw = client.get(_key(note_id, note_text))
+
         if raw is None:
             _bump_stat(client, "misses")
             return None
 
         _bump_stat(client, "hits")
+
+        if isinstance(raw, bytes):
+            raw = raw.decode("utf-8")
+
         return json.loads(raw)
+
     except Exception:
         return None
 
 
-def set_result(note_id: str, note_text: str, result: dict) -> None:
+def set_result(
+    note_id: str,
+    note_text: str,
+    result: dict,
+) -> None:
     """Cache a result if Redis is available; otherwise do nothing."""
     client = _get_client()
+
     if client is None:
         return
 
@@ -160,8 +216,10 @@ def stats() -> dict:
             "redis_available": True,
             "hits": hits,
             "misses": misses,
-            "hit_rate": round(hits / total, 3) if total else 0.0,
+            "hit_rate": round(hits / total, 3)
+            if total else 0.0,
         }
+
     except Exception:
         return {
             "redis_available": False,
@@ -173,6 +231,7 @@ def stats() -> dict:
 
 def reset_stats() -> None:
     client = _get_client()
+
     if client is None:
         return
 
@@ -185,6 +244,7 @@ def reset_stats() -> None:
 def flush() -> None:
     """Delete pipeline cache entries without touching other Redis data."""
     client = _get_client()
+
     if client is None:
         return
 
